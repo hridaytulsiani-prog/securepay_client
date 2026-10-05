@@ -1,0 +1,84 @@
+name: Deploy securepay-client to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Vite 8 needs Node ^20.19 or >=22.12 (the 18.x used by older client
+        # projects will fail on `vite build`).
+        node-version: [22.x]
+
+    steps:
+      # setup s5cmd
+      - name: Setup s5cmd
+        uses: peak/action-setup-s5cmd@main
+        with:
+          version: v2.0.0
+
+      # checkout the repository content to github runner
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # setup nodejs environment
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      # install dependencies (package-lock.json is committed, so ci is exact)
+      - name: Install dependencies
+        run: npm ci
+
+      # build the react app (Vite writes to dist/, not build/)
+      # Vite inlines VITE_* values at BUILD time, so every one used in src/
+      # must be provided here. Unset secrets become '' and the code falls back
+      # to its own default (see the notes next to each variable).
+      - name: Build
+        run: npm run build
+        env:
+          # REQUIRED. Backend (Django) base URL, e.g. https://api.example.com
+          # with no trailing slash. Left empty the app calls its own origin
+          # (Cloudflare Pages) and every API request 404s - the Vite dev
+          # proxy does not exist in production.
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          # Optional. Default: /merchants/create_merchant/
+          VITE_REGISTER_ENDPOINT: ${{ secrets.VITE_REGISTER_ENDPOINT }}
+          # Optional. Default: https://<this site>/button.js
+          VITE_SECUREPAY_BUTTON_URL: ${{ secrets.VITE_SECUREPAY_BUTTON_URL }}
+          # Optional. Default: <VITE_API_BASE_URL>/payments/v1/checkout-sessions/
+          VITE_SECUREPAY_SESSION_API_URL: ${{ secrets.VITE_SECUREPAY_SESSION_API_URL }}
+          # Optional. Default: <VITE_API_BASE_URL>/payments/v1/button-config/
+          VITE_SECUREPAY_BUTTON_CONFIG_URL: ${{ secrets.VITE_SECUREPAY_BUTTON_CONFIG_URL }}
+          # Optional. Default: Chrome Web Store search for "SecurePay Label Uploader"
+          VITE_SECUREPAY_EXTENSION_URL: ${{ secrets.VITE_SECUREPAY_EXTENSION_URL }}
+
+      - name: Upload to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_APP_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_APP_AWS_SECRET_ACCESS_KEY}}
+          S3_ENDPOINT_URL: ${{ secrets.DEPLOY_APP_S3_ENDPOINT }}
+        run: |
+          s5cmd sync 'dist/' 's3://react-deployer-bucket/securepay_client/'
+
+      - name: Download all files from S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_APP_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_APP_AWS_SECRET_ACCESS_KEY}}
+          S3_ENDPOINT_URL: ${{ secrets.DEPLOY_APP_S3_ENDPOINT }}
+        run: |
+          s5cmd sync 's3://react-deployer-bucket/securepay_client/*' 'dist/'
+
+      - name: Publish to cloudflare pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.DEPLOY_APP_CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.DEPLOY_APP_CLOUDFLARE_ACCOUNT_ID }}
+          projectName: securepay-client
+          directory: dist

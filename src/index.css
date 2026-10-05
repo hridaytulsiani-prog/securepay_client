@@ -1,0 +1,76 @@
+/*
+  Theme tokens. Swap the values in this block to change the whole app's
+  look — nothing else in the codebase should hardcode a color.
+*/
+:root {
+  /* Brand (muted grey-blue, low saturation) */
+  --color-navy-900: #23262b;
+  --color-navy-800: #2c3036;
+  --color-navy-700: #3a3f47;
+  --color-blue-600: #5b6472;
+  --color-blue-700: #454c56;
+
+  /* Neutrals */
+  --color-white: #ffffff;
+  --color-grey-50: #f4f4f5;
+  --color-grey-100: #e9eaec;
+  --color-grey-200: #dcdee1;
+  --color-grey-300: #c3c6cb;
+  --color-grey-500: #6f747c;
+  --color-grey-700: #40444b;
+  --color-grey-900: #202225;
+
+  /* Status */
+  --color-success-bg: #e5f6ec;
+  --color-success-text: #0f6b3f;
+  --color-warning-bg: #fdf3da;
+  --color-warning-text: #8a6500;
+  --color-danger-bg: #fbe7e7;
+  --color-danger-text: #9c2b2b;
+
+  /* Semantic tokens (reference the palette above) */
+  --color-bg: var(--color-grey-50);
+  --color-surface: var(--color-white);
+  --color-surface-alt: var(--color-grey-100);
+  --color-border: var(--color-grey-200);
+  --color-text: var(--color-grey-900);
+  --color-text-muted: var(--color-grey-500);
+
+  --color-accent: var(--color-navy-800);
+  --color-accent-strong: var(--color-navy-900);
+  --color-action: var(--color-blue-600);
+  --color-action-hover: var(--color-blue-700);
+  --color-action-contrast: var(--color-white);
+
+  --color-on-accent: #e6e7e9;
+  --color-on-accent-muted: #b3b7bd;
+
+  --radius-sm: 0.45rem;
+  --radius-md: 0.6rem;
+  --radius-lg: 0.9rem;
+  --shadow-card: 0 12px 30px rgba(32, 34, 37, 0.1);
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
