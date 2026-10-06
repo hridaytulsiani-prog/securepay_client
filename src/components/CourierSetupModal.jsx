@@ -2,9 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { getCourierPreferences, saveCourierPreferences } from '../api/merchant'
 import { BLUE_DART_PLANS, COURIERS } from '../constants/couriers'
 import { getUser } from '../utils/storage'
+import { STORE_PLATFORMS, readStoredStorePlatform, storeStorePlatform } from '../constants/storePlatforms'
+import { StorePlatformPicker } from './StoreIntegration'
 
 const ONBOARDING_STEPS = [
 	{ key: 'couriers', label: 'Delivery partners' },
+	{ key: 'store', label: 'Your website' },
 	{ key: 'kyc', label: 'KYC setup' },
 	{ key: 'extension', label: 'Browser extension (optional)' },
 ]
@@ -19,6 +22,7 @@ function CourierSetupModal() {
 	const [error, setError] = useState('')
 	const [hasStarted, setHasStarted] = useState(false)
 	const [stepIndex, setStepIndex] = useState(0)
+	const [storePlatform, setStorePlatform] = useState(readStoredStorePlatform)
 	const user = getUser()
 
 	const displayName = useMemo(() => {
@@ -91,6 +95,11 @@ function CourierSetupModal() {
 		}
 	}
 
+	function chooseStorePlatform(key) {
+		setStorePlatform(key)
+		storeStorePlatform(key)
+	}
+
 	function finishOnboarding() {
 		window.dispatchEvent(new Event('securepay-courier-setup-complete'))
 	}
@@ -113,11 +122,12 @@ function CourierSetupModal() {
 			<div className="onboarding-welcome">
 				<p className="eyebrow">First-time setup</p>
 				<h2 id="courier-setup-title">Welcome to EscroSafe{displayName ? `, ${displayName}` : ''}</h2>
-				<p>We will set up your shipment assurance workspace in three quick steps so labels, delivery checks, and payment decisions are ready before your team starts processing orders.</p>
+				<p>We will set up your shipment assurance workspace in four quick steps so labels, delivery checks, and payment decisions are ready before your team starts processing orders.</p>
 				<div className="onboarding-welcome-grid">
 					<div><span>01</span><strong>Choose couriers</strong><p>Select the shipping partners your business uses.</p></div>
-					<div><span>02</span><strong>Complete KYC</strong><p>Set up your business verification for prepaid orders.</p></div>
-					<div><span>03</span><strong>Set up extension (optional)</strong><p>Prepare browser-based PDF label uploads.</p></div>
+					<div><span>02</span><strong>Connect your website</strong><p>Tell us if it is custom-built, WordPress or WooCommerce.</p></div>
+					<div><span>03</span><strong>Complete KYC</strong><p>Set up your business verification for prepaid orders.</p></div>
+					<div><span>04</span><strong>Set up extension (optional)</strong><p>Prepare browser-based PDF label uploads.</p></div>
 				</div>
 				<button type="button" className="primary-button onboarding-main-action" onClick={() => setHasStarted(true)}>
 					Start onboarding
@@ -130,7 +140,7 @@ function CourierSetupModal() {
 		return (
 			<form onSubmit={saveCouriersAndContinue}>
 				<div className="courier-setup-header">
-					<p className="eyebrow">Step 1 of 3</p>
+					<p className="eyebrow">Step 1 of 4</p>
 					<h2 id="courier-setup-title">Choose your delivery partners</h2>
 					<p>Choose the courier partners you already use. EscroSafe will set up tracking and delivery checks around them.</p>
 				</div>
@@ -187,7 +197,7 @@ function CourierSetupModal() {
 		return (
 			<div>
 				<div className="courier-setup-header">
-					<p className="eyebrow">Step 3 of 3</p>
+					<p className="eyebrow">Step 4 of 4</p>
 					<h2 id="courier-setup-title">Set up browser label capture <span>(optional)</span></h2>
 					<p>Use the EscroSafe browser extension to capture courier PDF labels from Chrome or Edge with less manual upload work.</p>
 				</div>
@@ -203,8 +213,35 @@ function CourierSetupModal() {
 					</div>
 				</div>
 				<div className="courier-setup-footer">
-					<button type="button" className="secondary-button" onClick={() => setStepIndex(1)}>Back</button>
+					<button type="button" className="secondary-button" onClick={() => setStepIndex(2)}>Back</button>
 					<button type="button" className="primary-button" onClick={finishOnboarding}>Finish onboarding</button>
+				</div>
+			</div>
+		)
+	}
+
+	function renderStoreStep() {
+		const platform = STORE_PLATFORMS.find((item) => item.key === storePlatform) || STORE_PLATFORMS[0]
+		const details = {
+			manual: 'You will get a short snippet to paste on your website. The Pay with EscroSafe button then appears where you place it.',
+			wordpress: 'You will get the EscroSafe plugin for WordPress. Install it, then add a shortcode where the Pay with EscroSafe button should appear.',
+			woocommerce: 'You will get the EscroSafe plugin for WooCommerce. Install it and Pay with EscroSafe is added to your checkout automatically.',
+		}
+		return (
+			<div>
+				<div className="courier-setup-header">
+					<p className="eyebrow">Step 2 of 4</p>
+					<h2 id="courier-setup-title">How is your website built?</h2>
+					<p>This lets us show the easiest way to add Pay with EscroSafe to your store.</p>
+				</div>
+				<StorePlatformPicker value={storePlatform} onChange={chooseStorePlatform} />
+				<div className="onboarding-callout">
+					<p><strong>{platform.label}.</strong> {details[platform.key]}</p>
+					<p>You can get the snippet or plugin, and your Merchant Key, anytime from Settings → Connect your store.</p>
+				</div>
+				<div className="courier-setup-footer">
+					<button type="button" className="secondary-button" onClick={() => setStepIndex(0)}>Back</button>
+					<button type="button" className="primary-button" onClick={() => setStepIndex(2)}>Next</button>
 				</div>
 			</div>
 		)
@@ -214,7 +251,7 @@ function CourierSetupModal() {
 		return (
 			<div>
 				<div className="courier-setup-header">
-					<p className="eyebrow">Step 2 of 3</p>
+					<p className="eyebrow">Step 3 of 4</p>
 					<h2 id="courier-setup-title">Complete your merchant KYC</h2>
 					<p>Verify your business details so your store can offer prepaid checkout to more serious buyers with confidence.</p>
 				</div>
@@ -227,8 +264,8 @@ function CourierSetupModal() {
 					<p>KYC is required before your account can fully use prepaid order assurance. You can complete or continue this from your merchant profile.</p>
 				</div>
 				<div className="courier-setup-footer">
-					<button type="button" className="secondary-button" onClick={() => setStepIndex(0)}>Back</button>
-					<button type="button" className="primary-button" onClick={() => setStepIndex(2)}>Next</button>
+					<button type="button" className="secondary-button" onClick={() => setStepIndex(1)}>Back</button>
+					<button type="button" className="primary-button" onClick={() => setStepIndex(3)}>Next</button>
 				</div>
 			</div>
 		)
@@ -238,7 +275,8 @@ function CourierSetupModal() {
 		if (!hasStarted) return renderWelcome()
 		if (loading) return <p className="courier-setup-loading">Loading your account setup...</p>
 		if (stepIndex === 0) return renderCourierStep()
-		if (stepIndex === 1) return renderKycStep()
+		if (stepIndex === 1) return renderStoreStep()
+		if (stepIndex === 2) return renderKycStep()
 		return renderExtensionStep()
 	}
 

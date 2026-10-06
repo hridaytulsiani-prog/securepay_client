@@ -7,6 +7,8 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     allowedHosts: true,
+    // Dev only: lets a local WordPress site (e.g. escrotest.local) call the proxied API.
+    cors: true,
     hmr: {
       clientPort: 443,
     },
