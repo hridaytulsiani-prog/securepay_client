@@ -442,6 +442,7 @@ function CustomerTrust() {
 			<header className={`buyer-nav${isScrolled ? ' is-scrolled' : ''}`}>
 				<div className="buyer-nav-inner">
 					<img className="buyer-brand-logo" src={escrosafeLogo.src} alt="EscroSafe" />
+					<img className="buyer-brand-mark" src="/short-logo-new.png" alt="EscroSafe" />
 					<nav className="buyer-nav-links" aria-label="Buyer protection page">
 						<a className={activeNavId === 'hero' ? 'is-active' : ''} href="#hero">
 							How it works
