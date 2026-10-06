@@ -1,9 +1,12 @@
 'use client'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import Link from 'next/link'
 import escrosafeLogo from '../../assets/escrosafe-logo.png'
 import PaymentFlowDiagram from '../../components/PaymentFlowDiagram'
 import PostPayArt from '../../components/PostPayArt'
+
+// This app only serves /customer, so "For merchants" and Terms live on the
+// merchant site. A bare "/" here would redirect straight back to /customer.
+const MERCHANT_SITE_URL = (process.env.NEXT_PUBLIC_MERCHANT_URL || 'https://merchant.escrosafe.com').replace(/\/$/, '')
 
 // Same-origin by default: next.config.mjs rewrites /adminpanel/* to Django.
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
@@ -457,10 +460,10 @@ function CustomerTrust() {
 							Contact
 						</a>
 					</nav>
-					<Link className="buyer-nav-cta" href="/">
+					<a className="buyer-nav-cta" href={`${MERCHANT_SITE_URL}/`}>
 						For merchants
 						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
-					</Link>
+					</a>
 				</div>
 			</header>
 
@@ -755,7 +758,7 @@ function CustomerTrust() {
 
 			<footer className="buyer-footer">
 				<span>© {new Date().getFullYear()} EscroSafe. Checkout protection for every order.</span>
-				<Link href="/terms">Terms & Conditions</Link>
+				<a href={`${MERCHANT_SITE_URL}/terms`}>Terms & Conditions</a>
 			</footer>
 		</div>
 	)
