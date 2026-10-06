@@ -1,4 +1,4 @@
-name: Deploy securepay-client to Cloudflare Pages
+name: Deploy securepay_client to Cloudflare Pages
 
 on:
   push:
@@ -15,11 +15,12 @@ jobs:
         node-version: [22.x]
 
     steps:
-      # setup s5cmd
-      - name: Setup s5cmd
-        uses: peak/action-setup-s5cmd@main
-        with:
-          version: v2.0.0
+      # --- S3 steps disabled for now (no AWS credentials yet); re-enable with the Pages step below ---
+#       # setup s5cmd
+#       - name: Setup s5cmd
+#         uses: peak/action-setup-s5cmd@main
+#         with:
+#           version: v2.0.0
 
       # checkout the repository content to github runner
       - name: Checkout
@@ -59,26 +60,35 @@ jobs:
           # Optional. Default: Chrome Web Store search for "SecurePay Label Uploader"
           VITE_SECUREPAY_EXTENSION_URL: ${{ secrets.VITE_SECUREPAY_EXTENSION_URL }}
 
-      - name: Upload to S3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_APP_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_APP_AWS_SECRET_ACCESS_KEY}}
-          S3_ENDPOINT_URL: ${{ secrets.DEPLOY_APP_S3_ENDPOINT }}
-        run: |
-          s5cmd sync 'dist/' 's3://react-deployer-bucket/securepay_client/'
+#       - name: Upload to S3
+#         env:
+#           AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_APP_AWS_ACCESS_KEY_ID }}
+#           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_APP_AWS_SECRET_ACCESS_KEY}}
+#           S3_ENDPOINT_URL: ${{ secrets.DEPLOY_APP_S3_ENDPOINT }}
+#         run: |
+#           s5cmd sync 'dist/' 's3://react-deployer-bucket/securepay_client/'
 
-      - name: Download all files from S3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_APP_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_APP_AWS_SECRET_ACCESS_KEY}}
-          S3_ENDPOINT_URL: ${{ secrets.DEPLOY_APP_S3_ENDPOINT }}
-        run: |
-          s5cmd sync 's3://react-deployer-bucket/securepay_client/*' 'dist/'
+#       - name: Download all files from S3
+#         env:
+#           AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_APP_AWS_ACCESS_KEY_ID }}
+#           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_APP_AWS_SECRET_ACCESS_KEY}}
+#           S3_ENDPOINT_URL: ${{ secrets.DEPLOY_APP_S3_ENDPOINT }}
+#         run: |
+#           s5cmd sync 's3://react-deployer-bucket/securepay_client/*' 'dist/'
 
-      - name: Publish to cloudflare pages
-        uses: cloudflare/pages-action@v1
+#       - name: Publish to cloudflare pages
+#         uses: cloudflare/pages-action@v1
+#         with:
+#           apiToken: ${{ secrets.DEPLOY_APP_CLOUDFLARE_API_TOKEN }}
+#           accountId: ${{ secrets.DEPLOY_APP_CLOUDFLARE_ACCOUNT_ID }}
+#           projectName: securepay_client
+#           directory: dist
+
+      # Active deploy: direct upload of dist/ to the Cloudflare Pages project
+      # attached to merchant.escrosafe.com. Needs only the two Cloudflare secrets.
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.DEPLOY_APP_CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.DEPLOY_APP_CLOUDFLARE_ACCOUNT_ID }}
-          projectName: securepay-client
-          directory: dist
+          command: pages deploy dist --project-name=escrosafe-merchant --branch=production

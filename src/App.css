@@ -2194,7 +2194,7 @@ button:disabled {
 
 .onboarding-progress {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.55rem;
 }
 
@@ -3280,7 +3280,7 @@ button:disabled {
 }
 
 .dashboard-page .shipments-table[aria-label="Enquiries table"] {
-  min-width: 1560px;
+  min-width: 1220px;
 }
 
 .shipments-table[aria-label="Enquiries table"] th,
@@ -3306,44 +3306,44 @@ button:disabled {
 
 .shipments-table[aria-label="Enquiries table"] th:nth-child(2),
 .shipments-table[aria-label="Enquiries table"] td:nth-child(2) {
-  width: 130px;
-  min-width: 130px;
-  max-width: 130px;
+  width: 210px;
+  min-width: 210px;
+  max-width: 210px;
 }
 
 .shipments-table[aria-label="Enquiries table"] th:nth-child(3),
 .shipments-table[aria-label="Enquiries table"] td:nth-child(3) {
+  width: 170px;
+  min-width: 170px;
+  max-width: 170px;
+}
+
+.shipments-table[aria-label="Enquiries table"] th:nth-child(4),
+.shipments-table[aria-label="Enquiries table"] td:nth-child(4) {
   width: 160px;
   min-width: 160px;
   max-width: 160px;
 }
 
-.shipments-table[aria-label="Enquiries table"] th:nth-child(4),
-.shipments-table[aria-label="Enquiries table"] td:nth-child(4) {
+.shipments-table[aria-label="Enquiries table"] th:nth-child(5),
+.shipments-table[aria-label="Enquiries table"] td:nth-child(5) {
+  width: 140px;
+  min-width: 140px;
+  max-width: 140px;
+}
+
+.shipments-table[aria-label="Enquiries table"] th:nth-child(6),
+.shipments-table[aria-label="Enquiries table"] td:nth-child(6) {
   width: 120px;
   min-width: 120px;
   max-width: 120px;
 }
 
-.shipments-table[aria-label="Enquiries table"] th:nth-child(5),
-.shipments-table[aria-label="Enquiries table"] td:nth-child(5) {
-  width: 130px;
-  min-width: 130px;
-  max-width: 130px;
-}
-
-.shipments-table[aria-label="Enquiries table"] th:nth-child(6),
-.shipments-table[aria-label="Enquiries table"] td:nth-child(6) {
-  width: 90px;
-  min-width: 90px;
-  max-width: 90px;
-}
-
 .shipments-table[aria-label="Enquiries table"] th:nth-child(7),
 .shipments-table[aria-label="Enquiries table"] td:nth-child(7) {
-  width: 110px;
-  min-width: 110px;
-  max-width: 110px;
+  width: 190px;
+  min-width: 190px;
+  max-width: 190px;
 }
 
 .shipments-table[aria-label="Enquiries table"] th:nth-child(8),
@@ -3351,35 +3351,6 @@ button:disabled {
   width: 100px;
   min-width: 100px;
   max-width: 100px;
-}
-
-.shipments-table[aria-label="Enquiries table"] th:nth-child(9),
-.shipments-table[aria-label="Enquiries table"] td:nth-child(9) {
-  width: 90px;
-  min-width: 90px;
-  max-width: 90px;
-}
-
-.shipments-table[aria-label="Enquiries table"] th:nth-child(10),
-.shipments-table[aria-label="Enquiries table"] td:nth-child(10) {
-  width: 220px;
-  min-width: 220px;
-  max-width: 220px;
-}
-
-.shipments-table[aria-label="Enquiries table"] th:nth-child(11),
-.shipments-table[aria-label="Enquiries table"] td:nth-child(11) {
-  width: 120px;
-  min-width: 120px;
-  max-width: 120px;
-}
-
-.shipments-table[aria-label="Enquiries table"] th:nth-child(12),
-.shipments-table[aria-label="Enquiries table"] td:nth-child(12) {
-  width: 160px;
-  min-width: 160px;
-  max-width: 160px;
-  white-space: nowrap;
 }
 
 .shipments-table td {
@@ -8139,3 +8110,55 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
 .buyer-contact-form .buyer-contact-note { font-size: 0.82rem; font-weight: 600; }
 .buyer-contact-form .buyer-contact-note.is-sent { color: #1b7f4b; }
 .buyer-contact-form .buyer-contact-note.is-error { color: #c0392b; }
+
+
+/* ===== Connect your store: platform picker + WordPress/WooCommerce plugin panel (Settings + onboarding) ===== */
+.onboarding-welcome-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.store-platform-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; margin: 0.9rem 0; }
+.store-platform-option { display: grid; gap: 0.25rem; padding: 0.85rem 1rem; border: 1px solid #cbd3d0; border-radius: 8px; background: #fbfcfb; color: #173d38; font-weight: 400; text-align: left; box-shadow: none; }
+.store-platform-option strong { font-size: 0.95rem; font-weight: 650; }
+.store-platform-option small { color: #687572; font-size: 0.78rem; line-height: 1.35; }
+.store-platform-option:hover:not(:disabled) { border-color: #a9b4b0; background: #eef1f0; }
+.store-platform-option.is-selected { border-color: #173d38; background: #eef1f0; box-shadow: 0 0 0 2px rgba(23, 61, 56, 0.14); }
+.store-platform-lead { margin: 0 0 0.7rem; color: #40504e; font-size: 0.92rem; }
+.store-plugin-panel { display: grid; gap: 1rem; padding: 1.1rem; border: 1px solid #e3e8e5; border-radius: 8px; background: #fbfcfb; }
+.store-plugin-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 0.8rem; }
+.store-plugin-head strong { color: #173d38; font-size: 1rem; }
+.store-plugin-head p { margin: 0.25rem 0 0; color: #687572; font-size: 0.88rem; }
+.store-plugin-steps { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.4rem; color: #40504e; font-size: 0.9rem; line-height: 1.45; }
+.store-copy-list { display: grid; gap: 0.5rem; }
+.store-copy-row { display: grid; grid-template-columns: 150px minmax(0, 1fr) auto; align-items: center; gap: 0.7rem; padding: 0.55rem 0.7rem; border: 1px solid #e3e8e5; border-radius: 7px; background: #ffffff; }
+.store-copy-row span { color: #687572; font-size: 0.8rem; font-weight: 600; }
+.store-copy-row code { overflow: hidden; color: #173d38; font-size: 0.82rem; text-overflow: ellipsis; white-space: nowrap; }
+.store-copy-row button { padding: 0.35rem 0.8rem; border: 1px solid #cbd3d0; border-radius: 7px; background: #eef1f0; color: #173d38; font-size: 0.8rem; font-weight: 600; box-shadow: none; }
+.store-copy-row button:hover:not(:disabled) { border-color: #a9b4b0; background: #e1e6e4; }
+.store-shortcode { display: grid; gap: 0.3rem; }
+.store-shortcode span { color: #687572; font-size: 0.8rem; font-weight: 600; }
+.store-shortcode pre { margin: 0; padding: 0.7rem 0.85rem; overflow-x: auto; border: 1px solid #e3e8e5; border-radius: 7px; background: #ffffff; color: #173d38; font-size: 0.82rem; }
+.store-shortcode small, .store-plugin-note { margin: 0; color: #687572; font-size: 0.8rem; line-height: 1.45; }
+@media (max-width: 760px) {
+  .store-platform-picker { grid-template-columns: 1fr; }
+  .store-copy-row { grid-template-columns: 1fr auto; }
+  .store-copy-row span { grid-column: 1 / -1; }
+  .onboarding-progress { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+
+/* Enquiries: Details column + details modal */
+.shipments-table td button.enquiry-details-button, a.enquiry-modal-primary { display: inline-block; padding: 0.35rem 0.85rem; border: 1px solid #cbd3d0; border-radius: 7px; background: #eef1f0; color: #173d38; font-size: 0.8rem; font-weight: 600; text-decoration: none; box-shadow: none; cursor: pointer; }
+.shipments-table td button.enquiry-details-button:hover:not(:disabled), a.enquiry-modal-primary:hover { border-color: #a9b4b0; background: #e1e6e4; color: #173d38; }
+.enquiry-modal-overlay { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 1rem; background: rgba(17, 24, 39, 0.45); }
+.enquiry-modal-card { display: flex; flex-direction: column; width: 100%; max-width: 560px; max-height: 90vh; border-radius: 12px; background: #ffffff; box-shadow: 0 20px 50px rgba(17, 24, 39, 0.25); }
+.enquiry-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid #e3e8e5; }
+.enquiry-modal-header h3 { margin: 0; color: #173d38; font-size: 1.05rem; }
+button.enquiry-modal-close { padding: 0 0.3rem; border: 0; background: transparent; color: #687572; font-size: 1.6rem; line-height: 1; box-shadow: none; cursor: pointer; }
+button.enquiry-modal-close:hover:not(:disabled) { background: transparent; color: #173d38; }
+.enquiry-modal-body { display: grid; gap: 1rem; padding: 1.25rem; overflow-y: auto; }
+.enquiry-modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem 1.2rem; margin: 0; }
+.enquiry-modal-grid dt { color: #687572; font-size: 0.75rem; font-weight: 600; }
+.enquiry-modal-grid dd { margin: 0.15rem 0 0; color: #173d38; font-size: 0.9rem; font-weight: 600; word-break: break-word; }
+.enquiry-modal-message span { color: #687572; font-size: 0.75rem; font-weight: 600; }
+.enquiry-modal-message p { margin: 0.3rem 0 0; padding: 0.8rem 0.9rem; border: 1px solid #e3e8e5; border-radius: 8px; background: #fbfcfb; color: #40504e; font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+.enquiry-modal-footer { display: flex; align-items: center; justify-content: flex-end; gap: 0.7rem; padding: 0.9rem 1.25rem; border-top: 1px solid #e3e8e5; }
+a.enquiry-modal-primary { padding: 0.55rem 1.1rem; font-size: 0.88rem; }
+@media (max-width: 520px) { .enquiry-modal-grid { grid-template-columns: 1fr; } }

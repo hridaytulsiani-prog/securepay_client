@@ -3,6 +3,7 @@
 // EnquiriesPage was built to match, before it added notes/resolution and
 // pulled in every merchant's enquiries instead of just one.
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { fetchEnquiries } from '../api/enquiryList'
 
 const ENQUIRY_FETCH_LIMIT = 500
@@ -53,6 +54,89 @@ function getStatusClass(status) {
 	return 'status-badge status-pending'
 }
 
+// Opens the merchant's own mail app with the customer's address, a subject and
+// a greeting already filled in, same approach as the admin panel's reply button.
+function buildReplyLink(enquiry) {
+	const subject = `Regarding your enquiry ${enquiry.enquiry_id}${enquiry.order_id ? ` (order ${enquiry.order_id})` : ''}`
+	const body = `Hi ${enquiry.customer_name || 'there'},
+
+
+
+---
+Your message:
+${enquiry.enquiry_text || ''}`
+	return `mailto:${enquiry.customer_email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+}
+
+function EnquiryDetailsModal({ enquiry, onClose }) {
+	useEffect(() => {
+		function handleKey(event) {
+			if (event.key === 'Escape') onClose()
+		}
+		document.addEventListener('keydown', handleKey)
+		return () => document.removeEventListener('keydown', handleKey)
+	}, [onClose])
+
+	const details = [
+		['Enquiry ID', enquiry.enquiry_id],
+		['Order ID', enquiry.order_id],
+		['AWB', enquiry.shipment_awb || '-'],
+		['Customer', enquiry.customer_name || '-'],
+		['Phone', enquiry.customer_phone || '-'],
+		['Email', enquiry.customer_email || '-'],
+		['Receipt status', <span className={getReceiptStatusClass(enquiry.receipt_status)}>{formatReceiptStatus(enquiry.receipt_status).toUpperCase()}</span>],
+		['Status', <span className={getStatusClass(enquiry.status)}>{formatStatusText(enquiry.status).toUpperCase()}</span>],
+		['Submitted', new Date(enquiry.created_at).toLocaleString()],
+	]
+
+	return createPortal(
+		<div className="enquiry-modal-overlay" onMouseDown={onClose}>
+			<div className="enquiry-modal-card" role="dialog" aria-modal="true" aria-label="Enquiry details" onMouseDown={(event) => event.stopPropagation()}>
+				<div className="enquiry-modal-header">
+					<h3>Enquiry details</h3>
+					<button type="button" className="enquiry-modal-close" onClick={onClose} aria-label="Close">&times;</button>
+				</div>
+				<div className="enquiry-modal-body">
+					<dl className="enquiry-modal-grid">
+						{details.map(([label, value]) => (
+							<div key={label}>
+								<dt>{label}</dt>
+								<dd>{value}</dd>
+							</div>
+						))}
+					</dl>
+					<div className="enquiry-modal-message">
+						<span>Message</span>
+						<p>{enquiry.enquiry_text || '-'}</p>
+					</div>
+					{enquiry.evidence_file_url ? (
+						<a href={enquiry.evidence_file_url} target="_blank" rel="noreferrer">View uploaded file</a>
+					) : null}
+				</div>
+				<div className="enquiry-modal-footer">
+					{enquiry.customer_email ? (
+						<a className="enquiry-modal-primary" href={buildReplyLink(enquiry)}>Reply with email</a>
+					) : (
+						<span className="muted-text small-text">No customer email on file to reply to.</span>
+					)}
+				</div>
+			</div>
+		</div>,
+		document.body,
+	)
+}
+
+function getReceiptStatusClass(status) {
+	switch (status) {
+		case 'received':
+			return 'status-badge status-paid'
+		case 'not_received':
+			return 'status-badge status-failed'
+		default:
+			return 'status-badge status-pending'
+	}
+}
+
 function getDateOnly(value) {
 	if (!value) {
 		return ''
@@ -82,6 +166,7 @@ function EnquiryDashboard() {
 	const [currentPage, setCurrentPage] = useState(1)
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState('')
+	const [selectedEnquiry, setSelectedEnquiry] = useState(null)
 
 	const loadEnquiries = useCallback(async () => {
 		setIsLoading(true)
@@ -294,22 +379,18 @@ function EnquiryDashboard() {
 							<tr>
 								<th>Enquiry ID</th>
 								<th>Order ID</th>
+								<th>AWB</th>
 								<th>Customer</th>
 								<th>Receipt Status</th>
-								<th>Other Recipient</th>
-								<th>Agent</th>
-								<th>OTP Shared</th>
-								<th>Evidence</th>
-								<th>File</th>
-								<th>Message</th>
 								<th>Status</th>
 								<th>Submitted</th>
+								<th>Details</th>
 							</tr>
 						</thead>
 						<tbody>
 							{filteredRows.length === 0 && !isLoading ? (
 								<tr>
-									<td colSpan="12" className="empty-cell">
+									<td colSpan="8" className="empty-cell">
 										No enquiries found
 									</td>
 								</tr>
@@ -319,37 +400,31 @@ function EnquiryDashboard() {
 								<tr key={enquiry.enquiry_id}>
 									<td className="mono-text">{enquiry.enquiry_id}</td>
 									<td className="mono-text">{enquiry.order_id}</td>
+									<td className="mono-text">{enquiry.shipment_awb || '-'}</td>
 									<td>
 										{enquiry.customer_name || '-'}
 										<br />
 										<span className="muted-text small-text">{enquiry.customer_phone || ''}</span>
 									</td>
-									<td>{formatReceiptStatus(enquiry.receipt_status)}</td>
-									<td>{formatBool(enquiry.someone_else_received)}</td>
-									<td>{formatBool(enquiry.agent_contacted)}</td>
-									<td>{formatBool(enquiry.otp_shared)}</td>
-									<td>{formatBool(enquiry.unboxing_evidence)}</td>
 									<td>
-										{enquiry.evidence_file_url ? (
-											<a href={enquiry.evidence_file_url} target="_blank" rel="noreferrer">
-												View
-											</a>
-										) : (
-											'-'
-										)}
-									</td>
-									<td>
-										<pre className="history-pre">{enquiry.enquiry_text || ''}</pre>
+										<span className={getReceiptStatusClass(enquiry.receipt_status)}>{formatReceiptStatus(enquiry.receipt_status).toUpperCase()}</span>
 									</td>
 									<td>
 										<span className={getStatusClass(enquiry.status)}>{formatStatusText(enquiry.status).toUpperCase()}</span>
 									</td>
 									<td className="mono-text">{new Date(enquiry.created_at).toLocaleString()}</td>
+									<td>
+										<button type="button" className="enquiry-details-button" onClick={() => setSelectedEnquiry(enquiry)}>
+											Details
+										</button>
+									</td>
 								</tr>
 							))}
 						</tbody>
 					</table>
 				</div>
+
+				{selectedEnquiry ? <EnquiryDetailsModal enquiry={selectedEnquiry} onClose={() => setSelectedEnquiry(null)} /> : null}
 
 				<div className="shipments-pager">
 					<span className="muted-text small-text">

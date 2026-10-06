@@ -4,11 +4,15 @@ import { API_BASE_URL } from '../api/client'
 import { BLUE_DART_PLANS, COURIERS } from '../constants/couriers'
 import { getUser } from '../utils/storage'
 import { BUTTON_THEMES, readStoredButtonTheme } from '../constants/buttonThemes'
+import { readStoredStorePlatform, storeStorePlatform } from '../constants/storePlatforms'
+import { StorePlatformPicker, WordPressPluginPanel } from '../components/StoreIntegration'
 
 const EXTENSION_STORE_URL = import.meta.env.VITE_SECUREPAY_EXTENSION_URL || 'https://chromewebstore.google.com/search/SecurePay%20Label%20Uploader'
 const SECUREPAY_BUTTON_SCRIPT_URL = import.meta.env.VITE_SECUREPAY_BUTTON_URL || `${window.location.origin}/button.js`
 const SECUREPAY_SESSION_API_URL = import.meta.env.VITE_SECUREPAY_SESSION_API_URL || `${API_BASE_URL || window.location.origin}/payments/v1/checkout-sessions/`
 const SECUREPAY_BUTTON_CONFIG_URL = import.meta.env.VITE_SECUREPAY_BUTTON_CONFIG_URL || `${API_BASE_URL || window.location.origin}/payments/v1/button-config/`
+
+const SECUREPAY_API_URL = API_BASE_URL || window.location.origin
 
 const SECUREPAY_BUTTON_LOGO_URL = new URL('escrosafe-logo.png', SECUREPAY_BUTTON_SCRIPT_URL).toString()
 
@@ -28,6 +32,7 @@ function CourierSettings() {
 	const [kycStep, setKycStep] = useState(1)
 	const [buttonSnippetCopied, setButtonSnippetCopied] = useState(false)
 	const [buttonTheme] = useState(readStoredButtonTheme)
+	const [storePlatform, setStorePlatform] = useState(readStoredStorePlatform)
 	const activeTheme = BUTTON_THEMES.find((theme) => theme.key === buttonTheme) || BUTTON_THEMES[0]
 	const securePayButtonSnippet = buildSecurePayButtonSnippet(merchantKey, buttonTheme)
 
@@ -79,6 +84,11 @@ function CourierSettings() {
 		} finally {
 			setSaving(false)
 		}
+	}
+
+	function chooseStorePlatform(key) {
+		setStorePlatform(key)
+		storeStorePlatform(key)
 	}
 
 	async function copyButtonSnippet() {
@@ -280,42 +290,52 @@ function CourierSettings() {
 				<div className="settings-section-head">
 					<div>
 						<span>03</span>
-						<h3>Pay with EscroSafe button</h3>
-						<p>Copy this snippet and paste it on the merchant website where the EscroSafe payment button should appear.</p>
+						<h3>Connect your store</h3>
+						<p>Tell us how your website is built and we will show the right way to add the Pay with EscroSafe button.</p>
 					</div>
-					<button type="button" className="settings-extension-link" onClick={copyButtonSnippet}>
-						{buttonSnippetCopied ? 'Copied' : 'Copy snippet'}
-					</button>
+					{storePlatform === 'manual' && (
+						<button type="button" className="settings-extension-link" onClick={copyButtonSnippet}>
+							{buttonSnippetCopied ? 'Copied' : 'Copy snippet'}
+						</button>
+					)}
 				</div>
-				<div className="settings-button-snippet-card">
-					<div className="settings-pay-button-preview" style={{ '--sp-bg': activeTheme.bg, '--sp-border': activeTheme.border }}>
-						<span>Pay with</span>
-						<img src={SECUREPAY_BUTTON_LOGO_URL} alt="EscroSafe" />
-					</div>
-					<pre>{securePayButtonSnippet}</pre>
-					{/* Button colour picker, switched off for now (see BUTTON_THEME_PICKER_ENABLED). To bring it back, uncomment:
-					<div className="settings-theme-picker">
-						<p>Choose a button colour. The snippet above updates automatically.</p>
-						<div className="settings-theme-grid" role="radiogroup" aria-label="Button colour">
-							{BUTTON_THEMES.map((theme) => (
-								<button
-									type="button"
-									role="radio"
-									aria-checked={theme.key === buttonTheme}
-									className={`settings-theme-option${theme.key === buttonTheme ? ' is-selected' : ''}`}
-									key={theme.key}
-									onClick={() => chooseButtonTheme(theme.key)}
-								>
-									<span className="settings-theme-sample" style={{ background: theme.bg, border: `1.5px solid ${theme.border}` }}>
-										Pay with <img src={SECUREPAY_BUTTON_LOGO_URL} alt="" />
-									</span>
-									<span>{theme.label}</span>
-								</button>
-							))}
+				<StorePlatformPicker value={storePlatform} onChange={chooseStorePlatform} />
+				{storePlatform === 'manual' ? (
+					<>
+						<p className="store-platform-lead">Copy this snippet and paste it on your website where the EscroSafe payment button should appear.</p>
+						<div className="settings-button-snippet-card">
+							<div className="settings-pay-button-preview" style={{ '--sp-bg': activeTheme.bg, '--sp-border': activeTheme.border }}>
+								<span>Pay with</span>
+								<img src={SECUREPAY_BUTTON_LOGO_URL} alt="EscroSafe" />
+							</div>
+							<pre>{securePayButtonSnippet}</pre>
+							{/* Button colour picker, switched off for now (see BUTTON_THEME_PICKER_ENABLED). To bring it back, uncomment:
+							<div className="settings-theme-picker">
+								<p>Choose a button colour. The snippet above updates automatically.</p>
+								<div className="settings-theme-grid" role="radiogroup" aria-label="Button colour">
+									{BUTTON_THEMES.map((theme) => (
+										<button
+											type="button"
+											role="radio"
+											aria-checked={theme.key === buttonTheme}
+											className={`settings-theme-option${theme.key === buttonTheme ? ' is-selected' : ''}`}
+											key={theme.key}
+											onClick={() => chooseButtonTheme(theme.key)}
+										>
+											<span className="settings-theme-sample" style={{ background: theme.bg, border: `1.5px solid ${theme.border}` }}>
+												Pay with <img src={SECUREPAY_BUTTON_LOGO_URL} alt="" />
+											</span>
+											<span>{theme.label}</span>
+										</button>
+									))}
+								</div>
+							</div>
+							*/}
 						</div>
-					</div>
-					*/}
-				</div>
+					</>
+				) : (
+					<WordPressPluginPanel platform={storePlatform} merchantKey={merchantKey} apiUrl={SECUREPAY_API_URL} scriptUrl={SECUREPAY_BUTTON_SCRIPT_URL} theme={activeTheme} logoUrl={SECUREPAY_BUTTON_LOGO_URL} />
+				)}
 			</div>
 
 			<div className="settings-section-card settings-info-section">
