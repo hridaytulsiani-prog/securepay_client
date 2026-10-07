@@ -8193,6 +8193,11 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
 	.pfd-panel.pfd-blue, .pfd-panel.pfd-amber { padding-bottom: 4.6rem !important; }
 	.pfd-steps { flex-wrap: nowrap; }
 	.pfd-steps li { min-width: 0; }
+	/* all four white mock-up boxes share the same width so cards 3 and 4 match cards 1 and 2 */
+	.pfd-green .pfd-mock, .pfd-purple .pfd-mock, .pfd-blue .pfd-mock, .pfd-amber .pfd-mock { width: 230px; max-width: 100%; }
+	.pfd-blue .pfd-mock-route { padding: 0.55rem 0.65rem 0.6rem; }
+	.pfd-blue .pfd-mock-route .pfd-route { width: 100%; margin: 0; }
+	.pfd-amber .pfd-mock-chat { min-height: 142px; }
 
 	/* "If the order is not received" card */
 	.pfd-refund { padding: 1rem; grid-template-columns: auto minmax(0, 1fr); gap: 0.5rem 0.75rem; }
@@ -8219,7 +8224,8 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
 	.pfd-panel { padding: 0.85rem; }
 	.pfd-copy h4 { font-size: 1.02rem; }
 	.pfd-mock-option { font-size: 0.64rem; }
-	.pfd-green .pfd-mock, .pfd-purple .pfd-mock { width: calc(100% - 4.2rem); max-width: 230px; height: auto; min-height: 142px; }
+	.pfd-green .pfd-mock, .pfd-purple .pfd-mock, .pfd-blue .pfd-mock, .pfd-amber .pfd-mock { width: calc(100% - 4.2rem); max-width: 230px; }
+	.pfd-green .pfd-mock, .pfd-purple .pfd-mock { height: auto; min-height: 142px; }
 }
 
 /* Very narrow screens: swap the wordmark for the short lock logo so the header never feels cramped */
