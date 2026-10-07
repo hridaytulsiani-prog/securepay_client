@@ -160,7 +160,7 @@ function PaymentFlowDiagram() {
 						<p className="pfd-bubble-in pfd-bubble-long">
 							<span>Your order was tracked, and delivered via Delhivery!</span>
 							<span>If you have not received your order or had trouble with your order; click the link below, fill out a quick survey and our team will sort it out shortly. If you have received your order - feel free to ignore this</span>
-							<span className="pfd-chat-link">escrosafe.io/enquiry</span>
+							<span className="pfd-chat-link">escrosafe.com/enquiry</span>
 							<small>10:42</small>
 						</p>
 					</div>

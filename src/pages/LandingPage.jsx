@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { API_BASE_URL } from '../api/client'
 import ResourcesDropdown from '../components/ResourcesDropdown'
 import dashboardPreview from '../assets/dashboard.png'
 import blueDartLogo from '../assets/couriers/blue-dart-real.png'
@@ -79,7 +81,53 @@ const courierPartners = [
 ]
 import escrosafeLogo from '../assets/escrosafe-logo.png'
 
+const SUPPORT_EMAIL = 'partners@escrosafe.com'
+const HELP_TOPICS = ['Getting started', 'Payments and settlements', 'Couriers and label uploads', 'Account or KYC', 'Something else']
+
 function LandingPage() {
+	const [helpForm, setHelpForm] = useState({ name: '', email: '', topic: HELP_TOPICS[0], reference: '', message: '', website: '' })
+	const [helpStatus, setHelpStatus] = useState({ state: 'idle', text: '' })
+	const updateHelp = (field) => (event) => setHelpForm((current) => ({ ...current, [field]: event.target.value }))
+
+	// After a successful send, keep the confirmation for 10 seconds, then empty the form and bring the button back
+	// (same behaviour as the customer page), so another question can be sent.
+	useEffect(() => {
+		if (helpStatus.state !== 'sent') return undefined
+		const timer = window.setTimeout(() => {
+			setHelpForm({ name: '', email: '', topic: HELP_TOPICS[0], reference: '', message: '', website: '' })
+			setHelpStatus({ state: 'idle', text: '' })
+		}, 10000)
+		return () => window.clearTimeout(timer)
+	}, [helpStatus.state])
+
+	// Sent to the public contact endpoint (POST /adminpanel/contact/) with source "merchant", so it shows up in the
+	// admin app under "Merchant queries" instead of the customer "Messages" list.
+	const submitHelp = async (event) => {
+		event.preventDefault()
+		if (helpStatus.state === 'sending' || helpStatus.state === 'sent') return
+		setHelpStatus({ state: 'sending', text: '' })
+		try {
+			const response = await fetch(`${API_BASE_URL}/adminpanel/contact/`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					name: helpForm.name.trim(),
+					email: helpForm.email.trim(),
+					order_id: helpForm.reference.trim(),
+					message: helpForm.message.trim(),
+					source: 'merchant',
+					topic: helpForm.topic,
+					website: helpForm.website,
+				}),
+			})
+			const data = await response.json().catch(() => null)
+			if (!response.ok) throw new Error((data && data.error) || 'Could not send your message. Please try again.')
+			setHelpStatus({ state: 'sent', text: 'Thanks! Your message has been sent. We will get back to you within one working day.' })
+		} catch (error) {
+			setHelpStatus({ state: 'error', text: error.message || 'Could not send your message. Please try again.' })
+		}
+	}
+
 	return (
 		<div className="landing-page">
 			<header className="landing-nav">
@@ -88,6 +136,7 @@ function LandingPage() {
 				</Link>
 				<nav className="landing-nav-actions" aria-label="Account actions">
 					<ResourcesDropdown />
+					<a className="landing-login-link landing-help-link" href="#contact">Help</a>
 					<Link className="landing-login-link" to="/login">Log in</Link>
 					<Link className="landing-signup-button" to="/register">Create account</Link>
 				</nav>
@@ -181,6 +230,56 @@ function LandingPage() {
 						<div><span>02</span><strong>Reduce unserious buyers</strong><p>Use prepaid commitment and delivery visibility to lower fake orders, refusals, and avoidable follow-ups.</p></div>
 						<div><span>03</span><strong>Reduce wasted shipping</strong><p>Focus fulfilment effort on paid buyers with clearer shipment visibility from order to delivery.</p></div>
 					</div>
+				</section>
+
+				<section className="landing-section landing-help-section" id="contact">
+					<div className="landing-section-copy landing-help-intro">
+						<p className="landing-section-kicker">Still have a question?</p>
+						<h2>Ask us anything.</h2>
+						<p className="landing-help-lede">
+							<span>Not a merchant yet, or stuck somewhere? Send us a message and a real person</span>
+							<span>will get back to you.</span>
+						</p>
+						<ul className="landing-help-cards">
+							<li>
+								<span className="landing-help-icon is-blue"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg></span>
+								<div><strong>Email us</strong><a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></div>
+							</li>
+							<li>
+								<span className="landing-help-icon is-amber"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg></span>
+								<div><strong>We reply quickly</strong><span>Expect an answer within one working day.</span></div>
+							</li>
+							<li>
+								<span className="landing-help-icon is-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9Z" /><path d="m4 7.5 8 4.5 8-4.5M12 12v9" /></svg></span>
+								<div><strong>Already a merchant?</strong><span>Add your order ID or AWB so we can help faster.</span></div>
+							</li>
+						</ul>
+					</div>
+
+					<form className="landing-help-form" onSubmit={submitHelp}>
+						<label>Your name
+							<input type="text" required maxLength={120} value={helpForm.name} onChange={updateHelp('name')} placeholder="Full name" autoComplete="name" />
+						</label>
+						<label>Email
+							<input type="email" required value={helpForm.email} onChange={updateHelp('email')} placeholder="you@example.com" autoComplete="email" />
+						</label>
+						<label>Topic
+							<select value={helpForm.topic} onChange={updateHelp('topic')}>
+								{HELP_TOPICS.map((topic) => <option key={topic} value={topic}>{topic}</option>)}
+							</select>
+						</label>
+						<label>Order ID or AWB (optional)
+							<input type="text" maxLength={64} value={helpForm.reference} onChange={updateHelp('reference')} placeholder="e.g. SP_1001" />
+						</label>
+						<label className="is-wide">Your message
+							<textarea required rows={5} maxLength={1900} value={helpForm.message} onChange={updateHelp('message')} placeholder="How can we help?" />
+						</label>
+						<input className="landing-help-hp" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" value={helpForm.website} onChange={updateHelp('website')} />
+						<button type="submit" className="landing-help-send" disabled={helpStatus.state === 'sending' || helpStatus.state === 'sent'}>
+							{helpStatus.state === 'sending' ? 'Sending...' : helpStatus.state === 'sent' ? 'Message sent' : 'Send message'}
+						</button>
+						{helpStatus.text ? <p className={`landing-help-status is-${helpStatus.state}`} role="status">{helpStatus.text}</p> : null}
+					</form>
 				</section>
 
 			</main>

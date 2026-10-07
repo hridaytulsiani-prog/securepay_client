@@ -160,7 +160,7 @@ function PostPayVideo() {
 
 // Contact-form messages are saved by the backend (POST /adminpanel/contact/) and
 // read by the owner admin under "Messages". This address is only shown on the page.
-const CONTACT_EMAIL = 'support@escrosafe.io'
+const CONTACT_EMAIL = 'support@escrosafe.com'
 
 const contactCards = [
 	{

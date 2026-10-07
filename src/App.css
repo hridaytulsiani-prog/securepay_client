@@ -8650,3 +8650,54 @@ a.enquiry-modal-primary { padding: 0.55rem 1.1rem; font-size: 0.88rem; }
 	.landing-nav .resources-dropdown-container { display: none; }
 	.landing-nav-actions { flex: none; }
 }
+
+/* ===== landing page: "Still have a question?" section (merchant visitors who do not have an account yet) ===== */
+.landing-help-section { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; border-top: 1px solid rgba(37, 65, 60, 0.12); scroll-margin-top: 1rem; }
+.landing-help-intro h2 { margin: 0; color: #173d38; font-size: clamp(1.7rem, 2.3vw, 2.2rem); font-weight: 600; line-height: 1.15; }
+.landing-help-intro > p:not(.landing-section-kicker) { max-width: 46ch; margin: 1rem 0 0; color: #5b6967; line-height: 1.6; }
+.landing-help-cards { display: grid; gap: 0.8rem; margin: 1.6rem 0 0; padding: 0; list-style: none; }
+.landing-help-cards li { display: flex; align-items: center; gap: 0.9rem; padding: 0.9rem 1rem; border: 1px solid rgba(37, 65, 60, 0.1); border-radius: 10px; background: rgba(255, 255, 255, 0.85); box-shadow: 0 10px 18px rgba(31, 55, 50, 0.05); }
+.landing-help-cards li > div { display: grid; gap: 0.15rem; min-width: 0; }
+.landing-help-cards strong { color: #173d38; font-size: 0.95rem; }
+.landing-help-cards li > div span, .landing-help-cards a { color: #5b6967; font-size: 0.86rem; line-height: 1.4; overflow-wrap: anywhere; }
+.landing-help-cards a { color: #173d38; text-decoration: underline; }
+.landing-help-icon { display: grid; place-items: center; flex: none; width: 42px; height: 42px; border-radius: 11px; color: #ffffff; }
+.landing-help-icon svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.landing-help-icon.is-blue { background: #2f6fe0; }
+.landing-help-icon.is-amber { background: #d98a2b; }
+.landing-help-icon.is-green { background: #249a6c; }
+.landing-help-form { display: grid; grid-template-columns: 1fr 1fr; gap: 0.95rem 1rem; padding: 1.6rem; border: 1px solid rgba(37, 65, 60, 0.1); border-radius: 14px; background: #ffffff; box-shadow: 0 18px 40px rgba(31, 55, 50, 0.08); }
+.landing-help-form label { display: grid; gap: 0.35rem; min-width: 0; color: #173d38; font-size: 0.82rem; font-weight: 650; }
+.landing-help-form .is-wide, .landing-help-send, .landing-help-status { grid-column: 1 / -1; }
+.landing-help-form input, .landing-help-form select, .landing-help-form textarea { width: 100%; box-sizing: border-box; padding: 0.7rem 0.8rem; border: 1px solid #cbd3d0; border-radius: 8px; background: #fbfcfb; color: #173d38; font: inherit; font-weight: 400; }
+.landing-help-form textarea { resize: vertical; }
+.landing-help-form input:focus, .landing-help-form select:focus, .landing-help-form textarea:focus { outline: 0; border-color: #173d38; box-shadow: 0 0 0 3px rgba(23, 61, 56, 0.14); }
+.landing-help-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.landing-help-send { min-height: 46px; border: 1px solid #cbd3d0; border-radius: 8px; background: #eef1f0; color: #173d38; font: inherit; font-weight: 650; cursor: pointer; }
+.landing-help-send:hover:not(:disabled) { background: #e1e6e4; border-color: #a9b4b0; }
+.landing-help-send:disabled { opacity: 0.7; cursor: default; }
+.landing-help-status { margin: 0; font-size: 0.88rem; }
+.landing-help-status.is-sent { color: #1e7d4f; }
+.landing-help-status.is-error { color: #b3402a; }
+@media (max-width: 900px) { .landing-help-section { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .landing-help-form { grid-template-columns: 1fr; padding: 1.1rem; } .landing-help-intro h2 { font-size: 1.6rem; } }
+html { scroll-behavior: smooth; }
+
+/* help section heading + intro use the same type as "Make prepaid orders feel safer..." above it */
+.landing-help-intro { max-width: none; }
+.landing-help-intro h2 { max-width: none; font-size: clamp(2rem, 3vw, 2.85rem); font-weight: 600; line-height: 1.08; }
+.landing-help-lede { max-width: none; margin: 1rem 0 0; color: #5b6967; line-height: 1.55; text-align: left; }
+.landing-help-lede span { display: block; white-space: nowrap; }
+.landing-help-form { margin-top: 2.1rem; }
+@media (max-width: 1180px) { .landing-help-lede span { white-space: normal; display: inline; } .landing-help-lede span::after { content: ' '; } }
+@media (max-width: 900px) { .landing-help-form { margin-top: 0; } }
+
+.landing-help-cards a { text-decoration: none; }
+
+/* landing nav: Resources, Help, Log in and Create account all spaced evenly; Create account is light grey like "Get started" */
+.landing-nav-actions { gap: 1.5rem; }
+.landing-nav-actions .resources-trigger { padding-inline: 0; }
+.landing-signup-button { background: #eef1f0; color: #173d38; border: 1px solid #cbd3d0; box-shadow: 0 8px 20px rgba(23, 61, 56, 0.14); }
+.landing-signup-button:hover { background: #e1e6e4; border-color: #a9b4b0; color: #173d38; }
+@media (max-width: 640px) { .landing-nav-actions { gap: 0.75rem; } }
+@media (max-width: 400px) { .landing-nav-actions { gap: 0.4rem; } }
