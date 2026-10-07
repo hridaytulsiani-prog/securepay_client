@@ -436,6 +436,14 @@ function CustomerTrust() {
 		}
 	}
 	const isScrolled = useScrolled(80)
+	const [menuOpen, setMenuOpen] = useState(false)
+	const closeMenu = () => setMenuOpen(false)
+	useEffect(() => {
+		if (!menuOpen) return undefined
+		const onKey = (event) => { if (event.key === 'Escape') setMenuOpen(false) }
+		window.addEventListener('keydown', onKey)
+		return () => window.removeEventListener('keydown', onKey)
+	}, [menuOpen])
 
 	return (
 		<div className="buyer-page">
@@ -464,7 +472,29 @@ function CustomerTrust() {
 						For merchants
 						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
 					</a>
+					<button type="button" className="buyer-menu-button" aria-label="Open menu" aria-expanded={menuOpen} aria-controls="buyer-mobile-menu" onClick={() => setMenuOpen(true)}>
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+					</button>
 				</div>
+				{menuOpen && (
+					<>
+						<div className="buyer-menu-backdrop" onClick={closeMenu} aria-hidden="true" />
+						<div className="buyer-mobile-menu" id="buyer-mobile-menu" role="dialog" aria-label="Menu">
+							<div className="buyer-mobile-menu-head">
+								<span>Menu</span>
+								<button type="button" className="buyer-menu-close" aria-label="Close menu" onClick={closeMenu}>
+									<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+								</button>
+							</div>
+							<nav aria-label="Menu">
+								<a className={activeNavId === 'hero' ? 'is-active' : ''} href="#hero" onClick={closeMenu}>How it works</a>
+								<a className={activeNavId === 'how-it-works' ? 'is-active' : ''} href="#how-it-works" onClick={closeMenu}>What to expect</a>
+								<a className={activeNavId === 'faq' ? 'is-active' : ''} href="#faq" onClick={closeMenu}>FAQ</a>
+								<a className={activeNavId === 'contact' ? 'is-active' : ''} href="#contact" onClick={closeMenu}>Contact</a>
+							</nav>
+						</div>
+					</>
+				)}
 			</header>
 
 			<main>
@@ -483,7 +513,7 @@ function CustomerTrust() {
 						</p>
 						<div className="buyer-hero-actions buyer-fade-up" style={{ '--d': '0.22s' }}>
 							<a className="buyer-cta-primary" href="#how-it-works">
-								See a live demo
+								See a demo
 								<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
 							</a>
 						</div>
@@ -757,7 +787,7 @@ function CustomerTrust() {
 			</main>
 
 			<footer className="buyer-footer">
-				<span>© {new Date().getFullYear()} EscroSafe. Checkout protection for every order.</span>
+				<span>© {new Date().getFullYear()} EscroSafe.</span>
 				<a href={`${MERCHANT_SITE_URL}/terms`}>Terms & Conditions</a>
 			</footer>
 		</div>
