@@ -8355,3 +8355,38 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
 }
 /* Terms & Conditions: same purple on hover / press / focus */
 .buyer-footer a:hover, .buyer-footer a:active, .buyer-footer a:focus-visible { color: #7c5cff; }
+
+/* tall / portrait screens (e.g. 1260 x 2622): don't stretch sections to the full screen height,
+   that left a huge blank gap and pushed FAQ and Contact far below */
+@media (orientation: portrait) {
+	.buyer-timeline-section { min-height: 0; }
+	.buyer-contact { min-height: 0; }
+}
+
+/* narrow laptop widths (about 1200-1400px): the four step cards are small. The white boxes move to the left edge of the
+   card (under the number) and shrink a little, so the corner icon sits to their right with no overlap, and the cards
+   no longer keep extra empty space below the boxes */
+@media (min-width: 1201px) and (max-width: 1400px) {
+	.pfd-panel { min-height: 0; padding-bottom: 1rem; }
+	.pfd-mock { grid-column: 1 / -1; }
+	.pfd-green .pfd-mock, .pfd-purple .pfd-mock, .pfd-blue .pfd-mock, .pfd-amber .pfd-mock { width: calc(100% - 4.6rem); max-width: 230px; }
+	.pfd-green .pfd-mock, .pfd-purple .pfd-mock { height: auto; min-height: 142px; }
+	.pfd-art-phone, .pfd-art-safe, .pfd-art-parcel, .pfd-art-chat { right: 0.7rem; bottom: 1rem; height: 46px; width: auto; }
+	.pfd-art-parcel { height: 42px; }
+	.pfd-mock-held .pfd-held-track li { font-size: 0.54rem; }
+}
+
+/* 821-1200px (tablet landscape, small laptops): the step cards are stacked in one column like on tablets,
+   so the white boxes and icons are never squeezed or cut off */
+@media (min-width: 821px) and (max-width: 1200px) {
+	.pfd { grid-template-columns: 1fr; }
+	.pfd-panel { min-height: 230px; }
+	.pfd-refund { grid-template-columns: auto 1fr; }
+	.pfd-refund-flow { grid-column: 1 / -1; flex-wrap: wrap; }
+}
+
+/* tall tablet / portrait screens in the 2-column hero (about 1200-1500px wide, taller than wide):
+   the badge stays at the top; the title, text and button sit lower beside the step cards */
+@media (min-width: 1201px) and (max-width: 1500px) and (orientation: portrait) {
+	.buyer-hero-copy .buyer-hero h1, .buyer-hero-copy h1 { margin-top: 3.5rem; }
+}
