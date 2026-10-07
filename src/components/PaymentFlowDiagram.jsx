@@ -76,7 +76,7 @@ function PaymentFlowDiagram() {
 						<span className="pfd-mock-label">Live tracking</span>
 						<span className="pfd-route-status">On the way</span>
 					</div>
-					<svg className="pfd-route" viewBox="0 0 214 94" role="img" aria-label="Order route from store to home: shipped, in transit, out for delivery, delivered">
+					<svg className="pfd-route" viewBox="0 0 214 100" role="img" aria-label="Order route from store to home: shipped, in transit, out for delivery, delivered">
 						{/* straight road with 4 milestones: 22 (Shipped), 79 (In transit), 135 (Out for delivery), 192 (Delivered) */}
 						<line x1="22" y1="58" x2="192" y2="58" stroke="#d3ddf0" strokeWidth="9" strokeLinecap="round" />
 						<line x1="22" y1="58" x2="107" y2="58" stroke="#2f6fe0" strokeWidth="9" strokeLinecap="round" />
@@ -124,7 +124,8 @@ function PaymentFlowDiagram() {
 						<g className="pfd-route-labels" textAnchor="middle">
 							<text x="22" y="84">Shipped</text>
 							<text x="79" y="84">In transit</text>
-							<text x="135" y="84">Out for delivery</text>
+							<text x="135" y="84">Out for</text>
+							<text x="135" y="92.500">delivery</text>
 							<text x="192" y="84">Delivered</text>
 						</g>
 					</svg>

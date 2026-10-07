@@ -8190,7 +8190,6 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
 	.pfd-art-store { width: 76px; }
 	.pfd-card-chip { display: none; }
 	/* the corner artwork sits below the mock-up instead of on top of it */
-	.pfd-panel.pfd-blue, .pfd-panel.pfd-amber { padding-bottom: 4.6rem !important; }
 	.pfd-steps { flex-wrap: nowrap; }
 	.pfd-steps li { min-width: 0; }
 	/* all four white mock-up boxes share the same width so cards 3 and 4 match cards 1 and 2 */
@@ -8363,30 +8362,45 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
 	.buyer-contact { min-height: 0; }
 }
 
-/* narrow laptop widths (about 1200-1400px): the four step cards are small. The white boxes move to the left edge of the
-   card (under the number) and shrink a little, so the corner icon sits to their right with no overlap, and the cards
-   no longer keep extra empty space below the boxes */
-@media (min-width: 1201px) and (max-width: 1400px) {
-	.pfd-panel { min-height: 0; padding-bottom: 1rem; }
-	.pfd-mock { grid-column: 1 / -1; }
-	.pfd-green .pfd-mock, .pfd-purple .pfd-mock, .pfd-blue .pfd-mock, .pfd-amber .pfd-mock { width: calc(100% - 4.6rem); max-width: 230px; }
-	.pfd-green .pfd-mock, .pfd-purple .pfd-mock { height: auto; min-height: 142px; }
-	.pfd-art-phone, .pfd-art-safe, .pfd-art-parcel, .pfd-art-chat { right: 0.7rem; bottom: 1rem; height: 46px; width: auto; }
-	.pfd-art-parcel { height: 42px; }
-	.pfd-mock-held .pfd-held-track li { font-size: 0.54rem; }
-}
 
-/* 821-1200px (tablet landscape, small laptops): the step cards are stacked in one column like on tablets,
-   so the white boxes and icons are never squeezed or cut off */
-@media (min-width: 821px) and (max-width: 1200px) {
-	.pfd { grid-template-columns: 1fr; }
-	.pfd-panel { min-height: 230px; }
-	.pfd-refund { grid-template-columns: auto 1fr; }
-	.pfd-refund-flow { grid-column: 1 / -1; flex-wrap: wrap; }
-}
 
 /* tall tablet / portrait screens in the 2-column hero (about 1200-1500px wide, taller than wide):
    the badge stays at the top; the title, text and button sit lower beside the step cards */
 @media (min-width: 1201px) and (max-width: 1500px) and (orientation: portrait) {
 	.buyer-hero-copy .buyer-hero h1, .buyer-hero-copy h1 { margin-top: 3.5rem; }
+}
+
+/* ===== FLUID step cards (viewport <= 1400px) =====
+   Every card is its own "container". The white box and the corner icon are laid out from the card's OWN width,
+   not from a device width, so any phone / tablet / small laptop works with no overlap and nothing cut off.
+   - narrow card: number + text, then the white box, then the icon underneath on the right
+   - wider card:  the icon sits to the right of the white box */
+@media (max-width: 1400px) {
+	.pfd .pfd-panel { container-type: inline-size; min-height: 0; }
+	.pfd .pfd-panel:not(.pfd-refund) { grid-template-columns: auto minmax(0, 1fr) auto; align-content: start; gap: 0.5rem 0.7rem; padding: 1rem; }
+	.pfd .pfd-panel:not(.pfd-refund) > .pfd-num { grid-column: 1; grid-row: 1; }
+	.pfd .pfd-panel:not(.pfd-refund) > .pfd-copy { grid-column: 2 / -1; grid-row: 1; min-width: 0; }
+	.pfd .pfd-copy p, .pfd .pfd-copy h4 { max-width: none; overflow-wrap: break-word; }
+	.pfd .pfd-panel .pfd-mock { grid-column: 1 / -1; grid-row: 2; justify-self: start; width: 100%; max-width: 230px; min-width: 0; box-sizing: border-box; margin: 0.2rem 0 0; height: auto; min-height: 142px; }
+	.pfd .pfd-panel .pfd-art { position: static; inset: auto; grid-column: 1 / -1; grid-row: 3; justify-self: end; align-self: end; width: auto; height: 46px; margin: 0; }
+	.pfd .pfd-panel .pfd-art-parcel { height: 42px; }
+
+	/* inside the white boxes: text may wrap, nothing is forced onto one line */
+	.pfd-mock-option { min-width: 0; }
+	.pfd-held-pill { min-width: 0; }
+	.pfd-held-track li { min-width: 0; white-space: normal; text-align: center; line-height: 1.15; }
+	.pfd-route-status { white-space: nowrap; }
+	.pfd-route-labels text { font-size: 7px; }
+
+	/* the "not received" strip */
+	.pfd .pfd-panel.pfd-refund .pfd-copy h4 { white-space: normal; }
+	.pfd .pfd-refund-flow { flex-wrap: wrap; justify-content: center; min-width: 0; }
+	.pfd .pfd-refund-flow .pfd-bank-card { min-width: 0; flex: 1 1 190px; }
+	.pfd .pfd-refund-flow .pfd-bank-card strong, .pfd .pfd-refund-flow .pfd-bank-card small { white-space: normal; }
+}
+@media (max-width: 1400px) {
+	@container (min-width: 300px) {
+		.pfd-panel:not(.pfd-refund) > .pfd-mock { grid-column: 1 / 3; }
+		.pfd-panel:not(.pfd-refund) > .pfd-art { grid-column: 3; grid-row: 2; }
+	}
 }
