@@ -1,6 +1,24 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { isAuthenticated } from '../utils/storage'
+import blueDartLogo from '../assets/couriers/blue-dart-real.png'
+import delhiveryLogo from '../assets/couriers/delhivery-real.png'
+import dtdcLogo from '../assets/couriers/dtdc-real.png'
+import ekartLogo from '../assets/couriers/ekart-real.png'
+import shadowfaxLogo from '../assets/couriers/shadowfax.svg'
+import shiprocketLogo from '../assets/couriers/shiprocket-real.png'
+import xpressbeesLogo from '../assets/couriers/xpressbees-real.png'
+
+// Same logo boxes as the "delivery partners" strip on the landing page.
+const SUPPORTED_COURIERS = [
+	{ key: 'blue_dart', label: 'Blue Dart', logo: blueDartLogo },
+	{ key: 'delhivery', label: 'Delhivery', logo: delhiveryLogo },
+	{ key: 'dtdc', label: 'DTDC', logo: dtdcLogo },
+	{ key: 'ekart', label: 'Ekart', logo: ekartLogo },
+	{ key: 'shadowfax', label: 'Shadowfax', logo: shadowfaxLogo },
+	{ key: 'shiprocket', label: 'Shiprocket', logo: shiprocketLogo },
+	{ key: 'xpressbees', label: 'Xpressbees', logo: xpressbeesLogo },
+]
 
 const EXTENSION_STORE_URL = import.meta.env.VITE_SECUREPAY_EXTENSION_URL || 'https://chromewebstore.google.com/search/SecurePay%20Label%20Uploader'
 
@@ -66,7 +84,7 @@ function Documentation() {
 					<section className="doc-content-section">
 						<h2>Payment Aggregator Partnership Guide</h2>
 						<p className="doc-lead">
-							EscroSafe is not itself a payment aggregator — it sits as a decision layer between you and the customer. Your customer's money is actually collected and held by your linked payment aggregator partner. EscroSafe validates the shipping label and confirms delivery with the courier, and only then instructs the aggregator to <b>release</b> the held funds to you or <b>refund</b> the customer.
+							EscroSafe is not itself a payment aggregator, it sits as a decision layer between you and the customer. Your customer's money is actually collected and held by your linked payment aggregator partner. EscroSafe validates the shipping label and confirms delivery with the courier, and only then instructs the aggregator to <b>release</b> the held funds to you or <b>refund</b> the customer.
 						</p>
 
 						<div className="integration-steps font-body">
@@ -74,7 +92,7 @@ function Documentation() {
 								<div className="step-number">1</div>
 								<div className="step-body">
 									<h3>Sign Up, Complete KYC & Link Your Aggregator Account</h3>
-									<p>When you create your merchant account and log in for the first time, that same onboarding also completes your KYC and links your account to our partnered payment aggregator. EscroSafe stores that link (aggregator provider + your aggregator account ID) against your merchant profile, so every order you take is automatically routed through your linked aggregator — no separate signup with the aggregator is needed.</p>
+									<p>When you create your merchant account and log in for the first time, that same onboarding also completes your KYC and links your account to our partnered payment aggregator. EscroSafe stores that link (aggregator provider + your aggregator account ID) against your merchant profile, so every order you take is automatically routed through your linked aggregator, no separate signup with the aggregator is needed.</p>
 									<div className="code-block-wrapper">
 										<pre className="code-block">
 {`Authorization: Bearer <MERCHANT_ID>-<SESSION_TOKEN>
@@ -82,15 +100,15 @@ Content-Type: application/json`}
 										</pre>
 									</div>
 									<p>This session token (from <code>POST /merchants/login/</code>) is what every request below is authenticated with.</p>
-								<p>The first time you log in, you're also asked to choose your courier partners (Blue Dart, Delhivery, DTDC, Ekart, Shadowfax, Shiprocket, Xpressbees) — this is where EscroSafe's shipment validation and tracking get wired up per courier. Blue Dart specifically requires an OTP-enabled plan; EscroSafe does not support the basic (non-OTP) Blue Dart plan.</p>
+								<p>The first time you log in, you're also asked to choose your courier partners (Blue Dart, Delhivery, DTDC, Ekart, Shadowfax, Shiprocket, Xpressbees), this is where EscroSafe's shipment validation and tracking get wired up per courier. Blue Dart specifically requires an OTP-enabled plan; EscroSafe does not support the basic (non-OTP) Blue Dart plan.</p>
 								</div>
 							</div>
 
 							<div className="step-card">
 								<div className="step-number">2</div>
 								<div className="step-body">
-									<h3>Customer Pays — Funds Are Held, Not Settled</h3>
-									<p>Checkout is started through your linked aggregator. The customer's payment is captured and placed in a per-order hold rather than settling straight to your bank account — that hold is what lets EscroSafe step in before the money actually moves. <b>Note:</b> <code>amount</code> must be an integer in <i>paise</i> (₹1499.00 = <code>149900</code>).</p>
+									<h3>Customer Pays: Funds Are Held, Not Settled</h3>
+									<p>Checkout is started through your linked aggregator. The customer's payment is captured and placed in a per-order hold rather than settling straight to your bank account, that hold is what lets EscroSafe step in before the money actually moves. <b>Note:</b> <code>amount</code> must be an integer in <i>paise</i> (₹1499.00 = <code>149900</code>).</p>
 
 									<div className="lang-switcher">
 										<button type="button" className={language === 'curl' ? 'active' : ''} onClick={() => setLanguage('curl')}>cURL</button>
@@ -131,7 +149,7 @@ Content-Type: application/json`}
 								<div className="step-number">3</div>
 								<div className="step-body">
 									<h3>Upload the Shipping Label for Validation</h3>
-									<p>Once the order ships, upload the courier's PDF label (via the dashboard, or automatically through the Chrome extension). EscroSafe checks the label against the order — courier, AWB, amount, tamper signs — and separately confirms delivery status directly with the courier.</p>
+									<p>Once the order ships, upload the courier's PDF label (via the dashboard, or automatically through the Chrome extension). EscroSafe checks the label against the order, courier, AWB, amount, tamper signs, and separately confirms delivery status directly with the courier.</p>
 								</div>
 							</div>
 
@@ -139,7 +157,7 @@ Content-Type: application/json`}
 								<div className="step-number">4</div>
 								<div className="step-body">
 									<h3>EscroSafe Decides: Release or Refund</h3>
-									<p>This is the core of the partnership — you never call a "release" or "refund" API yourself. Once the label is approved <i>and</i> the courier confirms delivery, EscroSafe instructs your aggregator to release the held funds to you. If delivery fails, the courier reports a return, or no valid label shows up within the review window, EscroSafe instructs the aggregator to refund the customer instead. Anything the evidence doesn't clearly support is held for manual review rather than moved automatically.</p>
+									<p>This is the core of the partnership, you never call a "release" or "refund" API yourself. Once the label is approved <i>and</i> the courier confirms delivery, EscroSafe instructs your aggregator to release the held funds to you. If delivery fails, the courier reports a return, or no valid label shows up within the review window, EscroSafe instructs the aggregator to refund the customer instead. Anything the evidence doesn't clearly support is held for manual review rather than moved automatically.</p>
 								</div>
 							</div>
 
@@ -147,7 +165,7 @@ Content-Type: application/json`}
 								<div className="step-number">5</div>
 								<div className="step-body">
 									<h3>Track the Outcome</h3>
-									<p>Every release or refund shows up as a notification on your dashboard, and you can pull the same feed via <code>GET /payments/v1/notifications/</code> with your session token — useful if you want to mirror payout status back into your own systems.</p>
+									<p>Every release or refund shows up as a notification on your dashboard, and you can pull the same feed via <code>GET /payments/v1/notifications/</code> with your session token, useful if you want to mirror payout status back into your own systems.</p>
 								</div>
 							</div>
 						</div>
@@ -421,14 +439,12 @@ Content-Type: multipart/form-data`}
 
 						<div className="couriers-supported">
 							<h3>Supported Courier Services</h3>
-							<div className="courier-chips">
-								<span>Blue Dart</span>
-								<span>Delhivery</span>
-								<span>DTDC</span>
-								<span>Ekart</span>
-								<span>Shadowfax</span>
-								<span>Shiprocket</span>
-								<span>Xpressbees</span>
+							<div className="doc-courier-logos">
+								{SUPPORTED_COURIERS.map((courier) => (
+									<span className={`landing-courier-logo logo-${courier.key}`} key={courier.key}>
+										<img src={courier.logo} alt={`${courier.label} logo`} />
+									</span>
+								))}
 							</div>
 						</div>
 					</section>

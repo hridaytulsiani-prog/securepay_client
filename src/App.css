@@ -8505,3 +8505,148 @@ a.enquiry-modal-primary { padding: 0.55rem 1.1rem; font-size: 0.88rem; }
 	.buyer-contact { margin-bottom: 3rem; }
 	#hero, #how-it-works, #faq, #contact { scroll-margin-top: 5.75rem; }
 }
+
+/* ===== MERCHANT SITE - mobile (phones and small tablets only; laptop view is untouched) =====
+   Top bar: logo on the left, the bell / settings / more icons on the right, and the page links on their own row
+   underneath (they scroll sideways inside the bar instead of pushing the page wider). */
+@media (max-width: 850px) {
+	.navbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "brand account" "links links"; align-items: center; gap: 0.35rem 0.5rem; padding: 0.5rem 1rem; }
+	.navbar .brand { grid-area: brand; min-width: 0; }
+	.navbar .brand-logo img { max-width: 100%; height: auto; max-height: 40px; }
+	.navbar .nav-account { grid-area: account; justify-content: flex-end; flex-wrap: nowrap; min-width: 0; }
+	.navbar .nav-links { grid-area: links; justify-self: stretch; flex-wrap: nowrap; overflow-x: auto; gap: 0.3rem; padding: 0.1rem 0 0.25rem; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+	.navbar .nav-links::-webkit-scrollbar { display: none; }
+	.navbar .nav-links a { flex: none; white-space: nowrap; padding: 0.5rem 0.75rem; font-size: 0.86rem; }
+	.nav-more-menu { max-width: calc(100vw - 1.5rem); }
+}
+
+/* ----- landing page (public home) on phones: headings and paragraphs flow naturally instead of being cut into
+   fixed lines that run past the screen edge ----- */
+@media (max-width: 640px) {
+	.landing-copy h1 span, .landing-description span, .landing-section-copy h2 span, .landing-partner-copy strong span { display: inline; white-space: normal; }
+	.landing-copy h1 span::after, .landing-description span::after, .landing-section-copy h2 span::after, .landing-partner-copy strong span::after { content: ' '; }
+	.landing-copy h1 { font-size: clamp(1.7rem, 7.6vw, 2.3rem); max-width: 100%; }
+	.landing-section-copy { max-width: 100%; min-width: 0; }
+	.landing-section-copy h2 { font-size: clamp(1.55rem, 7vw, 2rem); max-width: 100%; overflow-wrap: break-word; }
+	.landing-description, .landing-section-copy p:last-child { text-align: left; }
+	.landing-nav { flex-wrap: wrap; row-gap: 0.5rem; }
+}
+@media (max-width: 400px) {
+	.landing-nav-actions { gap: 0.4rem; }
+	.landing-signup-button { padding-inline: 0.6rem; font-size: 0.72rem; min-width: 0; }
+}
+/* merchant nav: links fit on one row on most phones */
+@media (max-width: 850px) {
+	.navbar .nav-links { justify-content: space-between; }
+	.navbar .nav-links a { padding: 0.5rem 0.6rem; font-size: 0.82rem; }
+}
+@media (max-width: 640px) {
+	.landing-nav { align-items: center; }
+	.landing-brand img { --logo-h: 2.1rem; }
+	.landing-nav-actions { flex-wrap: nowrap; }
+	.landing-signup-button { white-space: nowrap; }
+}
+
+/* docs page on phones: inline code and tab buttons never push the page wider */
+@media (max-width: 640px) {
+	.doc-page code, .doc-section code, main code { overflow-wrap: anywhere; word-break: break-word; white-space: normal; }
+	.doc-tab-btn { min-width: 0; }
+}
+@media (max-width: 640px) {
+	.step-card { flex-direction: column; gap: 0.75rem; padding: 1.1rem; }
+	.step-body h3 { font-size: 1.08rem; }
+	.integration-steps { gap: 1.1rem; }
+	.code-block { padding: 1rem; font-size: 0.78rem; }
+	.doc-container { padding-left: 1rem; padding-right: 1rem; }
+}
+@media (max-width: 640px) {
+	.code-block-wrapper { display: flex; flex-direction: column; }
+	.code-block-wrapper .copy-btn { position: static; align-self: flex-end; order: -1; margin-bottom: 0.4rem; }
+}
+@media (max-width: 420px) {
+	.navbar .nav-links a { padding: 0.5rem 0.45rem; font-size: 0.76rem; }
+	.navbar { padding-left: 0.75rem; padding-right: 0.75rem; }
+}
+
+/* ----- landing page on phones (<= 640px): light-grey "Create account" button like "Get started", and the dashboard
+   picture sits right under "I already have an account" with the four outcomes (Fewer RTOs ...) below it ----- */
+@media (max-width: 640px) {
+	.landing-signup-button { background: #eef1f0; color: #173d38; border: 1px solid #cbd3d0; box-shadow: 0 8px 20px rgba(23, 61, 56, 0.14); }
+	.landing-signup-button:hover { background: #e1e6e4; border-color: #a9b4b0; color: #173d38; }
+	.landing-hero { gap: 0; align-items: start; }
+	.landing-copy { display: contents; }
+	.landing-workspace-visual { order: 5; margin-top: 2rem; max-width: 100%; }
+	.landing-outcome-row { order: 6; }
+}
+
+/* phones: each outcome is one row - icon and its text on the same horizontal line, text on a single line */
+@media (max-width: 640px) {
+	.landing-outcome-item { align-items: center; align-content: center; min-height: 48px; }
+	.landing-outcome-text { display: flex; align-items: center; min-height: 48px; font-size: 0.95rem; line-height: 1.2; white-space: nowrap; }
+	.landing-outcome-text.is-wrapped { display: flex; flex-wrap: nowrap; gap: 0; white-space: nowrap; }
+	.landing-outcome-text.is-wrapped > span { display: inline; white-space: nowrap; }
+	.landing-outcome-text.is-wrapped > span:first-child::after { content: '\00a0'; }
+	.landing-outcome-icon { align-self: center; }
+}
+
+/* phones: hide the round share icon in the delivery-partners card (laptop view keeps it) */
+@media (max-width: 640px) {
+	.landing-partner-connect { display: none; }
+}
+
+/* docs page on phones: the Resources menu already chooses the page, so the tab bar is hidden */
+@media (max-width: 640px) {
+	.doc-tabs { display: none; }
+	.doc-hero { padding-bottom: 1.5rem; }
+}
+@media (max-width: 640px) {
+	.doc-table { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+	.doc-table th, .doc-table td { padding: 0.55rem 0.7rem; }
+}
+@media (max-width: 640px) {
+	/* API tables: keep names whole and let the table scroll sideways inside its own box */
+	.doc-table code, .doc-table th, .doc-table td:not(:last-child) { white-space: nowrap; overflow-wrap: normal; word-break: normal; }
+	.doc-table td:last-child { min-width: 200px; }
+	/* endpoint title row: badge + path on one line, the title below */
+	.endpoint-header { flex-wrap: wrap; gap: 0.4rem 0.6rem; }
+	.endpoint-path { white-space: nowrap; overflow-wrap: normal; word-break: normal; }
+	.endpoint-title { flex-basis: 100%; }
+}
+
+/* docs page on phones (<= 640px) */
+@media (max-width: 640px) {
+	/* white content card starts below the green header with a gap, not on top of it */
+	.doc-hero { padding-bottom: 2rem; }
+	.doc-container { margin-top: 1.5rem; margin-bottom: 2.5rem; }
+	.doc-content-section { margin-top: 0; }
+
+	/* even space above and below code boxes */
+	.code-block-wrapper { margin: 0.9rem 0; }
+	.step-body pre.code-block, .step-body .code-block { margin-top: 0.9rem; margin-bottom: 0.9rem; }
+
+	/* cURL / Node.js / Python buttons stay on one line, with less space under them */
+	.lang-switcher { flex-wrap: nowrap; gap: 0.35rem; margin-bottom: 0.4rem; overflow-x: auto; scrollbar-width: none; }
+	.lang-switcher::-webkit-scrollbar { display: none; }
+	.lang-switcher button { flex: none; padding: 0.35rem 0.6rem; font-size: 0.74rem; white-space: nowrap; }
+
+	/* all running text justified (equal edges on the left and the right) */
+	.doc-page p, .doc-page li, .doc-lead, .step-body p, .endpoint-body p { text-align: justify; text-justify: inter-word; hyphens: auto; -webkit-hyphens: auto; }
+	.doc-hero p { text-align: center; hyphens: none; }
+}
+
+/* docs page: supported couriers shown as the same logo boxes as on the landing page */
+.doc-courier-logos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; margin-top: 0.9rem; }
+@media (max-width: 900px) { .doc-courier-logos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) {
+	/* two logos on every line */
+	.doc-courier-logos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	/* "Automatic session connection" badge on a single line */
+	.assistant-badge { white-space: nowrap; font-size: 0.66rem; letter-spacing: 0.04em; padding-inline: 0.6rem; max-width: 100%; }
+}
+
+/* very narrow phones (below 360px): hide the Resources menu so the logo and the "Create account" button stay together on one row */
+@media (max-width: 359px) {
+	.landing-nav { flex-wrap: nowrap; align-items: center; }
+	.landing-nav .resources-dropdown-container { display: none; }
+	.landing-nav-actions { flex: none; }
+}
