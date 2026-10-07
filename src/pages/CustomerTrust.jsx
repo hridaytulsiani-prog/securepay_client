@@ -184,6 +184,36 @@ function useReveal() {
 	return [ref, isVisible]
 }
 
+// "What happens after you pay" video. Drop your file at public/what-happens.mp4 (or change the path below) and it plays
+// here; until a file exists a "Video coming soon" placeholder is shown instead.
+const WHAT_HAPPENS_VIDEO = '/what-happens.mp4'
+const WHAT_HAPPENS_POSTER = '' // optional thumbnail image, e.g. '/what-happens-poster.jpg'
+
+function PostPayVideo() {
+	const [failed, setFailed] = useState(false)
+	if (failed) {
+		return (
+			<div className="buyer-timeline-video buyer-timeline-video-empty" role="img" aria-label="Video coming soon">
+				<span className="buyer-timeline-video-play" aria-hidden="true">
+					<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5Z" /></svg>
+				</span>
+				<strong>Video coming soon</strong>
+			</div>
+		)
+	}
+	return (
+		<video
+			className="buyer-timeline-video"
+			src={WHAT_HAPPENS_VIDEO}
+			poster={WHAT_HAPPENS_POSTER || undefined}
+			controls
+			playsInline
+			preload="metadata"
+			onError={() => setFailed(true)}
+		/>
+	)
+}
+
 // Contact-form messages are saved by the backend (POST /adminpanel/contact/) and
 // read by the owner admin under "Messages". This address is only shown on the page.
 const CONTACT_EMAIL = 'support@escrosafe.io'
@@ -723,11 +753,14 @@ function CustomerTrust() {
 						</p>
 					</div>
 
-					<div className="buyer-timeline-media">
+					<div className="buyer-timeline-media is-video">
 						{/* Previous pasted image, kept for reference:
 						<img className="buyer-timeline-image" src="/what-to-expect-illustration.png" alt="" />
 						*/}
+						{/* Previous icon strip, kept for reference:
 						<PostPayArt />
+						*/}
+						<PostPayVideo />
 					</div>
 
 					<div className="buyer-expect-grid">

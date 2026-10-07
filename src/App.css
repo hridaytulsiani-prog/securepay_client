@@ -8427,3 +8427,81 @@ a.enquiry-modal-primary { padding: 0.55rem 1.1rem; font-size: 0.88rem; }
 		.pfd-panel:not(.pfd-refund) > .pfd-art { grid-column: 3; grid-row: 2; }
 	}
 }
+
+/* ===== laptop / desktop: the same gap (5rem) between every section =====
+   hero -> what happens after you pay -> FAQ -> contact -> footer. The sections no longer stretch to the full
+   screen height, so there is no huge empty gap after "What happens after you pay". */
+@media (min-width: 901px) {
+	.buyer-hero { margin-bottom: 5rem; }
+	.buyer-timeline-section { min-height: 0; margin-top: 0; margin-bottom: 5rem; }
+	.buyer-faq { margin-bottom: 5rem; }
+	.buyer-contact { min-height: 0; padding-bottom: 0; margin-bottom: 5rem; }
+}
+@media (min-width: 901px) {
+	.buyer-hero .buyer-payment-flow { margin-bottom: 0; padding-bottom: 0; }
+}
+
+/* "What happens after you pay": video (or the "coming soon" placeholder) in place of the icon strip */
+.buyer-timeline-media.is-video { max-width: 560px; margin: 0; justify-self: end; }
+.buyer-timeline-video { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 20px; background: #0f2318; box-shadow: 0 18px 40px rgba(76, 55, 158, 0.22); }
+.buyer-timeline-video-empty { display: grid; place-content: center; justify-items: center; gap: 0.7rem; border: 2px dashed rgba(124, 92, 255, 0.45); background: rgba(255, 255, 255, 0.55); box-shadow: none; color: #4d4470; }
+.buyer-timeline-video-empty strong { font-size: 1rem; font-weight: 700; }
+.buyer-timeline-video-play { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: #7c5cff; box-shadow: 0 10px 22px rgba(124, 92, 255, 0.35); }
+.buyer-timeline-video-play svg { width: 24px; height: 24px; margin-left: 3px; fill: #fff; }
+@media (max-width: 1200px) { .buyer-timeline-media.is-video { justify-self: center; width: 100%; max-width: 560px; margin: 0 auto; } }
+
+/* two-column "What happens after you pay": the title's left edge, the four cards' left edge, the video's right edge
+   and the four cards' right edge all line up on the same two vertical lines */
+@media (min-width: 1201px) {
+	.buyer-timeline-section { --tl-pad: clamp(1.75rem, 4vw, 3.5rem); }
+	.buyer-timeline-media.is-video { margin: 0 var(--tl-pad) 0 0; justify-self: end; }
+	.buyer-expect-grid { width: calc(100% - 2 * var(--tl-pad)); max-width: none; margin: 0 auto; justify-self: center; }
+}
+
+/* video box: same height as the text block beside it (16:9 at 480px = 270px), more room before the four cards */
+@media (min-width: 1201px) {
+	.buyer-timeline-media.is-video { max-width: 480px; align-self: start; }
+	.buyer-timeline-section { row-gap: 2.5rem; }
+}
+
+/* bigger video box, growing to the left (its right edge stays on the cards' right edge) */
+@media (min-width: 1201px) {
+	.buyer-timeline-media.is-video { width: clamp(440px, 42vw, 680px); max-width: none; }
+}
+
+/* laptop / desktop: every menu jump (How it works, What to expect, FAQ, Contact) lands with the SAME gap under the
+   navbar as the page has when it first loads (navbar ~6.1rem + the hero's own top space) */
+@media (min-width: 901px) {
+	#hero, #how-it-works, #faq, #contact { scroll-margin-top: calc(6.1rem + clamp(2.5rem, 6vw, 4.5rem)); }
+}
+
+/* navbar once the page is scrolled: a clearly visible frosted-white bar (with a soft edge), so it looks the same
+   everywhere - also when only empty space is behind it (e.g. right after jumping to FAQ or Contact) */
+.buyer-nav.is-scrolled {
+	background: rgba(255, 255, 255, 0.62);
+	backdrop-filter: blur(16px) saturate(1.15);
+	-webkit-backdrop-filter: blur(16px) saturate(1.15);
+	box-shadow: 0 1px 0 rgba(124, 92, 255, 0.14), 0 8px 24px rgba(76, 55, 158, 0.08);
+}
+
+/* section fade-in uses opacity only: a slide-up (translateY) on the section itself moved its position while it was
+   still hidden, so the first jump to a section landed with a different gap than later jumps */
+.buyer-timeline-section, .buyer-faq, .buyer-contact,
+.buyer-timeline-section.is-visible, .buyer-faq.is-visible, .buyer-contact.is-visible { transform: none; transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* laptop / desktop: a smaller, equal gap between the navbar and the top of every section (hero on load and all menu jumps) */
+@media (min-width: 901px) {
+	.buyer-hero { margin-top: 2.5rem; }
+	#hero, #how-it-works, #faq, #contact { scroll-margin-top: calc(6.1rem + 2.5rem); }
+}
+
+/* ===== mobile / tablet (<= 900px): the same spacing rhythm for every section =====
+   3rem between sections, 1.5rem under the header (on load and after every menu jump) */
+@media (max-width: 900px) {
+	.buyer-hero { margin-top: 1.5rem; margin-bottom: 3rem; }
+	.buyer-hero .buyer-payment-flow { margin-bottom: 0; padding-bottom: 0; }
+	.buyer-timeline-section { margin-top: 0; margin-bottom: 3rem; }
+	.buyer-faq { margin-bottom: 3rem; }
+	.buyer-contact { margin-bottom: 3rem; }
+	#hero, #how-it-works, #faq, #contact { scroll-margin-top: 5.75rem; }
+}
