@@ -8701,3 +8701,9 @@ html { scroll-behavior: smooth; }
 .landing-signup-button:hover { background: #e1e6e4; border-color: #a9b4b0; color: #173d38; }
 @media (max-width: 640px) { .landing-nav-actions { gap: 0.75rem; } }
 @media (max-width: 400px) { .landing-nav-actions { gap: 0.4rem; } }
+
+/* help section (laptop): the form is pushed down so its bottom edge is level with the bottom of the last box on the left.
+   The boxes on the left are not changed. */
+@media (min-width: 901px) {
+	.landing-help-form { align-self: end; margin-top: 0; }
+}

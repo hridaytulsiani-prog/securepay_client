@@ -82,10 +82,9 @@ const courierPartners = [
 import escrosafeLogo from '../assets/escrosafe-logo.png'
 
 const SUPPORT_EMAIL = 'partners@escrosafe.com'
-const HELP_TOPICS = ['Getting started', 'Payments and settlements', 'Couriers and label uploads', 'Account or KYC', 'Something else']
 
 function LandingPage() {
-	const [helpForm, setHelpForm] = useState({ name: '', email: '', topic: HELP_TOPICS[0], reference: '', message: '', website: '' })
+	const [helpForm, setHelpForm] = useState({ name: '', email: '', message: '', website: '' })
 	const [helpStatus, setHelpStatus] = useState({ state: 'idle', text: '' })
 	const updateHelp = (field) => (event) => setHelpForm((current) => ({ ...current, [field]: event.target.value }))
 
@@ -94,7 +93,7 @@ function LandingPage() {
 	useEffect(() => {
 		if (helpStatus.state !== 'sent') return undefined
 		const timer = window.setTimeout(() => {
-			setHelpForm({ name: '', email: '', topic: HELP_TOPICS[0], reference: '', message: '', website: '' })
+			setHelpForm({ name: '', email: '', message: '', website: '' })
 			setHelpStatus({ state: 'idle', text: '' })
 		}, 10000)
 		return () => window.clearTimeout(timer)
@@ -113,10 +112,8 @@ function LandingPage() {
 				body: JSON.stringify({
 					name: helpForm.name.trim(),
 					email: helpForm.email.trim(),
-					order_id: helpForm.reference.trim(),
 					message: helpForm.message.trim(),
 					source: 'merchant',
-					topic: helpForm.topic,
 					website: helpForm.website,
 				}),
 			})
@@ -251,7 +248,7 @@ function LandingPage() {
 							</li>
 							<li>
 								<span className="landing-help-icon is-green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9Z" /><path d="m4 7.5 8 4.5 8-4.5M12 12v9" /></svg></span>
-								<div><strong>Already a merchant?</strong><span>Add your order ID or AWB so we can help faster.</span></div>
+								<div><strong>New to EscroSafe?</strong><span>Ask how it works and how to get started.</span></div>
 							</li>
 						</ul>
 					</div>
@@ -262,14 +259,6 @@ function LandingPage() {
 						</label>
 						<label>Email
 							<input type="email" required value={helpForm.email} onChange={updateHelp('email')} placeholder="you@example.com" autoComplete="email" />
-						</label>
-						<label>Topic
-							<select value={helpForm.topic} onChange={updateHelp('topic')}>
-								{HELP_TOPICS.map((topic) => <option key={topic} value={topic}>{topic}</option>)}
-							</select>
-						</label>
-						<label>Order ID or AWB (optional)
-							<input type="text" maxLength={64} value={helpForm.reference} onChange={updateHelp('reference')} placeholder="e.g. SP_1001" />
 						</label>
 						<label className="is-wide">Your message
 							<textarea required rows={5} maxLength={1900} value={helpForm.message} onChange={updateHelp('message')} placeholder="How can we help?" />
