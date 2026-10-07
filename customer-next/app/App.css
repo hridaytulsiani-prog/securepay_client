@@ -6177,7 +6177,6 @@ button.doc-tab-btn.active:focus {
 	margin: 0 auto;
 	background: transparent;
 	backdrop-filter: none;
-	-webkit-backdrop-filter: none;
 	transition: background 0.25s ease, backdrop-filter 0.25s ease;
 }
 
@@ -6187,7 +6186,6 @@ button.doc-tab-btn.active:focus {
 .buyer-nav.is-scrolled {
 	background: rgba(239, 233, 251, 0.78);
 	backdrop-filter: blur(14px);
-	-webkit-backdrop-filter: blur(14px);
 }
 
 .buyer-nav-inner {
@@ -8457,7 +8455,6 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
 .buyer-nav.is-scrolled {
 	background: rgba(255, 255, 255, 0.62);
 	backdrop-filter: blur(16px) saturate(1.15);
-	-webkit-backdrop-filter: blur(16px) saturate(1.15);
 	box-shadow: 0 1px 0 rgba(124, 92, 255, 0.14), 0 8px 24px rgba(76, 55, 158, 0.08);
 }
 
