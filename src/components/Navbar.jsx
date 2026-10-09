@@ -55,6 +55,7 @@ function Navbar() {
 				<NavLink to="/enquiries">Enquiries</NavLink>
 				<NavLink to="/track-order">Track Order</NavLink>
 				<NavLink to="/upload-label">Upload Label</NavLink>
+				<NavLink to="/support">Support</NavLink>
 			</nav>
 
 			<div className="nav-account">

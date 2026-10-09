@@ -8707,3 +8707,261 @@ html { scroll-behavior: smooth; }
 @media (min-width: 901px) {
 	.landing-help-form { align-self: end; margin-top: 0; }
 }
+
+/* ===== Support: raise an issue about orders (Dashboard checkboxes, pop-up, Support page) ===== */
+.issue-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; min-height: 40px; padding: 0.5rem 1rem; border: 1px solid #cbd3d0; border-radius: 8px; background: #eef1f0; color: #173d38; font: inherit; font-size: 0.9rem; font-weight: 600; text-decoration: none; cursor: pointer; box-shadow: none; }
+.issue-btn:hover:not(:disabled) { background: #e1e6e4; border-color: #a9b4b0; color: #173d38; }
+.issue-btn-primary, button.issue-btn-primary { border-color: #173d38; background: #173d38; color: #ffffff; }
+.issue-btn-primary:hover:not(:disabled), button.issue-btn-primary:hover:not(:disabled) { border-color: #0f2a26; background: #0f2a26; color: #ffffff; }
+.issue-btn:disabled { opacity: 0.6; cursor: default; }
+
+/* dashboard: checkbox column, selection bar */
+.issue-check-cell { width: 42px; text-align: center; }
+.issue-check-cell input { width: 17px; height: 17px; accent-color: #173d38; cursor: pointer; }
+.merchant-orders-table tr.is-selected td { background: #f1f7f4; }
+.issue-selection-hint { margin: 0 0 0.6rem; color: #687572; font-size: 0.82rem; }
+.issue-selection-bar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin: 0 0 0.7rem; padding: 0.6rem 0.9rem; border: 1px solid #cfe0d9; border-radius: 10px; background: #eaf4f0; color: #173d38; font-size: 0.9rem; }
+.issue-selection-actions { display: flex; gap: 0.5rem; }
+.issue-selection-actions button { min-height: 36px; padding: 0.4rem 0.9rem; border: 1px solid #cbd3d0; border-radius: 8px; background: #ffffff; color: #173d38; font: inherit; font-size: 0.86rem; font-weight: 600; cursor: pointer; }
+.issue-selection-actions button.issue-btn-primary { border-color: #173d38; background: #173d38; color: #ffffff; }
+
+/* pop-up */
+.issue-modal-backdrop { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 1rem; background: rgba(15, 35, 24, 0.45); overflow-y: auto; }
+.issue-modal { box-sizing: border-box; width: min(560px, 100%); max-height: calc(100vh - 2rem); overflow-y: auto; display: grid; gap: 1rem; padding: 1.4rem; border-radius: 14px; background: #ffffff; box-shadow: 0 28px 60px rgba(15, 35, 24, 0.3); color: #173d38; }
+.issue-modal-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.issue-modal-head h2, .issue-modal-done h2 { margin: 0; font-size: 1.3rem; font-weight: 650; }
+.issue-modal-close { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: #eef1f0; color: #173d38; cursor: pointer; }
+.issue-modal-close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+.issue-modal-lead { margin: -0.4rem 0 0; color: #5b6967; font-size: 0.9rem; line-height: 1.5; }
+.issue-field { display: grid; gap: 0.4rem; min-width: 0; }
+.issue-label { color: #173d38; font-size: 0.82rem; font-weight: 650; }
+.issue-field input, .issue-field select, .issue-field textarea { width: 100%; box-sizing: border-box; padding: 0.65rem 0.75rem; border: 1px solid #cbd3d0; border-radius: 8px; background: #fbfcfb; color: #173d38; font: inherit; font-size: 0.92rem; }
+.issue-field textarea { resize: vertical; }
+.issue-field input:focus, .issue-field select:focus, .issue-field textarea:focus { outline: 0; border-color: #173d38; box-shadow: 0 0 0 3px rgba(23, 61, 56, 0.14); }
+.issue-hint { color: #687572; font-size: 0.8rem; line-height: 1.4; }
+.issue-add-row { display: flex; gap: 0.5rem; }
+.issue-add-row input { flex: 1; min-width: 0; }
+.issue-order-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; max-height: 120px; overflow-y: auto; }
+.issue-order-chips li { display: inline-flex; align-items: center; gap: 0.3rem; max-width: 100%; padding: 0.25rem 0.35rem 0.25rem 0.65rem; border: 1px solid #cfe0d9; border-radius: 999px; background: #eaf4f0; color: #173d38; font-size: 0.8rem; font-weight: 600; }
+.issue-order-chips li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.issue-order-chips li button { display: grid; place-items: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 50%; background: rgba(23, 61, 56, 0.12); color: #173d38; font-size: 0.95rem; line-height: 1; cursor: pointer; }
+.issue-order-chips.is-static li { padding: 0.25rem 0.65rem; }
+.issue-error { margin: 0; color: #b3402a; font-size: 0.88rem; }
+.issue-modal-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 0.6rem; }
+.issue-modal-done { justify-items: center; text-align: center; }
+.issue-modal-done p { margin: 0; color: #5b6967; line-height: 1.55; }
+.issue-done-tick { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: #2fa866; }
+.issue-done-tick svg { width: 26px; height: 26px; fill: none; stroke: #ffffff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Support page */
+.support-page { width: min(920px, 100%); margin: 0 auto; }
+.support-card { padding: 1.5rem; border: 1px solid #e3e8e5; border-radius: 12px; background: #ffffff; box-shadow: 0 10px 30px rgba(23, 61, 56, 0.06); }
+.support-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.2rem; flex-wrap: wrap; }
+.support-head > div { flex: 1 1 360px; min-width: 0; }
+.support-kicker { margin: 0 0 0.3rem; color: #9a6224; font-size: 0.72rem; font-weight: 650; letter-spacing: 0.1em; text-transform: uppercase; }
+.support-head h2 { margin: 0; color: #173d38; font-size: 1.6rem; }
+.support-lead { margin: 0.5rem 0 0; color: #5b6967; line-height: 1.55; }
+.support-list-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 1.6rem 0 0.8rem; padding-top: 1.2rem; border-top: 1px solid #e3e8e5; }
+.support-list-head h3 { margin: 0; color: #173d38; font-size: 1.05rem; }
+.support-empty { margin: 1rem 0 0.4rem; color: #687572; }
+.support-issues { display: grid; gap: 0.9rem; margin: 0; padding: 0; list-style: none; }
+.support-issue { padding: 1rem 1.1rem; border: 1px solid #e3e8e5; border-radius: 10px; background: #fbfcfb; }
+.support-issue-top { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; }
+.support-issue-top strong { color: #173d38; }
+.support-issue-date { margin-left: auto; color: #687572; font-size: 0.8rem; }
+.support-issue-type { margin: 0.5rem 0 0.4rem; color: #173d38; font-weight: 650; }
+.support-issue-text { margin: 0.6rem 0 0; color: #40504e; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+.support-response { margin-top: 0.8rem; padding: 0.7rem 0.9rem; border-left: 3px solid #173d38; border-radius: 6px; background: #eaf4f0; }
+.support-response span { display: block; margin-bottom: 0.2rem; color: #173d38; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.support-response p { margin: 0; color: #173d38; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+@media (max-width: 640px) {
+	.support-card { padding: 1rem; }
+	.support-issue-date { margin-left: 0; flex-basis: 100%; }
+	.issue-modal { padding: 1.1rem; }
+	.issue-add-row { flex-direction: column; }
+	.issue-modal-actions .issue-btn { flex: 1 1 auto; }
+	.issue-selection-bar { align-items: flex-start; }
+}
+@media (max-width: 420px) {
+	.navbar .nav-links a { padding: 0.5rem 0.35rem; font-size: 0.72rem; }
+}
+
+/* issue pop-up: tick orders from the merchant's own list instead of typing order IDs */
+.issue-order-picker { max-height: 240px; overflow-y: auto; border: 1px solid #cbd3d0; border-radius: 8px; background: #fbfcfb; }
+.issue-order-picker ul { margin: 0; padding: 0; list-style: none; }
+.issue-picker-note { margin: 0; padding: 0.9rem; color: #687572; font-size: 0.88rem; }
+.issue-picker-row { display: flex; align-items: center; gap: 0.65rem; padding: 0.55rem 0.75rem; border-bottom: 1px solid #edf0ee; cursor: pointer; }
+.issue-picker-row:hover { background: #f3f7f5; }
+.issue-picker-row.is-ticked { background: #eaf4f0; }
+.issue-picker-row.is-head { position: sticky; top: 0; z-index: 1; background: #eef1f0; color: #173d38; font-size: 0.82rem; font-weight: 650; }
+.issue-picker-row input { width: 17px; height: 17px; flex: none; padding: 0; accent-color: #173d38; cursor: pointer; }
+.issue-picker-main { display: grid; min-width: 0; flex: 1; }
+.issue-picker-main strong { overflow: hidden; color: #173d38; font-size: 0.88rem; text-overflow: ellipsis; white-space: nowrap; }
+.issue-picker-main small { overflow: hidden; color: #687572; font-size: 0.76rem; text-overflow: ellipsis; white-space: nowrap; }
+.issue-picker-status { flex: none; padding: 0.15rem 0.5rem; border-radius: 999px; background: #e3edff; color: #2f5fb3; font-size: 0.7rem; font-style: normal; font-weight: 650; }
+
+/* Support: full-width page like the other merchant pages; every issue button uses the light-grey button theme */
+.support-page { width: 100%; max-width: none; margin: 0; }
+.support-page .dashboard-hero .issue-btn { align-self: center; flex: none; }
+.card.support-card { padding: 1.25rem 1.4rem; }
+.issue-btn-primary, button.issue-btn-primary, .issue-selection-actions button.issue-btn-primary { border-color: #cbd3d0; background: #eef1f0; color: #173d38; }
+.issue-btn-primary:hover:not(:disabled), button.issue-btn-primary:hover:not(:disabled), .issue-selection-actions button.issue-btn-primary:hover:not(:disabled) { border-color: #a9b4b0; background: #e1e6e4; color: #173d38; }
+.issue-selection-actions button:hover:not(:disabled) { border-color: #a9b4b0; background: #e1e6e4; }
+@media (max-width: 640px) { .support-page .dashboard-hero { flex-direction: column; align-items: flex-start; } .support-page .dashboard-hero .issue-btn { align-self: stretch; } }
+.support-page .dashboard-hero > div { min-width: 0; flex: 1 1 auto; }
+.support-page .dashboard-hero p { white-space: normal; max-width: 78ch; }
+.card.support-card .support-list-head { margin-top: 0; padding-top: 0; border-top: 0; }
+/* Support intro text uses the full width next to the button instead of a narrow column */
+.support-page .dashboard-hero p { max-width: none; }
+
+/* Support: issues shown as a table (same look as the Dashboard order table) */
+.support-table { min-width: 1000px; }
+.support-table th:nth-child(1) { width: 110px; }
+.support-table th:nth-child(2) { width: 150px; }
+.support-table th:nth-child(3) { width: 200px; }
+.support-table th:nth-child(4) { width: 170px; }
+.support-table th:nth-child(6) { width: 120px; }
+.support-table td.support-cell-left { text-align: left; }
+.support-table td.support-cell-text { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.45; }
+.support-table td strong { color: #173d38; }
+
+/* Support: issues table (centred cells, type on one line, order chips, chat pop-up) */
+.support-list-head h3 { display: inline-flex; align-items: center; gap: 0.55rem; }
+.support-list-head h3 svg { width: 21px; height: 21px; flex: 0 0 21px; padding: 0.22rem; border-radius: 6px; background: #e9f2ef; color: #28645a; fill: currentColor; }
+.support-table { min-width: 960px; }
+.support-table th:nth-child(1) { width: 140px; }
+.support-table th:nth-child(2) { width: 190px; }
+.support-table th:nth-child(3) { width: 330px; }
+.support-table th:nth-child(4) { width: 260px; }
+.support-table th:nth-child(5) { width: 130px; }
+.support-table th:nth-child(6) { width: 110px; }
+.support-table td { text-align: center; }
+.support-table td.support-type-cell { white-space: nowrap; }
+.support-order-chips { display: flex; flex-wrap: nowrap; align-items: center; justify-content: center; gap: 0.35rem; }
+.support-order-chip { max-width: 96px; overflow: hidden; padding: 0.2rem 0.6rem; border: 1px solid #cfe0d9; border-radius: 999px; background: #eaf4f0; color: #173d38; font: inherit; font-size: 0.76rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+button.support-order-chip.is-more { max-width: none; flex: none; border-color: #cbd3d0; background: #eef1f0; cursor: pointer; }
+button.support-order-chip.is-more:hover { border-color: #a9b4b0; background: #e1e6e4; }
+.issue-btn-small { min-height: 32px; padding: 0.3rem 0.9rem; font-size: 0.82rem; }
+
+.issue-orders-list { max-height: 360px; overflow: auto; border: 1px solid #e4eae7; border-radius: 8px; }
+.issue-orders-list table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.issue-orders-list th { position: sticky; top: 0; padding: 0.6rem 0.8rem; background: #eef5f2; color: #173d38; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.02em; text-align: left; text-transform: uppercase; }
+.issue-orders-list td { padding: 0.65rem 0.8rem; border-top: 1px solid #edf0ee; color: #173d38; font-size: 0.86rem; text-align: left; }
+
+.issue-chat-modal { width: min(640px, 100%); gap: 0.9rem; padding: 1.1rem 1.2rem 1.2rem; }
+.issue-chat-head { display: flex; align-items: center; gap: 0.8rem; padding-bottom: 0.85rem; border-bottom: 1px solid #e7ece9; }
+.issue-chat-title { flex: 1; min-width: 0; }
+.issue-chat-title h2 { margin: 0; color: #173d38; font-size: 1.1rem; font-weight: 700; }
+.issue-chat-title p { margin: 0.1rem 0 0; overflow: hidden; color: #687572; font-size: 0.84rem; text-overflow: ellipsis; white-space: nowrap; }
+.issue-chat-head .status-badge { flex: none; }
+.issue-chat-head .issue-modal-close { flex: none; }
+
+.issue-chat-avatar { display: grid; place-items: center; flex: none; align-self: flex-end; width: 34px; height: 34px; overflow: hidden; border-radius: 50%; }
+.issue-chat-avatar.is-large { width: 44px; height: 44px; align-self: center; }
+.issue-chat-avatar.is-escrosafe { border: 1px solid #d5e2dd; background: #ffffff; }
+.issue-chat-avatar.is-escrosafe img { display: block; width: 78%; height: 78%; object-fit: contain; }
+.issue-chat-avatar.is-merchant { background: #d9eee5; color: #28645a; }
+.issue-chat-avatar.is-merchant svg { width: 70%; height: 70%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.issue-chat-body { display: grid; align-content: start; gap: 0.85rem; height: 360px; overflow-y: auto; padding: 1rem 0.9rem; border: 1px solid #e0e8e4; border-radius: 12px; background-color: #ece8e1; background-image: radial-gradient(rgba(23, 61, 56, 0.06) 1px, transparent 1.4px); background-size: 10px 10px; }
+.issue-chat-item { display: grid; gap: 0.85rem; }
+.issue-chat-day { display: flex; justify-content: center; }
+.issue-chat-day span { padding: 0.2rem 0.75rem; border-radius: 999px; background: rgba(255, 255, 255, 0.85); color: #5b6967; font-size: 0.72rem; font-weight: 600; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); }
+.issue-chat-row { display: flex; align-items: flex-end; gap: 0.5rem; }
+.issue-chat-row.is-me { justify-content: flex-end; }
+.issue-chat-row.is-them { justify-content: flex-start; }
+.issue-chat-bubble { position: relative; max-width: min(78%, 420px); padding: 0.55rem 0.8rem 0.45rem; border-radius: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+.issue-chat-row.is-me .issue-chat-bubble { background: #d9eee5; border-bottom-right-radius: 4px; }
+.issue-chat-row.is-them .issue-chat-bubble { background: #ffffff; border-bottom-left-radius: 4px; }
+.issue-chat-who { display: block; margin-bottom: 0.2rem; color: #28645a; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.03em; }
+.issue-chat-bubble p { margin: 0; color: #173d38; font-size: 0.93rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+.issue-chat-bubble time { display: block; margin-top: 0.45rem; color: #7b8a86; font-size: 0.7rem; text-align: right; }
+.issue-chat-note { margin: 0.2rem 0; color: #687572; font-size: 0.84rem; text-align: center; }
+.issue-chat-body .issue-chat-note { justify-self: center; padding: 0.3rem 0.8rem; border-radius: 999px; background: rgba(255, 255, 255, 0.85); font-size: 0.78rem; }
+.issue-chat-note.is-resolved { padding: 0.45rem 0.7rem; border-radius: 8px; background: #eaf4f0; }
+
+.issue-chat-form { display: flex; align-items: center; gap: 0.6rem; }
+.issue-chat-form textarea { flex: 1; min-width: 0; box-sizing: border-box; max-height: 110px; padding: 0.7rem 1rem; border: 1px solid #cbd3d0; border-radius: 999px; background: #fbfcfb; color: #173d38; font: inherit; font-size: 0.93rem; line-height: 1.3; resize: none; }
+.issue-chat-form textarea:focus { outline: 0; border-color: #173d38; box-shadow: 0 0 0 3px rgba(23, 61, 56, 0.14); }
+.issue-chat-send { display: grid; place-items: center; flex: none; width: 44px; height: 44px; padding: 0; border: 1px solid #cbd3d0; border-radius: 50%; background: #eef1f0; color: #173d38; cursor: pointer; }
+.issue-chat-send svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.issue-chat-send:hover:not(:disabled) { border-color: #a9b4b0; background: #e1e6e4; }
+.issue-chat-send:disabled { opacity: 0.55; cursor: default; }
+@media (max-width: 640px) {
+	.issue-chat-modal { padding: 0.9rem; }
+	.issue-chat-body { height: 320px; padding: 0.8rem 0.6rem; }
+	.issue-chat-bubble { max-width: 82%; }
+	.issue-chat-avatar { width: 28px; height: 28px; }
+	.issue-chat-avatar.is-large { width: 38px; height: 38px; }
+}
+/* buttons inside the issues table use the light-grey theme (the table's own button style is dark) */
+.support-table td button.issue-btn, .support-table td button.support-order-chip.is-more { border: 1px solid #cbd3d0; background: #eef1f0; color: #173d38; box-shadow: none; }
+.support-table td button.issue-btn:hover, .support-table td button.support-order-chip.is-more:hover { border-color: #a9b4b0; background: #e1e6e4; color: #173d38; }
+
+/* issues table buttons: always light grey with dark green text, also on hover / focus / press */
+.shipments-table.support-table td button.issue-btn,
+.shipments-table.support-table td button.issue-btn:hover:not(:disabled),
+.shipments-table.support-table td button.issue-btn:focus-visible,
+.shipments-table.support-table td button.issue-btn:active,
+.shipments-table.support-table td button.support-order-chip.is-more,
+.shipments-table.support-table td button.support-order-chip.is-more:hover:not(:disabled),
+.shipments-table.support-table td button.support-order-chip.is-more:focus-visible,
+.shipments-table.support-table td button.support-order-chip.is-more:active { color: #173d38 !important; box-shadow: none !important; }
+.shipments-table.support-table td button.issue-btn,
+.shipments-table.support-table td button.support-order-chip.is-more { border: 1px solid #cbd3d0 !important; background: #eef1f0 !important; }
+.shipments-table.support-table td button.issue-btn:hover:not(:disabled),
+.shipments-table.support-table td button.issue-btn:focus-visible,
+.shipments-table.support-table td button.issue-btn:active,
+.shipments-table.support-table td button.support-order-chip.is-more:hover:not(:disabled),
+.shipments-table.support-table td button.support-order-chip.is-more:focus-visible,
+.shipments-table.support-table td button.support-order-chip.is-more:active { border-color: #a9b4b0 !important; background: #e1e6e4 !important; }
+
+/* "+N more" is the same chip as the order IDs next to it (just clickable) */
+.shipments-table.support-table td button.support-order-chip.is-more { max-width: none; padding: 0.2rem 0.6rem; border: 1px solid #cfe0d9 !important; border-radius: 999px; background: #eaf4f0 !important; color: #173d38 !important; font-size: 0.76rem; font-weight: 600; line-height: inherit; }
+.shipments-table.support-table td button.support-order-chip.is-more:hover:not(:disabled),
+.shipments-table.support-table td button.support-order-chip.is-more:focus-visible,
+.shipments-table.support-table td button.support-order-chip.is-more:active { border-color: #a9c7bc !important; background: #d9eee5 !important; }
+/* chat pop-up: never wider than the screen; head items shrink instead of pushing the close button off */
+.issue-chat-modal { min-width: 0; max-width: 100%; box-sizing: border-box; overflow-x: hidden; }
+.issue-chat-head, .issue-chat-body, .issue-chat-form { min-width: 0; }
+.issue-chat-item { min-width: 0; }
+@media (max-width: 640px) {
+	.issue-chat-head { gap: 0.5rem; }
+	.issue-chat-avatar.is-large { display: none; }
+	.issue-chat-head .status-badge { font-size: 0.64rem; padding-inline: 0.5rem; }
+}
+
+/* pop-up close (X) button: light grey also on hover / focus / press (the global button hover turned it dark) */
+.issue-modal-close, .issue-modal-close:hover:not(:disabled), .issue-modal-close:focus-visible, .issue-modal-close:active { border: 0 !important; color: #173d38 !important; box-shadow: none !important; }
+.issue-modal-close { background: #eef1f0 !important; }
+.issue-modal-close:hover:not(:disabled), .issue-modal-close:focus-visible, .issue-modal-close:active { background: #e1e6e4 !important; }
+
+/* Orders column: "N orders" with an Open button; the pop-up is a wide table */
+.support-orders-cell { display: flex; align-items: center; justify-content: center; gap: 0.7rem; }
+.support-orders-count { color: #173d38; font-size: 0.85rem; white-space: nowrap; }
+.issue-orders-modal { width: min(820px, 100%); }
+.issue-orders-list { max-height: 420px; }
+.issue-orders-list td, .issue-orders-list th { text-align: center; white-space: nowrap; }
+.issue-orders-list td.mono-text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.82rem; }
+@media (max-width: 640px) { .issue-orders-list { overflow-x: auto; } }
+
+/* chat avatars: EscroSafe lock icon with no white box around it; merchant avatar shows the name's first letter */
+.issue-chat-avatar.is-escrosafe { border: 0; background: transparent; border-radius: 0; overflow: visible; }
+.issue-chat-avatar.is-escrosafe img { width: 100%; height: 100%; object-fit: contain; }
+.issue-chat-avatar.is-merchant { background: #d9eee5; color: #173d38; font-size: 0.95rem; font-weight: 700; line-height: 1; }
+.issue-chat-avatar.is-large { width: 42px; height: 42px; }
+
+/* merchant chat avatar: person icon in the green theme */
+.issue-chat-avatar.is-merchant { background: #d9eee5; color: #28645a; font-size: 0; }
+.issue-chat-avatar.is-merchant svg { width: 70%; height: 70%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* "Raise an issue" sits next to Refresh; lighter text in the order picker */
+.support-list-actions { display: flex; align-items: center; gap: 0.6rem; }
+.issue-picker-main strong { font-weight: 500; }
+.issue-picker-main small { font-weight: 400; }
+.issue-picker-row.is-head span { font-weight: 500; }
+@media (max-width: 640px) { .support-list-actions { flex-wrap: wrap; justify-content: flex-end; } }
+
+/* Resolved issues: green chip like the other status chips */
+.status-badge.status-success { background: #def3e6; color: #1e7d4f; border: 1px solid #bfe3cd; }

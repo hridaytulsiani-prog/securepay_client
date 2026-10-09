@@ -31,5 +31,11 @@ export function normalizeCourierName(courier) {
 export function getCourierLogo(courier) {
 	const normalized = normalizeCourierName(courier)
 
-	return courierLogos.find((item) => item.keys.some((key) => normalizeCourierName(key) === normalized))
+	// Exact match first; then a courier name followed or preceded by a service name, for example
+	// "Delhivery Surface", "Xpressbees Surface" or "Blue Dart Express", still shows that courier's logo.
+	const exact = courierLogos.find((item) => item.keys.some((key) => normalizeCourierName(key) === normalized))
+	if (exact) return exact
+
+	const padded = ` ${normalized} `
+	return courierLogos.find((item) => item.keys.some((key) => padded.includes(` ${normalizeCourierName(key)} `)))
 }

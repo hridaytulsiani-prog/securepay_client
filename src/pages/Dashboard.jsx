@@ -6,6 +6,7 @@ import { API_BASE_URL, buildAuthHeaders } from '../api/client'
 import { refreshAuthSessionCookie } from '../utils/storage'
 import { CourierLogoCell } from '../components/CourierLogo'
 import { normalizeCourierName } from '../utils/courierLogos'
+import RaiseIssueModal from '../components/RaiseIssueModal'
 
 // Arrays (rather than a single hardcoded path) so loadShipments/trackShipment
 // can try each candidate in turn — a defensive pattern from when the backend
@@ -246,6 +247,9 @@ function Dashboard() {
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState('')
 	const [trackingAwb, setTrackingAwb] = useState('')
+	// Orders ticked in the table (by the Order ID shown in the table) to raise an issue about with EscroSafe.
+	const [selectedOrderIds, setSelectedOrderIds] = useState([])
+	const [isIssueOpen, setIsIssueOpen] = useState(false)
 	const trackingCacheRef = useRef(new Map())
 	const trackingRequestsRef = useRef(new Map())
 
@@ -389,6 +393,17 @@ function Dashboard() {
 			absoluteIndex: shipment.sourceIndex ?? startIndex + index,
 		}))
 	}, [currentPage, filteredRows, pageSize])
+
+	const selectableIds = useMemo(() => visibleRows.map((shipment) => shipment.orderId).filter(Boolean), [visibleRows])
+	const allVisibleSelected = selectableIds.length > 0 && selectableIds.every((id) => selectedOrderIds.includes(id))
+	const toggleOrder = (orderId) =>
+		setSelectedOrderIds((current) => (current.includes(orderId) ? current.filter((id) => id !== orderId) : [...current, orderId]))
+	const toggleAllVisible = () =>
+		setSelectedOrderIds((current) =>
+			allVisibleSelected
+				? current.filter((id) => !selectableIds.includes(id))
+				: Array.from(new Set([...current, ...selectableIds])),
+		)
 	const pageNumbers = useMemo(() => {
 		return Array.from({ length: totalPages }, (_, index) => index + 1)
 	}, [totalPages])
@@ -575,10 +590,33 @@ function Dashboard() {
 
 				{error ? <p className="message error">{error}</p> : null}
 
+				{selectedOrderIds.length > 0 ? (
+					<div className="issue-selection-bar" role="status">
+						<span>
+							<strong>{selectedOrderIds.length}</strong> {selectedOrderIds.length === 1 ? 'order' : 'orders'} selected
+						</span>
+						<div className="issue-selection-actions">
+							<button type="button" onClick={() => setSelectedOrderIds([])}>Clear</button>
+							<button type="button" className="issue-btn-primary" onClick={() => setIsIssueOpen(true)}>Report an issue</button>
+						</div>
+					</div>
+				) : (
+					<p className="issue-selection-hint">Tick orders to report an issue with them, for example a delivered order showing another status, or a delayed payment.</p>
+				)}
+
 				<div className="shipments-scroll">
 						<table className="shipments-table merchant-orders-table" aria-label="Shipments table">
 						<thead>
 							<tr>
+								<th className="issue-check-cell">
+									<input
+										type="checkbox"
+										aria-label="Select all orders on this page"
+										checked={allVisibleSelected}
+										disabled={selectableIds.length === 0}
+										onChange={toggleAllVisible}
+									/>
+								</th>
 								<th>AWB</th>
 								<th>Order ID</th>
 								<th>Order date</th>
@@ -594,14 +632,23 @@ function Dashboard() {
 						<tbody>
 							{filteredRows.length === 0 && !isLoading ? (
 								<tr>
-									<td colSpan="10" className="empty-cell">
+									<td colSpan="11" className="empty-cell">
 										No payment orders found
 									</td>
 								</tr>
 							) : null}
 
 							{visibleRows.map((shipment) => (
-								<tr key={`${shipment.awb || 'row'}-${shipment.absoluteIndex}`}>
+								<tr key={`${shipment.awb || 'row'}-${shipment.absoluteIndex}`} className={selectedOrderIds.includes(shipment.orderId) ? 'is-selected' : ''}>
+									<td className="issue-check-cell">
+										<input
+											type="checkbox"
+											aria-label={`Select order ${shipment.orderId || ''}`}
+											checked={Boolean(shipment.orderId) && selectedOrderIds.includes(shipment.orderId)}
+											disabled={!shipment.orderId}
+											onChange={() => toggleOrder(shipment.orderId)}
+										/>
+									</td>
 									<td className="mono-text">{shipment.awb || '-'}</td>
 									<td className="mono-text">{shipment.orderId || '-'}</td>
 									<td className="order-date-cell">{formatOrderDate(shipment.orderDate)}</td>
@@ -673,6 +720,13 @@ function Dashboard() {
 				</div>
 			</div>
 
+			{isIssueOpen ? (
+				<RaiseIssueModal
+					initialOrders={selectedOrderIds}
+					onClose={() => setIsIssueOpen(false)}
+					onCreated={() => setSelectedOrderIds([])}
+				/>
+			) : null}
 		</section>
 	)
 }

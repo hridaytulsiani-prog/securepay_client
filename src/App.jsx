@@ -9,10 +9,12 @@ import Register from './pages/Register'
 import TrackOrder from './pages/TrackOrder'
 import UploadLabel from './pages/UploadLabel'
 import CourierSettings from './pages/CourierSettings'
+import Support from './pages/Support'
 import CreateOrder from './pages/CreateOrder'
 import Cart from './pages/Cart'
 import LandingPage from './pages/LandingPage'
 import CustomerTrust from './pages/CustomerTrust'
+import ReportIssue from './pages/ReportIssue'
 import CheckoutRoute from './pages/CheckoutRoute'
 import Documentation from './pages/Documentation'
 import Terms from './pages/Terms'
@@ -89,6 +91,7 @@ function App() {
       <Route path="/terms" element={<Terms />} />
       <Route path="/enquiry" element={<Enquiry />} />
       <Route path="/customer" element={<CustomerTrust />} />
+      <Route path="/report-issue" element={<ReportIssue />} />
       <Route path="/docs" element={<Documentation />} />
       <Route path="/checkout" element={<CheckoutRoute />} />
 
@@ -100,6 +103,7 @@ function App() {
         <Route path="/track-order" element={<TrackOrder />} />
         <Route path="/upload-label" element={<UploadLabel />} />
         <Route path="/settings" element={<CourierSettings />} />
+        <Route path="/support" element={<Support />} />
       </Route>
 
       <Route

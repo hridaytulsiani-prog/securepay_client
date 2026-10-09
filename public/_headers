@@ -1,0 +1,8 @@
+# Cloudflare Pages: never let a browser or the edge keep a stale copy of a built file for hours.
+# Without this, a request for a new /assets/xxx.js that arrives a moment before the deploy finishes gets the
+# index.html fallback (text/html), and that wrong answer was being cached for 4 hours -> blank page + the
+# "Expected a JavaScript-or-Wasm module script ... MIME type of text/html" console error.
+/assets/*
+  Cache-Control: public, max-age=0, must-revalidate
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
