@@ -8367,9 +8367,6 @@ a.enquiry-modal-primary { padding: 0.55rem 1.1rem; font-size: 0.88rem; }
 	.buyer-contact { min-height: 0; padding-bottom: 0; margin-bottom: 0.5rem; }
 }
 
-/* "For merchants" button: same colours as the "See a demo" button */
-.buyer-nav-cta { background: #0f2318; color: #ffffff; box-shadow: 0 16px 32px rgba(15, 35, 24, 0.22); }
-.buyer-nav-cta:hover { box-shadow: 0 20px 38px rgba(15, 35, 24, 0.28); }
 
 /* dropdown menu: the chosen / current section uses the same purple as "leap of faith" */
 @media (max-width: 900px) {
@@ -8965,3 +8962,131 @@ button.support-order-chip.is-more:hover { border-color: #a9b4b0; background: #e1
 
 /* Resolved issues: green chip like the other status chips */
 .status-badge.status-success { background: #def3e6; color: #1e7d4f; border: 1px solid #bfe3cd; }
+
+/* CTA buttons: label and arrow centred, equal space above and below the text */
+.buyer-nav-cta, .buyer-cta-primary { justify-content: center; align-items: center; line-height: 1; gap: 0.3rem; }
+.buyer-nav-cta svg, .buyer-cta-primary svg { display: block; flex: none; }
+
+/* "How it works" panels: one soft rose-pink colour family (lighter to deeper across the steps), picked to sit well on the lavender page background */
+.pfd-green  { background: #fff0f4; } .pfd-green  .pfd-num { background: #e8789a; } .pfd-green  .pfd-art { color: #e8789a; }
+.pfd-purple { background: #ffe4ec; } .pfd-purple .pfd-num { background: #de6589; } .pfd-purple .pfd-art { color: #f2a1b8; }
+.pfd-blue   { background: #ffd7e3; } .pfd-blue   .pfd-num { background: #d4547c; } .pfd-blue   .pfd-art { color: #ee93ad; }
+.pfd-amber  { background: #ffcadb; } .pfd-amber  .pfd-num { background: #c04470; } .pfd-amber  .pfd-art { color: #df7a9a; }
+.pfd-refund { background: #fff6f9; }
+.pfd-x { background: #a8355e; }
+.pfd-mock-option.is-selected { border-color: #e8789a; background: #fff8fa; }
+.pfd-radio.is-on { border-color: #e8789a; background: radial-gradient(circle, #e8789a 45%, #fff 50%); }
+.pfd-mock-button { background: #e8789a; }
+.pfd-held-pill { border-color: #de6589; background: #fff6f9; color: #8f2a50; }
+.pfd-held-track::before { border-top-color: #fbb9cd; }
+.pfd-held-track li i { border-color: #fbb9cd; }
+.pfd-held-track li.is-done { color: #d4547c; }
+.pfd-held-track li.is-done i { background: #e8789a; border-color: #e8789a; }
+.pfd-held-track li.is-now { color: #8f2a50; }
+.pfd-held-track li.is-now i { background: #de6589; border-color: #de6589; box-shadow: 0 0 0 3px rgba(222, 101, 137, 0.22); }
+.pfd-art-safe { filter: drop-shadow(0 6px 10px rgba(222, 101, 137, 0.28)); }
+.pfd-step-icon { color: #d4547c; box-shadow: 0 3px 8px rgba(212, 84, 124, 0.2); }
+.pfd-steps li:last-child .pfd-step-icon { background: #c04470; color: #fff; }
+.pfd-step-arrow { border-top-color: #f6a8bf; }
+.pfd-route-status { background: #ffe9f0; color: #d4547c; }
+.pfd-art-parcel { filter: drop-shadow(0 6px 10px rgba(212, 84, 124, 0.25)); }
+.pfd-art-chat { filter: drop-shadow(0 6px 10px rgba(192, 68, 112, 0.3)); }
+.pfd-bank-ico { background: #ffe9f0; color: #d4547c; }
+.pfd-agg-ico { background: #d4547c; }
+
+/* "How it works" panels: larger sub text under each heading */
+.pfd .pfd-copy p { font-size: 0.95rem; line-height: 1.45; }
+.pfd .pfd-refund .pfd-copy p { font-size: 0.95rem; }
+@media (max-width: 600px) {
+	.pfd .pfd-copy p { font-size: 0.9rem; }
+}
+
+/* "If the order is not received" box: slightly taller */
+.pfd .pfd-panel.pfd-refund { padding-top: 1.1rem; padding-bottom: 1.1rem; }
+
+/* CTA buttons ("For merchants", "See a demo"): where the browser supports it, trim the empty space above and below
+   the letters so the label and arrow are centred exactly, with the same space on every side. Vertical padding is in
+   em so it scales with the button's font size (mobile included). Other browsers keep the line-height: 1 centring. */
+@supports (text-box: trim-both cap alphabetic) {
+	.buyer-cta-label { display: block; text-box: trim-both cap alphabetic; }
+	.buyer-nav-cta { padding-block: 0.85em; }
+	.buyer-cta-primary { padding-block: 1.1em; }
+}
+
+/* CTA buttons ("For merchants", "See a demo"): mid grey with white text */
+.buyer-nav-cta, .buyer-cta-primary { background: #626a78; color: #ffffff; box-shadow: 0 12px 26px rgba(40, 48, 60, 0.22); }
+.buyer-nav-cta:hover, .buyer-cta-primary:hover { background: #565d6a; box-shadow: 0 16px 30px rgba(40, 48, 60, 0.28); }
+
+/* the four feature cards ("Your details stay private" ...): icon, heading and sub text centred */
+.buyer-expect-grid .buyer-expect-item { justify-items: center; text-align: center; }
+
+/* "Send message" button: same mid grey as the CTA buttons */
+.buyer-contact-send { background: #626a78; color: #ffffff; box-shadow: 0 12px 26px rgba(40, 48, 60, 0.22); }
+.buyer-contact-send:hover:not(:disabled) { background: #565d6a; box-shadow: 0 16px 30px rgba(40, 48, 60, 0.28); }
+.buyer-contact-send:disabled { cursor: default; opacity: 0.75; }
+
+/* panels 3 and 4: the tracking card and the WhatsApp card are exactly the same size */
+.pfd .pfd-blue .pfd-mock-route, .pfd .pfd-amber .pfd-mock-chat { box-sizing: border-box; min-height: 158px; }
+.pfd .pfd-amber .pfd-mock-chat { display: flex; flex-direction: column; }
+.pfd .pfd-amber .pfd-mock-chat .pfd-chat-body { flex: 1; }
+@media (min-width: 901px) {
+	.pfd .pfd-blue .pfd-mock-route, .pfd .pfd-amber .pfd-mock-chat { width: 250px; max-width: 100%; }
+}
+
+/* panels in the same row: heading + text stay at the top, the white card sits at the bottom, so both cards line up */
+@media (min-width: 901px) {
+	.pfd .pfd-panel:not(.pfd-refund) { align-content: space-between; }
+}
+
+/* the four section sub headings (hero, "Four things run quietly", FAQ, contact): one size, larger */
+.buyer-lede, .buyer-timeline-lede, .buyer-faq-lede, .buyer-contact-lede { font-size: 1.25rem; line-height: 1.6; color: #2f4a3b; }
+/* FAQ and contact lines may now wrap instead of running on one very long line */
+.buyer-faq-lede, .buyer-contact-lede { white-space: normal; max-width: 62ch; margin-left: auto; margin-right: auto; }
+@media (max-width: 600px) {
+	.buyer-lede, .buyer-timeline-lede, .buyer-faq-lede, .buyer-contact-lede { font-size: 1.05rem; }
+}
+
+/* FAQ + contact sub headings: one line on desktop. The size of all four sub headings scales with the screen width
+   (capped at 1.25rem), so the longest line (contact) always fits on one line and the four stay the same size. */
+.buyer-lede, .buyer-timeline-lede, .buyer-faq-lede, .buyer-contact-lede { font-size: clamp(0.95rem, 1.5vw, 1.25rem); }
+@media (min-width: 821px) {
+	.buyer-faq-lede, .buyer-contact-lede { white-space: nowrap; max-width: none; }
+}
+@media (max-width: 820px) {
+	.buyer-lede, .buyer-timeline-lede, .buyer-faq-lede, .buyer-contact-lede { font-size: 1.05rem; }
+	.buyer-faq-lede, .buyer-contact-lede { white-space: normal; max-width: 62ch; }
+}
+
+/* "What happens after you pay": a little space above, so the text block and the video box both sit slightly lower */
+@media (min-width: 901px) {
+	.buyer-timeline-copy { margin-top: 1.75rem; }
+	.buyer-timeline-media.is-video { margin-top: 1.75rem; }
+}
+
+/* larger footnote under "See a demo" and larger footer text ("© 2026 EscroSafe." / "Terms & Conditions") */
+.buyer-hero-footnote { font-size: 1.05rem; }
+.buyer-footer, .buyer-footer a { font-size: 1rem; }
+@media (max-width: 600px) {
+	.buyer-hero-footnote { font-size: 0.95rem; }
+	.buyer-footer, .buyer-footer a { font-size: 0.95rem; }
+}
+
+/* the four feature cards: larger sub text (and a slightly larger heading to keep the hierarchy) */
+.buyer-expect-grid .buyer-expect-item strong { font-size: 1.1rem; }
+.buyer-expect-grid .buyer-expect-item p { font-size: 1rem; line-height: 1.5; }
+
+/* feature cards on wide screens: sub text on ONE line, as large as the card allows (never above 1rem).
+   Each card is a size container, so the font follows the card's own width. Narrow screens wrap normally. */
+@media (min-width: 1280px) {
+	.buyer-expect-grid .buyer-expect-item { container-type: inline-size; padding-left: 0.6rem; padding-right: 0.6rem; }
+	.buyer-expect-grid .buyer-expect-item strong { white-space: nowrap; }
+	.buyer-expect-grid .buyer-expect-item p { font-size: min(1rem, 4.9cqw); white-space: nowrap; }
+}
+@media (max-width: 1279px) {
+	.buyer-expect-grid .buyer-expect-item p { font-size: 0.95rem; }
+}
+
+/* hero: the whole left block (chip down to the footnote) sits lower; the right-hand panels stay where they are */
+@media (min-width: 901px) {
+	.buyer-hero-copy { margin-top: 3rem; }
+}

@@ -553,7 +553,7 @@ function CustomerTrust() {
 						</a>
 					</nav>
 					<Link className="buyer-nav-cta" to="/">
-						For merchants
+						<span className="buyer-cta-label">For merchants</span>
 						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
 					</Link>
 					<button type="button" className="buyer-menu-button" aria-label="Open menu" aria-expanded={menuOpen} aria-controls="buyer-mobile-menu" onClick={() => setMenuOpen(true)}>
@@ -597,7 +597,7 @@ function CustomerTrust() {
 						</p>
 						<div className="buyer-hero-actions buyer-fade-up" style={{ '--d': '0.22s' }}>
 							<a className="buyer-cta-primary" href="#how-it-works">
-								See a demo
+								<span className="buyer-cta-label">See a demo</span>
 								<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
 							</a>
 						</div>
