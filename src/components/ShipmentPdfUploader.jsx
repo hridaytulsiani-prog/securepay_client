@@ -12,6 +12,10 @@ function normalizeFileName(name) {
 	return String(name || '').trim().toLowerCase()
 }
 
+function sanitizeBrandText(message) {
+	return String(message || '').replace(/SecurePay/g, 'EscroSafe')
+}
+
 function ShipmentPdfUploader() {
 	const [pdfFiles, setPdfFiles] = useState([])
 	const [progress, setProgress] = useState('')
@@ -20,24 +24,26 @@ function ShipmentPdfUploader() {
 	const [isLoadingRecords, setIsLoadingRecords] = useState(false)
 	const [recordsError, setRecordsError] = useState('')
 	const [deletingRecordId, setDeletingRecordId] = useState(null)
-	const [toastMessage, setToastMessage] = useState('')
+	const [toast, setToast] = useState(null)
+	const [isUploadConfirmOpen, setIsUploadConfirmOpen] = useState(false)
 
-	const showToast = useCallback((message) => {
-		setToastMessage('')
-		window.setTimeout(() => setToastMessage(message), 0)
+	const showToast = useCallback((message, tone = 'info') => {
+		const cleanMessage = sanitizeBrandText(message)
+		setToast(null)
+		window.setTimeout(() => setToast({ message: cleanMessage, tone }), 0)
 	}, [])
 
 	useEffect(() => {
-		if (!toastMessage) {
+		if (!toast?.message) {
 			return undefined
 		}
 
 		const toastTimerId = window.setTimeout(() => {
-			setToastMessage('')
+			setToast(null)
 		}, 3600)
 
 		return () => window.clearTimeout(toastTimerId)
-	}, [toastMessage])
+	}, [toast])
 
 	const loadRecords = useCallback(async () => {
 		setIsLoadingRecords(true)
@@ -78,7 +84,7 @@ function ShipmentPdfUploader() {
 		setProgress('')
 	}
 
-	const handleUpload = async () => {
+	const handleUpload = () => {
 		if (pdfFiles.length === 0) {
 			showToast('Please select at least one PDF file')
 			return
@@ -110,9 +116,11 @@ function ShipmentPdfUploader() {
 			return
 		}
 
-		if (!window.confirm(`Upload ${pdfFiles.length} PDF${pdfFiles.length === 1 ? '' : 's'}?`)) {
-			return
-		}
+		setIsUploadConfirmOpen(true)
+	}
+
+	const confirmUpload = async () => {
+		setIsUploadConfirmOpen(false)
 
 		setIsUploading(true)
 		setProgress(`Uploading 0/${pdfFiles.length} PDFs...`)
@@ -156,16 +164,21 @@ function ShipmentPdfUploader() {
 
 			const failedResults = results.filter((result) => result && !result.ok)
 			const successfulCount = results.length - failedResults.length
+			const successfulResults = results.filter((result) => result && result.ok)
 			const rejectedSummary = failedResults
-				.map((result) => `${result.file.name}: ${result.error?.message || 'Not uploaded'}`)
-				.join(', ')
-			setProgress(`${successfulCount}/${pdfFiles.length} PDFs uploaded.${successfulCount ? ' Validation is running in the background.' : ''}${failedResults.length ? ` Not uploaded: ${rejectedSummary}` : ''}`)
-			showToast(`${successfulCount} PDF${successfulCount === 1 ? '' : 's'} uploaded and ${failedResults.length} PDF${failedResults.length === 1 ? '' : 's'} not uploaded.${failedResults.length ? ` ${rejectedSummary}` : ' Validation is running in the background.'}`)
+				.map((result) => `${result.file.name}: ${sanitizeBrandText(result.error?.message || 'Not uploaded')}`)
+				.join('\n')
+			const successSummary =
+				successfulResults.length === 1
+					? `${successfulResults[0].file.name} uploaded successfully.`
+					: `${successfulResults.length} PDFs uploaded successfully.`
+			setProgress(failedResults.length ? rejectedSummary : successSummary)
+			showToast(failedResults.length ? rejectedSummary : successSummary, failedResults.length ? 'error' : 'success')
 			setPdfFiles([])
 			await loadRecords()
 		} catch (error) {
 			setProgress(`PDF upload failed: ${error.message}`)
-			showToast(`PDF upload failed: ${error.message}`)
+			showToast(`PDF upload failed: ${error.message}`, 'error')
 		} finally {
 			setIsUploading(false)
 		}
@@ -184,7 +197,7 @@ function ShipmentPdfUploader() {
 			await loadRecords()
 		} catch (error) {
 			setRecordsError(error.message || 'Unable to delete PDF record.')
-			showToast(`Delete failed: ${error.message}`)
+			showToast(`Delete failed: ${error.message}`, 'error')
 		} finally {
 			setDeletingRecordId(null)
 		}
@@ -192,14 +205,54 @@ function ShipmentPdfUploader() {
 
 	return (
 		<>
-		{toastMessage ? (
-			<div className="page-toast" role="status" aria-live="polite">
+		{toast?.message ? (
+			<div className={`page-toast page-toast-${toast.tone || 'info'}`} role="status" aria-live="polite">
 				<svg viewBox="0 0 24 24" aria-hidden="true">
 					<path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm.9 13.5h-1.8v-1.8h1.8Zm0-3.6h-1.8V7.5h1.8Z" />
 				</svg>
 				<div>
 					<strong>Upload label</strong>
-					<span>{toastMessage}</span>
+					<span>{toast.message}</span>
+				</div>
+			</div>
+		) : null}
+
+		{isUploadConfirmOpen ? (
+			<div className="label-upload-modal-backdrop" role="presentation" onMouseDown={() => setIsUploadConfirmOpen(false)}>
+				<div
+					className="label-upload-modal"
+					role="dialog"
+					aria-modal="true"
+					aria-labelledby="label-upload-confirm-title"
+					onMouseDown={(event) => event.stopPropagation()}
+				>
+					<div className="label-upload-modal-head">
+						<div>
+							<span>Confirm upload</span>
+							<h2 id="label-upload-confirm-title">Upload selected PDFs?</h2>
+						</div>
+						<button type="button" className="label-upload-modal-close" aria-label="Close" onClick={() => setIsUploadConfirmOpen(false)}>
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<path d="M6 6l12 12M18 6 6 18" />
+							</svg>
+						</button>
+					</div>
+					<p className="label-upload-modal-copy">
+						{pdfFiles.length} PDF{pdfFiles.length === 1 ? '' : 's'} will be uploaded for label validation.
+					</p>
+					<ul className="label-upload-file-list">
+						{pdfFiles.map((file) => (
+							<li key={`${file.name}-${file.size}`}>{file.name}</li>
+						))}
+					</ul>
+					<div className="label-upload-modal-actions">
+						<button type="button" className="secondary-btn" onClick={() => setIsUploadConfirmOpen(false)}>
+							Cancel
+						</button>
+						<button type="button" onClick={() => void confirmUpload()}>
+							Upload PDFs
+						</button>
+					</div>
 				</div>
 			</div>
 		) : null}
@@ -239,6 +292,16 @@ function ShipmentPdfUploader() {
 							multiple
 							onChange={(event) => handleFileSelection(event.target.files)}
 						/>
+						<span className="upload-pdf-picker" aria-hidden="true">
+							<span>Choose File</span>
+							<em>
+								{pdfFiles.length === 0
+									? 'No file chosen'
+									: pdfFiles.length === 1
+										? pdfFiles[0].name
+										: `${pdfFiles.length} files selected`}
+							</em>
+						</span>
 					</label>
 
 					<div className="tracking-actions-column end-align">

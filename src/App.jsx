@@ -3,7 +3,8 @@ import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
 import Dashboard from './pages/Dashboard'
 import Enquiry from './pages/Enquiry'
-import EnquiryDashboard from './pages/EnquiryDashboard'
+// EnquiryDashboard is hidden for now; keep the import path handy for restore.
+// import EnquiryDashboard from './pages/EnquiryDashboard'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import TrackOrder from './pages/TrackOrder'
@@ -99,7 +100,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create-order" element={<CreateOrder />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/enquiries" element={<EnquiryDashboard />} />
+        {/* Enquiries is hidden for now; restore this route when the section is needed again. */}
+        {/* <Route path="/enquiries" element={<EnquiryDashboard />} /> */}
         <Route path="/track-order" element={<TrackOrder />} />
         <Route path="/upload-label" element={<UploadLabel />} />
         <Route path="/settings" element={<CourierSettings />} />

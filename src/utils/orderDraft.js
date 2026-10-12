@@ -2,7 +2,11 @@
 const DRAFT_KEY = 'securepay.orderDraft'
 
 export function createMerchantOrderId() {
-	return `SP_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+	const now = new Date()
+	const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000)
+	const datePart = `${String(now.getFullYear()).slice(-2)}${String(dayOfYear).padStart(3, '0')}`
+	const randomPart = Math.random().toString(36).slice(2, 6).toUpperCase()
+	return `ES-${datePart}-${randomPart}`
 }
 
 export function readOrderDraft() {

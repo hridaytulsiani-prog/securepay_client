@@ -52,7 +52,8 @@ function Navbar() {
 
 			<nav className="nav-links">
 				<NavLink to="/dashboard">Dashboard</NavLink>
-				<NavLink to="/enquiries">Enquiries</NavLink>
+				{/* Enquiries is hidden for now; keep the link here so it can be restored later. */}
+				{/* <NavLink to="/enquiries">Enquiries</NavLink> */}
 				<NavLink to="/track-order">Track Order</NavLink>
 				<NavLink to="/upload-label">Upload Label</NavLink>
 				<NavLink to="/support">Support</NavLink>

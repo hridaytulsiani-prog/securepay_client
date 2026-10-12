@@ -1,32 +1,60 @@
-// Merchant UI for creating shipments (single or bulk-CSV) and looking up an
-// order's status. NOTE: "Load Order Info" (handleLoadOrder/refreshOrder)
-// calls fetchOrder(), which hits /v1/orders/<id> — a route that doesn't
-// exist on the backend (see the NOTE in api/tracking.js) — so that lookup
-// will always fail as written; shipment creation itself is unaffected.
-import { useCallback, useEffect, useState } from 'react'
-import { createShipment, createShipmentsBulk, fetchOrder } from '../api/tracking'
+// Merchant UI for creating shipments and showing order details passed from the
+// dashboard Track button. The dashboard supplies backend order data, so this
+// page does not make courier tracking calls just to open an order.
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import { createShipment, createShipmentsBulk } from '../api/tracking'
 import { getCourierPreferences } from '../api/merchant'
 import { COURIERS } from '../constants/couriers'
+import { getCourierLogo } from '../utils/courierLogos'
+
+const TRACK_ORDER_CONTEXT_KEY = 'escrosafe.trackOrderContext'
+
+function valueOrDash(value) {
+	return value === undefined || value === null || value === '' ? '-' : value
+}
+
+function formatMoney(value) {
+	const parsed = Number(value)
+	if (Number.isNaN(parsed)) return valueOrDash(value)
+	return `₹ ${parsed.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+}
+
+function formatDate(value) {
+	if (!value) return '-'
+	const parsed = new Date(value)
+	if (Number.isNaN(parsed.getTime())) return String(value)
+	return parsed.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+}
+
+function CourierPickerOption({ label }) {
+	const match = getCourierLogo(label)
+	const logoClass = match ? `logo-${match.label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : ''
+
+	return (
+		<span className={`courier-picker-option ${logoClass}`}>
+			{match ? (
+				<span className="courier-picker-logo-frame">
+					<img src={match.logo} alt={match.label} />
+				</span>
+			) : (
+				<span className="courier-picker-mark">{label}</span>
+			)}
+		</span>
+	)
+}
 
 function TrackOrderControl() {
+	const location = useLocation()
+	const initialTrackOrder = location.state?.trackOrder || null
 	const [onboardedCouriers, setOnboardedCouriers] = useState(COURIERS)
 	const [toastMessage, setToastMessage] = useState('')
-	const [orderId, setOrderId] = useState(() => {
-		try {
-			const cached = localStorage.getItem('last_payment') || localStorage.getItem('CURRENT_ORDER')
-			if (!cached) {
-				return ''
-			}
-
-			const parsed = JSON.parse(cached)
-			return parsed.secureupi_order_id || ''
-		} catch {
-			return ''
-		}
-	})
-	const [awbInput, setAwbInput] = useState('')
-	const [courier, setCourier] = useState('Delhivery')
-	const [orderSummary, setOrderSummary] = useState('')
+	const [isCourierOpen, setIsCourierOpen] = useState(false)
+	const courierPickerRef = useRef(null)
+	const [orderId, setOrderId] = useState(initialTrackOrder?.orderId || '')
+	const [awbInput, setAwbInput] = useState(initialTrackOrder?.awb || '')
+	const [courier, setCourier] = useState(initialTrackOrder?.courier || 'Delhivery')
+	const [orderDetails, setOrderDetails] = useState(initialTrackOrder || null)
 	// Bulk shipment creation (CSV) is commented out below — keep this state/handler wired for when it comes back.
 	// eslint-disable-next-line no-unused-vars
 	const [bulkCsvFile, setBulkCsvFile] = useState(null)
@@ -51,6 +79,50 @@ function TrackOrderControl() {
 	}, [toastMessage])
 
 	useEffect(() => {
+		if (!isCourierOpen) {
+			return undefined
+		}
+
+		const closeOnOutsideClick = (event) => {
+			if (!courierPickerRef.current?.contains(event.target)) {
+				setIsCourierOpen(false)
+			}
+		}
+		const closeOnEscape = (event) => {
+			if (event.key === 'Escape') {
+				setIsCourierOpen(false)
+			}
+		}
+
+		document.addEventListener('mousedown', closeOnOutsideClick)
+		document.addEventListener('keydown', closeOnEscape)
+		return () => {
+			document.removeEventListener('mousedown', closeOnOutsideClick)
+			document.removeEventListener('keydown', closeOnEscape)
+		}
+	}, [isCourierOpen])
+
+	useEffect(() => {
+		const incomingContext = location.state?.trackOrder
+		if (!incomingContext) {
+			return
+		}
+
+		setOrderDetails(incomingContext)
+		setOrderId(incomingContext.orderId || '')
+		setAwbInput(incomingContext.awb || '')
+		setCourier(incomingContext.courier || 'Delhivery')
+	}, [location.state])
+
+	useEffect(() => {
+		try {
+			window.localStorage.removeItem(TRACK_ORDER_CONTEXT_KEY)
+		} catch {
+			// Ignore browsers with blocked storage.
+		}
+	}, [])
+
+	useEffect(() => {
 		getCourierPreferences()
 			.then((data) => {
 				const onboardedKeys = data.courier_preferences?.couriers
@@ -71,48 +143,10 @@ function TrackOrderControl() {
 			})
 	}, [])
 
-	const refreshOrder = useCallback(
-		async (targetOrderId) => {
-			if (!targetOrderId) {
-				return
-			}
-
-			try {
-				const response = await fetchOrder(targetOrderId)
-				setOrderSummary(
-					`Order ${response.secureupi_order_id || targetOrderId} - Amount: ${response.amount || '-'} - Status: ${response.status || '-'}`,
-				)
-			} catch (error) {
-				showToast(`Order fetch failed: ${error.message}`)
-				setOrderSummary('')
-			}
-		},
-		[showToast],
-	)
-
-	useEffect(() => {
-		try {
-			const cached = localStorage.getItem('last_payment') || localStorage.getItem('CURRENT_ORDER')
-			if (!cached) {
-				return
-			}
-
-			const parsed = JSON.parse(cached)
-			const cachedOrderId = parsed.secureupi_order_id || orderId
-			if (cachedOrderId) {
-				// Hydrate initial order summary from cached context on mount.
-				// eslint-disable-next-line react-hooks/set-state-in-effect
-				void refreshOrder(cachedOrderId)
-			}
-		} catch {
-			// Ignore invalid local cache.
-		}
-	}, [orderId, refreshOrder])
-
 	const handleCreateOrStart = async () => {
 		const normalizedOrderId = orderId.trim()
 		if (!normalizedOrderId) {
-			showToast('Enter SecureUPI order id')
+			showToast('Enter order id')
 			return
 		}
 
@@ -130,7 +164,6 @@ function TrackOrderControl() {
 				setAwbInput(response.awb)
 			}
 
-			await refreshOrder(normalizedOrderId)
 			showToast('Shipment created successfully.')
 		} catch (error) {
 			showToast(`Create shipment failed: ${error.message}`)
@@ -144,7 +177,12 @@ function TrackOrderControl() {
 			return
 		}
 
-		await refreshOrder(normalizedOrderId)
+		if (orderDetails?.orderId === normalizedOrderId) {
+			showToast('Order details loaded.')
+			return
+		}
+
+		showToast('Open this order from the dashboard Track button to view saved backend details.')
 	}
 
 	// eslint-disable-next-line no-unused-vars
@@ -217,7 +255,7 @@ function TrackOrderControl() {
 				</div>
 				<div className="tracking-row">
 					<label>
-						SecureUPI Order ID
+						Order ID
 						<input
 							type="text"
 							value={orderId}
@@ -232,19 +270,46 @@ function TrackOrderControl() {
 							type="text"
 							value={awbInput}
 							onChange={(event) => setAwbInput(event.target.value)}
-							placeholder="leave blank to auto-generate"
+							placeholder="e.g. 123456789012"
 						/>
 					</label>
 
 					<label className="tracking-courier-field">
 						Courier
-						<select value={courier} onChange={(event) => setCourier(event.target.value)}>
-							{onboardedCouriers.map((item) => (
-								<option value={item.label} key={item.key}>
-									{item.label}
-								</option>
-							))}
-						</select>
+						<div className="courier-picker" ref={courierPickerRef}>
+							<button
+								type="button"
+								className="courier-picker-trigger"
+								aria-haspopup="listbox"
+								aria-expanded={isCourierOpen}
+								onClick={() => setIsCourierOpen((open) => !open)}
+							>
+								<CourierPickerOption label={courier} />
+								<svg viewBox="0 0 24 24" aria-hidden="true">
+									<path d="m6 9 6 6 6-6" />
+								</svg>
+							</button>
+							{isCourierOpen ? (
+								<div className="courier-picker-menu" role="listbox" aria-label="Courier">
+									{onboardedCouriers.map((item) => (
+										<button
+											type="button"
+											role="option"
+											aria-selected={item.label === courier}
+											className={item.label === courier ? 'is-selected' : ''}
+											value={item.label}
+											key={item.key}
+											onClick={() => {
+												setCourier(item.label)
+												setIsCourierOpen(false)
+											}}
+										>
+											<CourierPickerOption label={item.label} />
+										</button>
+									))}
+								</div>
+							) : null}
+						</div>
 					</label>
 
 					<div className="tracking-actions-column">
@@ -290,7 +355,20 @@ function TrackOrderControl() {
 				</div>
 				*/}
 
-				{orderSummary ? <p className="muted-text small-text tracking-summary">{orderSummary}</p> : null}
+				{orderDetails ? (
+					<div className="tracking-order-details" aria-label="Selected order details">
+						<div><span>Order ID</span><strong>{valueOrDash(orderDetails.orderId)}</strong></div>
+						<div><span>AWB</span><strong>{valueOrDash(orderDetails.awb)}</strong></div>
+						<div><span>Courier</span><strong>{valueOrDash(orderDetails.courier)}</strong></div>
+						<div><span>Amount</span><strong>{formatMoney(orderDetails.amount)}</strong></div>
+						<div><span>Payment</span><strong>{valueOrDash(orderDetails.paymentStatus)}</strong></div>
+						<div><span>Stage</span><strong>{valueOrDash(orderDetails.paymentState)}</strong></div>
+						<div><span>Delivery</span><strong>{valueOrDash(orderDetails.deliveryStatus)}</strong></div>
+						<div><span>Order date</span><strong>{formatDate(orderDetails.orderDate)}</strong></div>
+						<div><span>Customer</span><strong>{valueOrDash(orderDetails.customerName)}</strong></div>
+						<div><span>Phone</span><strong>{valueOrDash(orderDetails.customerPhone)}</strong></div>
+					</div>
+				) : null}
 			</div>
 		</section>
 	)

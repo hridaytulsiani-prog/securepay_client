@@ -237,7 +237,6 @@ function CourierSetupModal() {
 				<StorePlatformPicker value={storePlatform} onChange={chooseStorePlatform} />
 				<div className="onboarding-callout">
 					<p><strong>{platform.label}.</strong> {details[platform.key]}</p>
-					<p>You can get the snippet or plugin, and your Merchant Key, anytime from Settings → Connect your store.</p>
 				</div>
 				<div className="courier-setup-footer">
 					<button type="button" className="secondary-button" onClick={() => setStepIndex(0)}>Back</button>

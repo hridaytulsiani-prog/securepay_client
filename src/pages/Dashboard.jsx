@@ -1,11 +1,13 @@
 // Merchant's own shipments/orders dashboard — the counterpart to
 // securepay-admin's OrdersPage, but scoped to the logged-in merchant only
 // (backed by payments.api.v1.generate_order.ShipmentListView).
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { API_BASE_URL, buildAuthHeaders } from '../api/client'
+import { getCourierPreferences } from '../api/merchant'
 import { refreshAuthSessionCookie } from '../utils/storage'
 import { CourierLogoCell } from '../components/CourierLogo'
 import { normalizeCourierName } from '../utils/courierLogos'
+import { COURIERS } from '../constants/couriers'
 import RaiseIssueModal from '../components/RaiseIssueModal'
 
 // Arrays (rather than a single hardcoded path) so loadShipments/trackShipment
@@ -16,8 +18,6 @@ const SHIPMENT_LIST_PATHS = [
 ]
 
 const DASHBOARD_FETCH_LIMIT = 500
-const TRACKING_CACHE_TTL_MS = 60 * 60 * 1000
-const SAVED_TRACKING_PATH = '/payments/v1/shipments/'
 
 function formatMoney(value) {
 	const parsed = Number(value)
@@ -136,35 +136,6 @@ function matchesDeliveryStatus(status, selectedStatus) {
 	return normalized === selectedStatus || normalized.includes(selectedStatus)
 }
 
-function getTrackingCacheKey(awb) {
-	return `securepay.dashboard.savedTracking.${encodeURIComponent(String(awb))}`
-}
-
-function readTrackingCache(awb) {
-	try {
-		const cached = JSON.parse(window.localStorage.getItem(getTrackingCacheKey(awb)) || 'null')
-		if (!cached?.fetchedAt || Date.now() - cached.fetchedAt >= TRACKING_CACHE_TTL_MS) {
-			window.localStorage.removeItem(getTrackingCacheKey(awb))
-			return null
-		}
-
-		return cached.data || null
-	} catch {
-		return null
-	}
-}
-
-function writeTrackingCache(awb, data) {
-	try {
-		window.localStorage.setItem(
-			getTrackingCacheKey(awb),
-			JSON.stringify({ fetchedAt: Date.now(), data }),
-		)
-	} catch {
-		// Tracking still works when browser storage is unavailable.
-	}
-}
-
 // Backend responses vary in shape depending on which endpoint answered
 // (flat ShipmentListView rows vs. a nested {order, shipment} shape) — this
 // normalizes both into one consistent row shape for the table below.
@@ -241,17 +212,17 @@ function Dashboard() {
 	const [dateFrom, setDateFrom] = useState('')
 	const [dateTo, setDateTo] = useState('')
 	const [courierFilter, setCourierFilter] = useState('')
+	const [courierOptions, setCourierOptions] = useState(COURIERS)
 	const [deliveryStatusFilter, setDeliveryStatusFilter] = useState('')
 	const [pageSize, setPageSize] = useState('25')
 	const [currentPage, setCurrentPage] = useState(1)
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState('')
-	const [trackingAwb, setTrackingAwb] = useState('')
+	const [dashboardToast, setDashboardToast] = useState(null)
+	const [trackingKey, setTrackingKey] = useState('')
 	// Orders ticked in the table (by the Order ID shown in the table) to raise an issue about with EscroSafe.
 	const [selectedOrderIds, setSelectedOrderIds] = useState([])
 	const [isIssueOpen, setIsIssueOpen] = useState(false)
-	const trackingCacheRef = useRef(new Map())
-	const trackingRequestsRef = useRef(new Map())
 
 	const fetchJson = useCallback(async (pathWithQuery) => {
 		const response = await fetch(`${API_BASE_URL}${pathWithQuery}`, {
@@ -273,10 +244,24 @@ function Dashboard() {
 		}
 	}, [])
 
-	const loadShipments = useCallback(async () => {
-		setIsLoading(true)
-		setError('')
+	const showDashboardToast = useCallback((message, tone = 'warning') => {
+		setDashboardToast(null)
+		window.setTimeout(() => setDashboardToast({ message, tone }), 0)
+	}, [])
 
+	useEffect(() => {
+		if (!dashboardToast?.message) {
+			return undefined
+		}
+
+		const toastTimerId = window.setTimeout(() => {
+			setDashboardToast(null)
+		}, 4200)
+
+		return () => window.clearTimeout(toastTimerId)
+	}, [dashboardToast])
+
+	const fetchShipmentRows = useCallback(async () => {
 		const params = new URLSearchParams({ limit: String(DASHBOARD_FETCH_LIMIT) })
 		if (query.trim()) {
 			params.set('q', query.trim())
@@ -291,71 +276,74 @@ function Dashboard() {
 				const result = await fetchJson(candidate)
 				if (result.ok) {
 					const payload = result.data
-					const rows = Array.isArray(payload) ? payload : payload.results || payload.shipments || []
-					setShipments(rows)
-					setIsLoading(false)
-					return
+					return Array.isArray(payload) ? payload : payload.results || payload.shipments || []
 				}
 
 			} catch (requestError) {
-				setError(requestError.message || 'Request failed while fetching shipments.')
+				throw new Error(requestError.message || 'Request failed while fetching shipments.')
 			}
 		}
 
-		setShipments([])
-		setError('No shipments endpoint found / error')
-		setIsLoading(false)
+		throw new Error('No shipments endpoint found / error')
 	}, [fetchJson, query])
 
-	const trackShipment = useCallback(
-		async (awb, rowIndex) => {
-			if (!awb) {
+	const loadShipments = useCallback(async () => {
+		setIsLoading(true)
+		setError('')
+
+		try {
+			const rows = await fetchShipmentRows()
+			setShipments(rows)
+		} catch (requestError) {
+			setShipments([])
+			setError(requestError.message || 'No shipments endpoint found / error')
+		} finally {
+			setIsLoading(false)
+		}
+	}, [fetchShipmentRows])
+
+	const trackShipmentStatus = useCallback(
+		async (shipment) => {
+			const rowKey = shipment.awb || shipment.orderId
+			if (!rowKey) {
 				return
 			}
 
-			const cacheKey = String(awb)
-			const inMemoryCache = trackingCacheRef.current.get(cacheKey)
-			const cachedData =
-				inMemoryCache && Date.now() - inMemoryCache.fetchedAt < TRACKING_CACHE_TTL_MS
-					? inMemoryCache.data
-					: readTrackingCache(awb)
-			if (cachedData) {
-				trackingCacheRef.current.set(cacheKey, { fetchedAt: Date.now(), data: cachedData })
-				setShipments((currentRows) =>
-					currentRows.map((row, index) => (index === rowIndex ? { ...row, ...cachedData } : row)),
-				)
-				setError('')
-				return
-			}
-
-			if (trackingRequestsRef.current.has(cacheKey)) {
-				return
-			}
-
-			setTrackingAwb(awb)
-			trackingRequestsRef.current.set(cacheKey, true)
+			setTrackingKey(rowKey)
+			setError('')
 
 			try {
-				const encodedAwb = encodeURIComponent(awb)
-				const result = await fetchJson(`${SAVED_TRACKING_PATH}${encodedAwb}/tracking/`)
-				if (result.ok) {
-					const fetchedAt = Date.now()
-					trackingCacheRef.current.set(cacheKey, { fetchedAt, data: result.data })
-					writeTrackingCache(awb, result.data)
-					setShipments((currentRows) =>
-						currentRows.map((row, index) => (index === rowIndex ? { ...row, ...result.data } : row)),
+				const rows = await fetchShipmentRows()
+				const latestRows = rows.map((row) => normalizeShipment(row))
+				const latest = latestRows.find((row) => {
+					return (
+						(shipment.awb && row.awb === shipment.awb) ||
+						(shipment.orderId && row.orderId === shipment.orderId)
 					)
-					setTrackingAwb('')
+				})
+
+				setShipments(rows)
+
+				if (!latest) {
+					showDashboardToast('We could not find the latest tracking details for this order right now. Please try again shortly.', 'warning')
 					return
 				}
-			} finally {
-				trackingRequestsRef.current.delete(cacheKey)
-			}
 
-			setError(`Track failed for ${awb}.`)
-			setTrackingAwb('')
+				const previousStatus = formatStatusText(shipment.deliveryStatus)
+				const latestStatus = formatStatusText(latest.deliveryStatus)
+				if (previousStatus === latestStatus) {
+					showDashboardToast(`No new courier update yet. This shipment is currently marked ${latestStatus}. Please check again after some time.`, 'warning')
+					return
+				}
+
+				showDashboardToast(`Tracking refreshed. Shipment status changed from ${previousStatus} to ${latestStatus}.`, 'success')
+			} catch (requestError) {
+				showDashboardToast('Tracking refresh is temporarily unavailable. Please try again in a few minutes.', 'warning')
+			} finally {
+				setTrackingKey('')
+			}
 		},
-		[fetchJson],
+		[fetchShipmentRows, showDashboardToast],
 	)
 
 	useEffect(() => {
@@ -367,6 +355,27 @@ function Dashboard() {
 			window.clearTimeout(timerId)
 		}
 	}, [loadShipments])
+
+	useEffect(() => {
+		getCourierPreferences()
+			.then((data) => {
+				const onboardedKeys = data.courier_preferences?.couriers
+				if (!Array.isArray(onboardedKeys) || onboardedKeys.length === 0) {
+					return
+				}
+
+				const matched = COURIERS.filter((item) => onboardedKeys.includes(item.key))
+				if (matched.length === 0) {
+					return
+				}
+
+				setCourierOptions(matched)
+				setCourierFilter((current) => (current && !matched.some((item) => item.label === current) ? '' : current))
+			})
+			.catch(() => {
+				// Keep the default courier list if merchant preferences cannot load.
+			})
+	}, [])
 
 	const normalizedRows = useMemo(() => shipments.map((item) => normalizeShipment(item)), [shipments])
 	const filteredRows = useMemo(() => {
@@ -448,6 +457,18 @@ function Dashboard() {
 
 	return (
 		<section className="dashboard-page">
+			{dashboardToast?.message ? (
+				<div className={`page-toast page-toast-${dashboardToast.tone || 'warning'}`} role="status" aria-live="polite">
+					<svg viewBox="0 0 24 24" aria-hidden="true">
+						<path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm.9 13.5h-1.8v-1.8h1.8Zm0-3.6h-1.8V7.5h1.8Z" />
+					</svg>
+					<div>
+						<strong>Tracking checked</strong>
+						<span>{dashboardToast.message}</span>
+					</div>
+				</div>
+			) : null}
+
 			<div className="dashboard-overview">
 				<div className="dashboard-hero">
 					<div>
@@ -549,14 +570,11 @@ function Dashboard() {
 							<span>Courier</span>
 							<select value={courierFilter} onChange={(event) => setCourierFilter(event.target.value)}>
 								<option value="">All couriers</option>
-								<option value="Blue Dart">Blue Dart</option>
-								<option value="Delhivery">Delhivery</option>
-								<option value="DTDC">DTDC</option>
-								<option value="Ecom Express">Ecom Express</option>
-								<option value="Ekart">Ekart</option>
-								<option value="Shadowfax">Shadowfax</option>
-								<option value="Shiprocket">Shiprocket</option>
-								<option value="Xpressbees">Xpressbees</option>
+								{courierOptions.map((item) => (
+									<option value={item.label} key={item.key}>
+										{item.label}
+									</option>
+								))}
 							</select>
 						</label>
 
@@ -680,10 +698,10 @@ function Dashboard() {
 										{shipment.awb ? (
 											<button
 												type="button"
-												onClick={() => void trackShipment(shipment.awb, shipment.absoluteIndex)}
-												disabled={trackingAwb === shipment.awb}
+												onClick={() => void trackShipmentStatus(shipment)}
+												disabled={trackingKey === (shipment.awb || shipment.orderId)}
 											>
-												{trackingAwb === shipment.awb ? 'Checking...' : 'Track'}
+												{trackingKey === (shipment.awb || shipment.orderId) ? 'Checking...' : 'Track'}
 											</button>
 										) : (
 											'-'
