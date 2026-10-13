@@ -8,7 +8,7 @@ import ecomExpressLogo from '../assets/couriers/ecom-express.png'
 import ekartLogo from '../assets/couriers/ekart-real.png'
 import shadowfaxLogo from '../assets/couriers/shadowfax.svg'
 import shiprocketLogo from '../assets/couriers/shiprocket-real.png'
-import xpressbeesLogo from '../assets/couriers/xpressbees-real.png'
+import xpressbeesLogo from '../assets/couriers/xpressbees.png'
 
 export const courierLogos = [
 	{ keys: ['blue dart', 'bluedart', 'blue_dart'], label: 'Blue Dart', logo: blueDartLogo },

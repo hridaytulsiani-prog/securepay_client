@@ -243,6 +243,7 @@ function PostPayVideo({ playWithSoundSignal = 0 }) {
 			className="buyer-timeline-video"
 			src={WHAT_HAPPENS_VIDEO}
 			poster={WHAT_HAPPENS_POSTER || undefined}
+			controls
 			playsInline
 			preload="metadata"
 			onError={() => setFailed(true)}

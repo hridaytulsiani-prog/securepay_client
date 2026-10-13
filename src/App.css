@@ -3544,6 +3544,12 @@ button:disabled {
   height: 26px;
 }
 
+.courier-logo-cell.logo-xpressbees img {
+  width: 108px;
+  height: 28px;
+  object-fit: contain;
+}
+
 .courier-logo-fallback,
 .courier-logo-empty {
   color: #53635f;
@@ -9568,29 +9574,29 @@ button.support-order-chip.is-more:hover { border-color: #a9b4b0; background: #e1
 	.buyer-hero-copy { margin-top: 3rem; }
 }
 
-/* /customer colour trial: orange variant only for the right-side "How it works" panels. */
-.pfd-green  { background: #fff3e3; } .pfd-green  .pfd-num { background: #fb923c; } .pfd-green  .pfd-art { color: #fb923c; }
-.pfd-purple { background: #ffe8c7; } .pfd-purple .pfd-num { background: #f97316; } .pfd-purple .pfd-art { color: #fdba74; }
-.pfd-blue   { background: #ffddb0; } .pfd-blue   .pfd-num { background: #ea580c; } .pfd-blue   .pfd-art { color: #fb923c; }
-.pfd-amber  { background: #ffd19a; } .pfd-amber  .pfd-num { background: #c2410c; } .pfd-amber  .pfd-art { color: #f97316; }
-.pfd-refund { background: #fff7ed; }
-.pfd-x { background: #9a3412; }
-.pfd-mock-option.is-selected { border-color: #fb923c; background: #fff7ed; }
-.pfd-radio.is-on { border-color: #fb923c; background: radial-gradient(circle, #fb923c 45%, #fff 50%); }
-.pfd-mock-button { background: #f97316; }
-.pfd-held-pill { border-color: #f97316; background: #fff7ed; color: #9a3412; }
-.pfd-held-track::before { border-top-color: #fdba74; }
-.pfd-held-track li i { border-color: #fdba74; }
-.pfd-held-track li.is-done { color: #ea580c; }
-.pfd-held-track li.is-done i { background: #fb923c; border-color: #fb923c; }
-.pfd-held-track li.is-now { color: #9a3412; }
-.pfd-held-track li.is-now i { background: #f97316; border-color: #f97316; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.22); }
-.pfd-art-safe { filter: drop-shadow(0 6px 10px rgba(249, 115, 22, 0.26)); }
-.pfd-step-icon { color: #ea580c; box-shadow: 0 3px 8px rgba(234, 88, 12, 0.2); }
-.pfd-steps li:last-child .pfd-step-icon { background: #c2410c; color: #fff; }
-.pfd-step-arrow { border-top-color: #fdba74; }
-.pfd-route-status { background: #ffedd5; color: #ea580c; }
-.pfd-art-parcel { filter: drop-shadow(0 6px 10px rgba(234, 88, 12, 0.25)); }
-.pfd-art-chat { filter: drop-shadow(0 6px 10px rgba(194, 65, 12, 0.28)); }
-.pfd-bank-ico { background: #ffedd5; color: #ea580c; }
-.pfd-agg-ico { background: #ea580c; }
+/* /customer: multi-colour "How it works" panels matched to the reference mock. */
+.pfd-green  { background: #dff3ea; } .pfd-green  .pfd-num { background: #1f9a78; } .pfd-green  .pfd-art { color: #1f9a78; }
+.pfd-purple { background: #f8dfe8; } .pfd-purple .pfd-num { background: #df4f86; } .pfd-purple .pfd-art { color: #df4f86; }
+.pfd-blue   { background: #ddeafc; } .pfd-blue   .pfd-num { background: #2f6fe0; } .pfd-blue   .pfd-art { color: #4f86ea; }
+.pfd-amber  { background: #fdebd6; } .pfd-amber  .pfd-num { background: #f08a24; } .pfd-amber  .pfd-art { color: #f08a24; }
+.pfd-refund { background: #e4ecfb; }
+.pfd-x { background: #e5534b; }
+.pfd-mock-option.is-selected { border-color: #1f9a78; background: #f2fbf8; }
+.pfd-radio.is-on { border-color: #1f9a78; background: radial-gradient(circle, #1f9a78 45%, #fff 50%); }
+.pfd-mock-button { background: #1f9a78; }
+.pfd-held-pill { border-color: #df4f86; background: #fff2f7; color: #b33468; }
+.pfd-held-track::before { border-top-color: #f0a6c3; }
+.pfd-held-track li i { border-color: #f0a6c3; }
+.pfd-held-track li.is-done { color: #1f9a78; }
+.pfd-held-track li.is-done i { background: #2fa866; border-color: #2fa866; }
+.pfd-held-track li.is-now { color: #b33468; }
+.pfd-held-track li.is-now i { background: #df4f86; border-color: #df4f86; box-shadow: 0 0 0 3px rgba(223, 79, 134, 0.22); }
+.pfd-art-safe { filter: drop-shadow(0 6px 10px rgba(223, 79, 134, 0.25)); }
+.pfd-step-icon { color: #2f6fe0; box-shadow: 0 3px 8px rgba(47, 111, 224, 0.2); }
+.pfd-steps li:last-child .pfd-step-icon { background: #f08a24; color: #fff; }
+.pfd-step-arrow { border-top-color: #8aa9e6; }
+.pfd-route-status { background: #e3edff; color: #2f6fe0; }
+.pfd-art-parcel { filter: drop-shadow(0 6px 10px rgba(47, 111, 224, 0.25)); }
+.pfd-art-chat { filter: drop-shadow(0 6px 10px rgba(240, 138, 36, 0.3)); }
+.pfd-bank-ico { background: #e4ecfb; color: #2f6fe0; }
+.pfd-agg-ico { background: #2f6fe0; }
