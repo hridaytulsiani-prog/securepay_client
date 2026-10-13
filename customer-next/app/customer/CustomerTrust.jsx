@@ -128,13 +128,49 @@ function useReveal() {
 	return [ref, isVisible]
 }
 
-// "What happens after you pay" video. Drop your file at public/what-happens.mp4 (or change the path below) and it plays
-// here; until a file exists a "Video coming soon" placeholder is shown instead.
-const WHAT_HAPPENS_VIDEO = '/what-happens.mp4'
+// "What happens after you pay" video. Keep the MP4 in public/ so it is served as a static asset.
+const WHAT_HAPPENS_VIDEO = '/escrosafe-video.mp4'
 const WHAT_HAPPENS_POSTER = '' // optional thumbnail image, e.g. '/what-happens-poster.jpg'
 
-function PostPayVideo() {
+function PostPayVideo({ playWithSoundSignal = 0 }) {
 	const [failed, setFailed] = useState(false)
+	const videoRef = useRef(null)
+
+	useEffect(() => {
+		const video = videoRef.current
+		if (!video) return undefined
+
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting) {
+					video.muted = false
+					video.play().catch(() => {
+						// Browsers block sound autoplay on first load/scroll without a click.
+					})
+				} else {
+					video.pause()
+				}
+			},
+			{ threshold: 0.45 },
+		)
+
+		observer.observe(video)
+		return () => {
+			observer.disconnect()
+			video.pause()
+		}
+	}, [])
+
+	useEffect(() => {
+		const video = videoRef.current
+		if (!video || playWithSoundSignal === 0) return
+
+		video.muted = false
+		video.play().catch(() => {
+			// If the browser still blocks it, the user can press play with the visible controls.
+		})
+	}, [playWithSoundSignal])
+
 	if (failed) {
 		return (
 			<div className="buyer-timeline-video buyer-timeline-video-empty" role="img" aria-label="Video coming soon">
@@ -147,10 +183,10 @@ function PostPayVideo() {
 	}
 	return (
 		<video
+			ref={videoRef}
 			className="buyer-timeline-video"
 			src={WHAT_HAPPENS_VIDEO}
 			poster={WHAT_HAPPENS_POSTER || undefined}
-			controls
 			playsInline
 			preload="metadata"
 			onError={() => setFailed(true)}
@@ -413,6 +449,7 @@ function CustomerTrust() {
 	const [contactForm, setContactForm] = useState({ name: '', email: '', orderId: '', message: '', website: '' })
 	// idle | sending | sent | error
 	const [contactStatus, setContactStatus] = useState({ state: 'idle', text: '' })
+	const [demoPlaySignal, setDemoPlaySignal] = useState(0)
 	// const activeStep = useStepCycle(HOW_IT_WORKS_STEPS.length, 2200)
 	// const { frame: chatFrame, chatBodyRef } = useChatDemo()
 
@@ -468,6 +505,7 @@ function CustomerTrust() {
 	const isScrolled = useScrolled(80)
 	const [menuOpen, setMenuOpen] = useState(false)
 	const closeMenu = () => setMenuOpen(false)
+	const requestDemoPlayback = () => setDemoPlaySignal((current) => current + 1)
 	useEffect(() => {
 		if (!menuOpen) return undefined
 		const onKey = (event) => { if (event.key === 'Escape') setMenuOpen(false) }
@@ -488,7 +526,7 @@ function CustomerTrust() {
 						<a className={activeNavId === 'hero' ? 'is-active' : ''} href="#hero">
 							How it works
 						</a>
-						<a className={activeNavId === 'how-it-works' ? 'is-active' : ''} href="#how-it-works">
+						<a className={activeNavId === 'how-it-works' ? 'is-active' : ''} href="#how-it-works" onClick={requestDemoPlayback}>
 							What to expect
 						</a>
 						<a className={activeNavId === 'faq' ? 'is-active' : ''} href="#faq">
@@ -518,7 +556,7 @@ function CustomerTrust() {
 							</div>
 							<nav aria-label="Menu">
 								<a className={activeNavId === 'hero' ? 'is-active' : ''} href="#hero" onClick={closeMenu}>How it works</a>
-								<a className={activeNavId === 'how-it-works' ? 'is-active' : ''} href="#how-it-works" onClick={closeMenu}>What to expect</a>
+								<a className={activeNavId === 'how-it-works' ? 'is-active' : ''} href="#how-it-works" onClick={() => { requestDemoPlayback(); closeMenu() }}>What to expect</a>
 								<a className={activeNavId === 'faq' ? 'is-active' : ''} href="#faq" onClick={closeMenu}>FAQ</a>
 								<a className={activeNavId === 'contact' ? 'is-active' : ''} href="#contact" onClick={closeMenu}>Contact</a>
 							</nav>
@@ -542,7 +580,7 @@ function CustomerTrust() {
 							with a direct line to the seller if anything goes wrong.
 						</p>
 						<div className="buyer-hero-actions buyer-fade-up" style={{ '--d': '0.22s' }}>
-							<a className="buyer-cta-primary" href="#how-it-works">
+							<a className="buyer-cta-primary" href="#how-it-works" onClick={requestDemoPlayback}>
 								<span className="buyer-cta-label">See a demo</span>
 								<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
 							</a>
@@ -706,7 +744,7 @@ function CustomerTrust() {
 						{/* Previous icon strip, kept for reference:
 						<PostPayArt />
 						*/}
-						<PostPayVideo />
+						<PostPayVideo playWithSoundSignal={demoPlaySignal} />
 					</div>
 
 					<div className="buyer-expect-grid">

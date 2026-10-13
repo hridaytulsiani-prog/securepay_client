@@ -644,7 +644,7 @@ function Dashboard() {
 								<th>Courier</th>
 								<th>Delivery Status</th>
 								<th>Customer</th>
-								<th>Track</th>
+								<th>Tracking</th>
 							</tr>
 						</thead>
 						<tbody>
