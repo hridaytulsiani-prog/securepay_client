@@ -77,7 +77,41 @@ function ShipmentPdfUploader() {
 		}
 	}, [loadRecords, records])
 
-	const getMerchantVisibleStatus = () => 'UNDER REVIEW'
+	const getMerchantVisibleStatus = (record) => {
+		if (record?.status === 'approved') return 'ACCEPTED'
+		if (record?.status === 'not_approved') return 'REJECTED'
+		return 'UNDER REVIEW'
+	}
+
+	const getStatusClassName = (record) => {
+		if (record?.status === 'approved') return 'status-badge status-success'
+		if (record?.status === 'not_approved') return 'status-badge status-rejected'
+		return 'status-badge status-pending'
+	}
+
+	const getReasonClassName = (record) => {
+		return record?.status === 'approved' ? 'label-reason-cell reason-accepted' : 'label-reason-cell'
+	}
+
+	const getMerchantVisibleReason = (record) => {
+		if (record?.reason) return sanitizeBrandText(record.reason)
+		if (record?.status === 'approved') return 'Label accepted'
+		if (record?.status === 'not_approved') return 'Label could not be verified'
+		return 'Checking label'
+	}
+
+	const renderMerchantVisibleReason = (record) => {
+		const reason = getMerchantVisibleReason(record)
+		if (reason === 'Courier branding could not be verified') {
+			return (
+				<>
+					<span>Courier branding</span>
+					<span>could not be verified</span>
+				</>
+			)
+		}
+		return <span>{reason}</span>
+	}
 
 	const handleFileSelection = (fileList) => {
 		setPdfFiles(Array.from(fileList || []))
@@ -246,11 +280,8 @@ function ShipmentPdfUploader() {
 						))}
 					</ul>
 					<div className="label-upload-modal-actions">
-						<button type="button" className="secondary-btn" onClick={() => setIsUploadConfirmOpen(false)}>
-							Cancel
-						</button>
 						<button type="button" onClick={() => void confirmUpload()}>
-							Upload PDFs
+							Upload
 						</button>
 					</div>
 				</div>
@@ -293,7 +324,13 @@ function ShipmentPdfUploader() {
 							onChange={(event) => handleFileSelection(event.target.files)}
 						/>
 						<span className="upload-pdf-picker" aria-hidden="true">
-							<span>Choose File</span>
+							<span className="upload-pdf-icon">
+								<svg viewBox="0 0 24 24" aria-hidden="true">
+									<path d="M7 18a5 5 0 0 1 1.2-9.85A6 6 0 0 1 19.5 10.5 3.8 3.8 0 0 1 19 18h-3.5" />
+									<path d="M12 18V11" />
+									<path d="m9 14 3-3 3 3" />
+								</svg>
+							</span>
 							<em>
 								{pdfFiles.length === 0
 									? 'No file chosen'
@@ -335,13 +372,14 @@ function ShipmentPdfUploader() {
 							<th>AWB</th>
 							<th>Order ID</th>
 							<th>Upload Time</th>
+							<th>Reason</th>
 							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody>
 						{records.length === 0 && !isLoadingRecords ? (
 							<tr>
-								<td colSpan="8" className="empty-cell">
+								<td colSpan="9" className="empty-cell">
 									No PDF records found
 								</td>
 							</tr>
@@ -351,12 +389,14 @@ function ShipmentPdfUploader() {
 							<tr key={record.id}>
 								<td>{record.file_name || '-'}</td>
 								<td>
-									<span className="status-badge status-pending">
+									<span className={getStatusClassName(record)}>
 										{getMerchantVisibleStatus(record)}
 									</span>
 								</td>
-								<td>
-									<CourierLogoCell courier={record.delivery_partner} />
+								<td className="courier-logo-table-cell">
+									<span className="courier-logo-slot">
+										<CourierLogoCell courier={record.delivery_partner} />
+									</span>
 								</td>
 								<td>
 									<CourierLogoCell courier={record.courier_partner} />
@@ -364,6 +404,7 @@ function ShipmentPdfUploader() {
 								<td className="mono-text">{record.awb || '-'}</td>
 								<td className="mono-text">{record.order_id || '-'}</td>
 								<td>{record.uploaded_at ? new Date(record.uploaded_at).toLocaleString() : '-'}</td>
+								<td className={getReasonClassName(record)}>{renderMerchantVisibleReason(record)}</td>
 								<td>
 									<button type="button" className="secondary-btn" onClick={() => void handleDeleteRecord(record)} disabled={deletingRecordId === record.id}>
 										{deletingRecordId === record.id ? 'Removing...' : 'Remove'}

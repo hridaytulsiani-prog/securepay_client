@@ -138,31 +138,6 @@ function PostPayVideo({ playWithSoundSignal = 0 }) {
 
 	useEffect(() => {
 		const video = videoRef.current
-		if (!video) return undefined
-
-		const observer = new IntersectionObserver(
-			([entry]) => {
-				if (entry.isIntersecting) {
-					video.muted = false
-					video.play().catch(() => {
-						// Browsers block sound autoplay on first load/scroll without a click.
-					})
-				} else {
-					video.pause()
-				}
-			},
-			{ threshold: 0.45 },
-		)
-
-		observer.observe(video)
-		return () => {
-			observer.disconnect()
-			video.pause()
-		}
-	}, [])
-
-	useEffect(() => {
-		const video = videoRef.current
 		if (!video || playWithSoundSignal === 0) return
 
 		video.muted = false
