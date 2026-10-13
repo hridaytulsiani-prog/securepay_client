@@ -8481,32 +8481,32 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
 .buyer-nav-cta, .buyer-cta-primary { justify-content: center; align-items: center; line-height: 1; gap: 0.3rem; }
 .buyer-nav-cta svg, .buyer-cta-primary svg { display: block; flex: none; }
 
-/* "How it works" panels: one soft rose-pink colour family (lighter to deeper across the steps), picked to sit well on the lavender page background */
-.pfd-green  { background: #fff0f4; } .pfd-green  .pfd-num { background: #e8789a; } .pfd-green  .pfd-art { color: #e8789a; }
-.pfd-purple { background: #ffe4ec; } .pfd-purple .pfd-num { background: #de6589; } .pfd-purple .pfd-art { color: #f2a1b8; }
-.pfd-blue   { background: #ffd7e3; } .pfd-blue   .pfd-num { background: #d4547c; } .pfd-blue   .pfd-art { color: #ee93ad; }
-.pfd-amber  { background: #ffcadb; } .pfd-amber  .pfd-num { background: #c04470; } .pfd-amber  .pfd-art { color: #df7a9a; }
-.pfd-refund { background: #fff6f9; }
-.pfd-x { background: #a8355e; }
-.pfd-mock-option.is-selected { border-color: #e8789a; background: #fff8fa; }
-.pfd-radio.is-on { border-color: #e8789a; background: radial-gradient(circle, #e8789a 45%, #fff 50%); }
-.pfd-mock-button { background: #e8789a; }
-.pfd-held-pill { border-color: #de6589; background: #fff6f9; color: #8f2a50; }
-.pfd-held-track::before { border-top-color: #fbb9cd; }
-.pfd-held-track li i { border-color: #fbb9cd; }
-.pfd-held-track li.is-done { color: #d4547c; }
-.pfd-held-track li.is-done i { background: #e8789a; border-color: #e8789a; }
-.pfd-held-track li.is-now { color: #8f2a50; }
-.pfd-held-track li.is-now i { background: #de6589; border-color: #de6589; box-shadow: 0 0 0 3px rgba(222, 101, 137, 0.22); }
-.pfd-art-safe { filter: drop-shadow(0 6px 10px rgba(222, 101, 137, 0.28)); }
-.pfd-step-icon { color: #d4547c; box-shadow: 0 3px 8px rgba(212, 84, 124, 0.2); }
-.pfd-steps li:last-child .pfd-step-icon { background: #c04470; color: #fff; }
-.pfd-step-arrow { border-top-color: #f6a8bf; }
-.pfd-route-status { background: #ffe9f0; color: #d4547c; }
-.pfd-art-parcel { filter: drop-shadow(0 6px 10px rgba(212, 84, 124, 0.25)); }
-.pfd-art-chat { filter: drop-shadow(0 6px 10px rgba(192, 68, 112, 0.3)); }
-.pfd-bank-ico { background: #ffe9f0; color: #d4547c; }
-.pfd-agg-ico { background: #d4547c; }
+/* /customer colour trial: orange variant only for the right-side "How it works" panels. */
+.pfd-green  { background: #fff3e3; } .pfd-green  .pfd-num { background: #fb923c; } .pfd-green  .pfd-art { color: #fb923c; }
+.pfd-purple { background: #ffe8c7; } .pfd-purple .pfd-num { background: #f97316; } .pfd-purple .pfd-art { color: #fdba74; }
+.pfd-blue   { background: #ffddb0; } .pfd-blue   .pfd-num { background: #ea580c; } .pfd-blue   .pfd-art { color: #fb923c; }
+.pfd-amber  { background: #ffd19a; } .pfd-amber  .pfd-num { background: #c2410c; } .pfd-amber  .pfd-art { color: #f97316; }
+.pfd-refund { background: #fff7ed; }
+.pfd-x { background: #9a3412; }
+.pfd-mock-option.is-selected { border-color: #fb923c; background: #fff7ed; }
+.pfd-radio.is-on { border-color: #fb923c; background: radial-gradient(circle, #fb923c 45%, #fff 50%); }
+.pfd-mock-button { background: #f97316; }
+.pfd-held-pill { border-color: #f97316; background: #fff7ed; color: #9a3412; }
+.pfd-held-track::before { border-top-color: #fdba74; }
+.pfd-held-track li i { border-color: #fdba74; }
+.pfd-held-track li.is-done { color: #ea580c; }
+.pfd-held-track li.is-done i { background: #fb923c; border-color: #fb923c; }
+.pfd-held-track li.is-now { color: #9a3412; }
+.pfd-held-track li.is-now i { background: #f97316; border-color: #f97316; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.22); }
+.pfd-art-safe { filter: drop-shadow(0 6px 10px rgba(249, 115, 22, 0.26)); }
+.pfd-step-icon { color: #ea580c; box-shadow: 0 3px 8px rgba(234, 88, 12, 0.2); }
+.pfd-steps li:last-child .pfd-step-icon { background: #c2410c; color: #fff; }
+.pfd-step-arrow { border-top-color: #fdba74; }
+.pfd-route-status { background: #ffedd5; color: #ea580c; }
+.pfd-art-parcel { filter: drop-shadow(0 6px 10px rgba(234, 88, 12, 0.25)); }
+.pfd-art-chat { filter: drop-shadow(0 6px 10px rgba(194, 65, 12, 0.28)); }
+.pfd-bank-ico { background: #ffedd5; color: #ea580c; }
+.pfd-agg-ico { background: #ea580c; }
 
 /* "How it works" panels: larger sub text under each heading */
 .pfd .pfd-copy p { font-size: 0.95rem; line-height: 1.45; }
