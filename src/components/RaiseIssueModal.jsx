@@ -12,14 +12,14 @@ function prettyStatus(value) {
 		.replace(/^\w/, (letter) => letter.toUpperCase())
 }
 
-function RaiseIssueModal({ initialOrders = [], onClose, onCreated }) {
+function RaiseIssueModal({ initialOrders = [], initialIssueType = '', initialDescription = '', initialOrderSearch = '', onClose, onCreated }) {
 	// orders = the order IDs ticked so far; myOrders = every order on this merchant's account, loaded for the picker.
 	const [orders, setOrders] = useState(() => Array.from(new Set(initialOrders)))
 	const [myOrders, setMyOrders] = useState([])
 	const [ordersState, setOrdersState] = useState('loading')
-	const [orderSearch, setOrderSearch] = useState('')
-	const [issueType, setIssueType] = useState('')
-	const [description, setDescription] = useState('')
+	const [orderSearch, setOrderSearch] = useState(initialOrderSearch)
+	const [issueType, setIssueType] = useState(initialIssueType)
+	const [description, setDescription] = useState(initialDescription)
 	const [status, setStatus] = useState({ state: 'idle', text: '', reference: '' })
 
 	useEffect(() => {

@@ -3219,7 +3219,7 @@ button:disabled {
 }
 
 .upload-label-page .shipments-table {
-  min-width: 1380px;
+  min-width: 1520px;
 }
 
 .shipments-table[aria-label="PDF validation records table"] th:nth-child(1),
@@ -3316,6 +3316,13 @@ button:disabled {
   width: 110px;
   min-width: 110px;
   max-width: 110px;
+}
+
+.shipments-table[aria-label="PDF validation records table"] th:nth-child(10),
+.shipments-table[aria-label="PDF validation records table"] td:nth-child(10) {
+  width: 140px;
+  min-width: 140px;
+  max-width: 140px;
 }
 
 .dashboard-page .shipments-table[aria-label="Enquiries table"] {
@@ -3531,17 +3538,44 @@ button:disabled {
   background: #0f302c;
 }
 
-.shipments-table[aria-label="PDF validation records table"] td button.secondary-btn {
+.shipments-table[aria-label="PDF validation records table"] td button.secondary-btn,
+.shipments-table[aria-label="PDF validation records table"] .table-file-action {
   background: #eef1f0;
   color: #173d38;
   border: 1px solid #cbd3d0;
   box-shadow: none;
 }
 
-.shipments-table[aria-label="PDF validation records table"] td button.secondary-btn:hover:not(:disabled) {
+.shipments-table[aria-label="PDF validation records table"] td button.secondary-btn:hover:not(:disabled),
+.shipments-table[aria-label="PDF validation records table"] .table-file-action:hover:not(.is-disabled) {
   background: #e1e6e4;
   border-color: #a9b4b0;
   color: #173d38;
+}
+
+.table-file-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0.45rem 0.7rem;
+  border-radius: 7px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.table-file-action input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.table-file-action.is-disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .shipments-table td button:disabled {

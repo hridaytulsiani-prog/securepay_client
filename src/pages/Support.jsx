@@ -2,6 +2,7 @@
 // list of orders in an issue; "Details" opens the chat with the EscroSafe team about it. New issues are raised
 // from here (orders ticked from the merchant's own list) or from the Dashboard (orders ticked in the table).
 import { useCallback, useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { getMyIssues } from '../api/issues'
 import IssueChatModal from '../components/IssueChatModal'
 import IssueOrdersModal from '../components/IssueOrdersModal'
@@ -22,6 +23,7 @@ function formatDate(value) {
 }
 
 function Support() {
+	const [searchParams, setSearchParams] = useSearchParams()
 	const [issues, setIssues] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState('')
@@ -31,6 +33,9 @@ function Support() {
 
 	// reloadKey changes whenever the list should be fetched again (Refresh button, after raising an issue).
 	const [reloadKey, setReloadKey] = useState(0)
+	const prefillOrderId = searchParams.get('orderId') || ''
+	const prefillIssueType = searchParams.get('issueType') || ''
+	const prefillDescription = searchParams.get('description') || ''
 	const reload = () => {
 		setIsLoading(true)
 		setReloadKey((key) => key + 1)
@@ -43,6 +48,19 @@ function Support() {
 		const timer = window.setInterval(() => setReloadKey((key) => key + 1), 15000)
 		return () => window.clearInterval(timer)
 	}, [])
+
+	useEffect(() => {
+		if (searchParams.get('raise') === '1') {
+			setIsRaiseOpen(true)
+		}
+	}, [searchParams])
+
+	const closeRaiseModal = () => {
+		setIsRaiseOpen(false)
+		if (searchParams.get('raise') === '1') {
+			setSearchParams({}, { replace: true })
+		}
+	}
 
 	useEffect(() => {
 		let active = true
@@ -148,7 +166,15 @@ function Support() {
 				)}
 			</div>
 
-			{isRaiseOpen ? <RaiseIssueModal onClose={() => setIsRaiseOpen(false)} onCreated={reload} /> : null}
+			{isRaiseOpen ? (
+				<RaiseIssueModal
+					initialOrders={prefillOrderId ? [prefillOrderId] : []}
+					initialIssueType={prefillIssueType}
+					initialDescription={prefillDescription}
+					onClose={closeRaiseModal}
+					onCreated={reload}
+				/>
+			) : null}
 			{ordersIssue ? <IssueOrdersModal issue={ordersIssue} onClose={() => setOrdersIssue(null)} /> : null}
 			{chatIssue ? <IssueChatModal issue={chatIssue} onClose={() => setChatIssue(null)} onChanged={quietReload} /> : null}
 		</section>

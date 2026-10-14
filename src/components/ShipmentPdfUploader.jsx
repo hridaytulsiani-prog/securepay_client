@@ -2,6 +2,7 @@
 // validator (tracking.api.v1.validate.PDFValidator via api/labels.js's
 // uploadTrackingPdf). Saved validation records are shown below the form.
 import { useCallback, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { deletePdfValidationRecord, fetchPdfValidationRecords, uploadTrackingPdf } from '../api/labels'
 import { CourierLogoCell } from './CourierLogo'
 
@@ -17,13 +18,15 @@ function sanitizeBrandText(message) {
 }
 
 function ShipmentPdfUploader() {
+	const navigate = useNavigate()
 	const [pdfFiles, setPdfFiles] = useState([])
 	const [progress, setProgress] = useState('')
 	const [isUploading, setIsUploading] = useState(false)
 	const [records, setRecords] = useState([])
+	const [updatingRecords, setUpdatingRecords] = useState({})
 	const [isLoadingRecords, setIsLoadingRecords] = useState(false)
 	const [recordsError, setRecordsError] = useState('')
-	const [deletingRecordId, setDeletingRecordId] = useState(null)
+	const [updatingRecordId, setUpdatingRecordId] = useState(null)
 	const [toast, setToast] = useState(null)
 	const [isUploadConfirmOpen, setIsUploadConfirmOpen] = useState(false)
 
@@ -51,13 +54,23 @@ function ShipmentPdfUploader() {
 
 		try {
 			const response = await fetchPdfValidationRecords()
-			setRecords(response.results || [])
+			setRecords((currentRecords) => {
+				const nextRecords = response.results || []
+				const updatingPlaceholders = Object.values(updatingRecords)
+				if (updatingPlaceholders.length === 0) {
+					return nextRecords
+				}
+
+				const nextRecordIds = new Set(nextRecords.map((record) => record.id))
+				const preservedRows = updatingPlaceholders.filter((record) => !nextRecordIds.has(record.id))
+				return [...preservedRows, ...nextRecords]
+			})
 		} catch (error) {
 			setRecordsError(error.message || 'Unable to load PDF records.')
 		} finally {
 			setIsLoadingRecords(false)
 		}
-	}, [])
+	}, [updatingRecords])
 
 	useEffect(() => {
 		void loadRecords()
@@ -218,23 +231,108 @@ function ShipmentPdfUploader() {
 		}
 	}
 
-	const handleDeleteRecord = async (record) => {
-		if (!window.confirm(`Remove PDF record: ${record.file_name || 'this file'}?`)) {
+	const handleUpdateRecord = async (record, fileList) => {
+		const file = fileList?.[0]
+		if (!file) {
 			return
 		}
 
-		setDeletingRecordId(record.id)
+		if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+			showToast(`Only PDF files are allowed. Invalid file: ${file.name}`)
+			return
+		}
+
+		if (file.size > MAX_FILE_SIZE_BYTES) {
+			showToast(`PDF is too large: ${file.name}. Maximum allowed size is 10 MB.`)
+			return
+		}
+
+		if (!record.order_id) {
+			showToast('Order ID is missing for this PDF record.', 'error')
+			return
+		}
+
+		setUpdatingRecordId(record.id)
+		setUpdatingRecords((currentRecords) => ({
+			...currentRecords,
+			[record.id]: {
+				...record,
+				file_name: file.name,
+				status: 'processing',
+				reason: 'Uploading replacement label',
+			},
+		}))
+		setRecords((currentRecords) =>
+			currentRecords.map((item) =>
+				item.id === record.id
+					? {
+							...item,
+							file_name: file.name,
+							status: 'processing',
+							reason: 'Uploading replacement label',
+						}
+					: item,
+			),
+		)
 		setRecordsError('')
 
 		try {
-			await deletePdfValidationRecord(record.id)
+			const isSameFileName = normalizeFileName(file.name) === normalizeFileName(record.file_name)
+			let response
+
+			if (isSameFileName) {
+				await deletePdfValidationRecord(record.id)
+				response = await uploadTrackingPdf({
+					file,
+					secureupiOrderId: record.order_id,
+				})
+			} else {
+				response = await uploadTrackingPdf({
+					file,
+					secureupiOrderId: record.order_id,
+				})
+				await deletePdfValidationRecord(record.id)
+			}
+
+			if (response.upload_record) {
+				setRecords((currentRecords) => [response.upload_record, ...currentRecords.filter((item) => item.id !== record.id)])
+			}
+			setUpdatingRecords((currentRecords) => {
+				const nextRecords = { ...currentRecords }
+				delete nextRecords[record.id]
+				return nextRecords
+			})
+			showToast('PDF updated. Validation is running in the background.', 'success')
 			await loadRecords()
 		} catch (error) {
-			setRecordsError(error.message || 'Unable to delete PDF record.')
-			showToast(`Delete failed: ${error.message}`, 'error')
+			setRecordsError(error.message || 'Unable to update PDF record.')
+			showToast(`Update failed: ${error.message}`, 'error')
+			await loadRecords()
 		} finally {
-			setDeletingRecordId(null)
+			setUpdatingRecords((currentRecords) => {
+				const nextRecords = { ...currentRecords }
+				delete nextRecords[record.id]
+				return nextRecords
+			})
+			setUpdatingRecordId(null)
 		}
+	}
+
+	const openSupportForRecord = (record) => {
+		const params = new URLSearchParams({
+			raise: '1',
+			issueType: 'other',
+			description: `PDF label rejected for this order.${record.awb ? `\nAWB: ${record.awb}` : ''}`,
+		})
+
+		if (record.order_id) {
+			params.set('orderId', record.order_id)
+		}
+		if (record.awb) {
+			params.set('awb', record.awb)
+		}
+
+		navigate(`/support?${params.toString()}`)
 	}
 
 	return (
@@ -374,12 +472,13 @@ function ShipmentPdfUploader() {
 							<th>Upload Time</th>
 							<th>Reason</th>
 							<th>Action</th>
+							<th>Support</th>
 						</tr>
 					</thead>
 					<tbody>
 						{records.length === 0 && !isLoadingRecords ? (
 							<tr>
-								<td colSpan="9" className="empty-cell">
+								<td colSpan="10" className="empty-cell">
 									No PDF records found
 								</td>
 							</tr>
@@ -406,9 +505,27 @@ function ShipmentPdfUploader() {
 								<td>{record.uploaded_at ? new Date(record.uploaded_at).toLocaleString() : '-'}</td>
 								<td className={getReasonClassName(record)}>{renderMerchantVisibleReason(record)}</td>
 								<td>
-									<button type="button" className="secondary-btn" onClick={() => void handleDeleteRecord(record)} disabled={deletingRecordId === record.id}>
-										{deletingRecordId === record.id ? 'Removing...' : 'Remove'}
-									</button>
+									<label className={`table-file-action ${updatingRecordId === record.id ? 'is-disabled' : ''}`}>
+										<span>{updatingRecordId === record.id ? 'Updating...' : 'Update'}</span>
+										<input
+											type="file"
+											accept="application/pdf,.pdf"
+											disabled={updatingRecordId === record.id}
+											onChange={(event) => {
+												void handleUpdateRecord(record, event.target.files)
+												event.target.value = ''
+											}}
+										/>
+									</label>
+								</td>
+								<td>
+									{record.status === 'not_approved' ? (
+										<button type="button" className="secondary-btn" onClick={() => openSupportForRecord(record)}>
+											Contact
+										</button>
+									) : (
+										'-'
+									)}
 								</td>
 							</tr>
 						))}
