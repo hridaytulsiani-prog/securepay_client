@@ -23,6 +23,8 @@ export async function submitEnquiry({
 	orderId,
 	sig,
 	enquiryMessage,
+	additionalMessage = '',
+	consentGiven = false,
 	receiptStatus,
 	someoneElseReceived = null,
 	agentContacted = null,
@@ -41,6 +43,8 @@ export async function submitEnquiry({
 	formData.append('order_id', orderId)
 	formData.append('sig', sig)
 	formData.append('enquiry_msg', enquiryMessage)
+	formData.append('additional_message', additionalMessage.trim())
+	formData.append('consent_given', consentGiven)
 	formData.append('receipt_status', receiptStatus)
 
 	if (someoneElseReceived !== null) {
