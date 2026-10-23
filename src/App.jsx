@@ -11,6 +11,7 @@ import TrackOrder from './pages/TrackOrder'
 import UploadLabel from './pages/UploadLabel'
 import CourierSettings from './pages/CourierSettings'
 import Support from './pages/Support'
+import CustomerIssues from './pages/CustomerIssues'
 import CreateOrder from './pages/CreateOrder'
 import Cart from './pages/Cart'
 import LandingPage from './pages/LandingPage'
@@ -106,6 +107,7 @@ function App() {
         <Route path="/upload-label" element={<UploadLabel />} />
         <Route path="/settings" element={<CourierSettings />} />
         <Route path="/support" element={<Support />} />
+        <Route path="/customer-issues" element={<CustomerIssues />} />
       </Route>
 
       <Route

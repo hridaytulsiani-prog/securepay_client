@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { fetchMerchantNotifications } from '../api/notifications'
 
 const NOTIFICATION_POLL_MS = 15 * 1000
@@ -36,6 +37,37 @@ function formatNotificationDate(value) {
 function getNotificationLabel(notification) {
 	const type = String(notification.type || '').replaceAll('_', ' ')
 	return type ? type.replace(/\b\w/g, (letter) => letter.toUpperCase()) : 'System notification'
+}
+
+function getNotificationVisual(notification) {
+	const searchText = `${notification.source || ''} ${notification.type || ''} ${notification.title || ''}`.toLowerCase()
+	if (searchText.includes('customer_issue') || searchText.includes('customer issue')) {
+		return { tone: 'issue', icon: 'message' }
+	}
+	if (searchText.includes('shipment') || searchText.includes('label') || searchText.includes('courier')) {
+		return { tone: 'shipment', icon: 'package' }
+	}
+	if (searchText.includes('payment') || searchText.includes('refund') || searchText.includes('release')) {
+		return { tone: 'payment', icon: 'payment' }
+	}
+	return { tone: 'general', icon: 'bell' }
+}
+
+function NotificationTypeIcon({ notification }) {
+	const { tone, icon } = getNotificationVisual(notification)
+	return (
+		<span className={`notification-item-icon is-${tone}`} aria-hidden="true">
+			{icon === 'message' ? (
+				<svg viewBox="0 0 24 24"><path d="M20 15a3 3 0 0 1-3 3H8l-4 3V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3Z" /><path d="M8 9h8M8 13h5" /></svg>
+			) : icon === 'package' ? (
+				<svg viewBox="0 0 24 24"><path d="m4 7 8-4 8 4-8 4Z" /><path d="M4 7v10l8 4 8-4V7M12 11v10" /></svg>
+			) : icon === 'payment' ? (
+				<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3" /><path d="M3 10h18M7 15h3" /></svg>
+			) : (
+				<svg viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21a2 2 0 0 0 4 0" /></svg>
+			)}
+		</span>
+	)
 }
 
 // Tracking messages end with "Next check: ..." — show that on its own line.
@@ -77,13 +109,13 @@ function sortNotifications(items) {
 }
 
 function NotificationBell() {
+	const navigate = useNavigate()
 	const notificationWrapRef = useRef(null)
 	const [notifications, setNotifications] = useState([])
 	const [isOpen, setIsOpen] = useState(false)
 	const [selectedNotification, setSelectedNotification] = useState(null)
 	const [viewedNotificationIds, setViewedNotificationIds] = useState(readStoredReadIds)
 	const [error, setError] = useState('')
-	const [isRefreshing, setIsRefreshing] = useState(false)
 
 	const loadNotifications = useCallback(async () => {
 		try {
@@ -145,14 +177,18 @@ function NotificationBell() {
 		})
 	}
 
-	const handleRefresh = async () => {
-		setIsRefreshing(true)
-		await loadNotifications()
-		setIsRefreshing(false)
-	}
-
 	const handleToggle = () => {
 		setIsOpen((current) => !current)
+	}
+
+	const handleNotificationClick = (notification) => {
+		markAsRead([notification.id])
+		setIsOpen(false)
+		if (notification.source === 'admin_customer_issue' && notification.customer_issue_id) {
+			navigate(`/customer-issues?issue=${notification.customer_issue_id}`)
+			return
+		}
+		setSelectedNotification(notification)
 	}
 
 	useEffect(() => {
@@ -207,46 +243,45 @@ function NotificationBell() {
 			{isOpen ? (
 				<div className="notification-menu" role="dialog" aria-label="Notifications">
 					<div className="notification-head">
-						<div>
+						<div className="notification-head-copy">
 							<strong>Notifications</strong>
-							<span>{notifications.length ? `${unreadCount} unread of ${notifications.length}` : 'You are all caught up'}</span>
+							<span>{notifications.length ? (unreadCount ? `${unreadCount} new · ${notifications.length} total` : 'All caught up') : 'No new updates'}</span>
 						</div>
-						<button type="button" className="notification-mark-read" disabled={unreadCount === 0} onClick={() => markAsRead(notifications.map((notification) => notification.id))}>
-							Mark all as read
-						</button>
-						<button type="button" className={`notification-refresh${isRefreshing ? ' is-spinning' : ''}`} aria-label="Refresh notifications" title="Refresh" disabled={isRefreshing} onClick={handleRefresh}>
-							<svg aria-hidden="true" viewBox="0 0 24 24">
-								<path d="M20 11a8.1 8.1 0 0 0-14.8-4L3 10" />
-								<path d="M3 4v6h6" />
-								<path d="M4 13a8.1 8.1 0 0 0 14.8 4L21 14" />
-								<path d="M21 20v-6h-6" />
-							</svg>
-						</button>
+						<div className="notification-head-actions">
+							<button type="button" className="notification-mark-read" disabled={unreadCount === 0} onClick={() => markAsRead(notifications.map((notification) => notification.id))}>
+								Mark all as read
+							</button>
+							<button type="button" className="notification-menu-close" aria-label="Close notifications" onClick={() => setIsOpen(false)}>
+								<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+							</button>
+						</div>
 					</div>
 					{error ? <p className="notification-error">{error}</p> : null}
 					{notifications.length === 0 ? (
 						<p className="notification-empty">No pending notifications.</p>
 					) : (
 						<ul className="notification-list">
-							{notifications.map((notification) => (
+							{notifications.map((notification) => {
+								const isUnread = !viewedNotificationIds.has(String(notification.id))
+								return (
 								<li key={notification.id}>
-									<button type="button" className="notification-item" onClick={() => { markAsRead([notification.id]); setSelectedNotification(notification); setIsOpen(false) }}>
-										<span className="notification-item-icon" aria-hidden="true">
-											<svg viewBox="0 0 24 24">
-												<path d="M12 3a7 7 0 0 0-7 7c0 4-2 5-2 7h18c0-2-2-3-2-7a7 7 0 0 0-7-7Z" />
-												<path d="M9.5 21h5" />
-											</svg>
-										</span>
+									<button type="button" className={`notification-item${isUnread ? ' is-unread' : ''}`} onClick={() => handleNotificationClick(notification)}>
+										<NotificationTypeIcon notification={notification} />
 										<span className="notification-item-content">
-											<strong>{notification.title}</strong>
+											<span className="notification-item-title-row">
+												<strong>{notification.title}</strong>
+												{isUnread ? <i className="notification-unread-dot" aria-label="Unread" /> : null}
+											</span>
 											<span>{renderMessage(notification)}</span>
-											{notification.order_id && String(notification.message || '').includes(notification.order_id) ? null : (
-												<small>{notification.order_id || notification.customer_name || 'System update'}</small>
-											)}
+											<small className="notification-item-meta">
+												{notification.order_id && !String(notification.message || '').includes(notification.order_id) ? <span>{notification.order_id}</span> : null}
+												<time dateTime={notification.created_at || undefined}>{formatNotificationDate(notification.created_at)}</time>
+											</small>
 										</span>
 									</button>
 								</li>
-							))}
+								)
+							})}
 						</ul>
 					)}
 				</div>
@@ -273,6 +308,8 @@ function NotificationBell() {
 							<div><span>Order ID</span><strong>{selectedNotification.order_id || 'Not available'}</strong></div>
 							<div><span>Customer</span><strong>{selectedNotification.customer_name || 'Not available'}</strong></div>
 							{selectedNotification.payment_state ? <div><span>Payment state</span><strong>{selectedNotification.payment_state}</strong></div> : null}
+							{selectedNotification.issue_reference ? <div><span>Customer issue</span><strong>{selectedNotification.issue_reference}</strong></div> : null}
+							{selectedNotification.issue_type ? <div><span>Issue</span><strong>{selectedNotification.issue_type}</strong></div> : null}
 							{selectedNotification.reminder_count ? <div><span>Reminder count</span><strong>{selectedNotification.reminder_count}</strong></div> : null}
 						</div>
 					</section>

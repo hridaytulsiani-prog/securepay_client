@@ -8807,6 +8807,267 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
 /* Notification list: neutral bell icon instead of orange */
 .notification-item-icon { background: #eef1f0; color: #173d38; }
 .notification-item:hover:not(:disabled) .notification-item-icon { background: #e1e6e4; }
+
+/* Merchant notification centre */
+.notification-menu {
+  width: min(440px, calc(100vw - 1.25rem));
+  max-height: min(610px, calc(100vh - 84px));
+  border: 1px solid #dce6e2;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 22px 55px rgba(17, 48, 43, 0.2), 0 4px 14px rgba(17, 48, 43, 0.08);
+}
+
+.notification-head {
+  min-height: 72px;
+  gap: 0.75rem;
+  padding: 0.9rem 0.9rem 0.85rem 1rem;
+  background: linear-gradient(135deg, #f8fbfa 0%, #f2f8f5 100%);
+  border-bottom-color: #e0e9e5;
+}
+
+.notification-head-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.notification-head .notification-head-copy > strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.notification-head .notification-head-copy > span {
+  margin-top: 0.1rem;
+  color: #6b7c77;
+  font-size: 0.73rem;
+  font-weight: 500;
+}
+
+.notification-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex: none;
+}
+
+.notification-head .notification-mark-read {
+  min-height: 32px;
+  padding: 0.35rem 0.7rem;
+  border-color: #cddcd7;
+  background: #ffffff;
+  color: #28564e;
+  font-size: 0.72rem;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(17, 48, 43, 0.04);
+}
+
+.notification-head .notification-mark-read:hover:not(:disabled) {
+  border-color: #94b7aa;
+  background: #eaf4f0;
+  color: #173d38;
+}
+
+.notification-head .notification-mark-read:disabled {
+  border-color: #e1e8e5;
+  background: #f7f9f8;
+  color: #9aa7a3;
+  opacity: 1;
+}
+
+.notification-menu-close {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #d7e2de;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #526661;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.notification-menu-close svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.notification-menu-close:hover:not(:disabled) {
+  border-color: #b9cbc5;
+  background: #eef4f2;
+  color: #173d38;
+}
+
+.notification-list {
+  gap: 0;
+  padding: 0.45rem 0.55rem 0.6rem;
+  background: #ffffff;
+  scrollbar-color: #c5d4cf transparent;
+}
+
+.notification-list li + li {
+  border-top: 1px solid #edf1ef;
+}
+
+.notification-item {
+  position: relative;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 0.75rem;
+  min-height: 82px;
+  padding: 0.8rem 0.65rem;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  box-shadow: none;
+  transition: background-color 140ms ease;
+}
+
+.notification-item.is-unread {
+  background: #f5faf8;
+}
+
+.notification-item:hover:not(:disabled),
+.notification-item.is-unread:hover:not(:disabled) {
+  border-color: transparent;
+  background: #edf5f2;
+  color: #173d38;
+  box-shadow: none;
+}
+
+.notification-item-icon,
+.notification-item:hover:not(:disabled) .notification-item-icon {
+  width: 40px;
+  height: 40px;
+  border: 1px solid transparent;
+  background: #edf3f1;
+  color: #345f57;
+}
+
+.notification-item-icon.is-issue,
+.notification-item:hover:not(:disabled) .notification-item-icon.is-issue {
+  border-color: #cce0da;
+  background: #e8f4f0;
+  color: #176b58;
+}
+
+.notification-item-icon.is-shipment,
+.notification-item:hover:not(:disabled) .notification-item-icon.is-shipment {
+  border-color: #edd9bd;
+  background: #fff4e5;
+  color: #9a5b18;
+}
+
+.notification-item-icon.is-payment,
+.notification-item:hover:not(:disabled) .notification-item-icon.is-payment {
+  border-color: #cdddf0;
+  background: #edf5ff;
+  color: #28639a;
+}
+
+.notification-item-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+}
+
+.notification-item-content {
+  gap: 0.25rem;
+  padding-top: 0.05rem;
+}
+
+.notification-item-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  color: #173d38;
+}
+
+.notification-item-title-row > strong {
+  color: inherit;
+  font-size: 0.87rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.notification-unread-dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: #d95f3d;
+  box-shadow: 0 0 0 3px #fdece7;
+}
+
+.notification-item-content > span:not(.notification-item-title-row) {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #596a66;
+  font-size: 0.79rem;
+  font-weight: 400;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.notification-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.08rem;
+  color: #83908c !important;
+  font-size: 0.68rem !important;
+  font-weight: 500 !important;
+}
+
+.notification-item-meta > span {
+  color: #8b5b26;
+}
+
+.notification-item-meta > span::after {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  border-radius: 50%;
+  background: #b2bdb9;
+}
+
+.notification-empty {
+  margin: 1rem;
+  padding: 1.25rem;
+  border-style: dashed;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 500;
+}
+
+@media (max-width: 520px) {
+  .notification-menu {
+    position: fixed;
+    top: 66px;
+    right: 0.65rem;
+    left: 0.65rem;
+    width: auto;
+  }
+
+  .notification-head {
+    padding-left: 0.85rem;
+  }
+
+  .notification-head .notification-mark-read {
+    padding-inline: 0.55rem;
+  }
+}
 .dummy-payment-box button:hover:not(:disabled),
 .securepay-modal-actions button:hover:not(:disabled),
 .pagination-controls button.is-active:hover:not(:disabled) { background: #e1e6e4; border-color: #a9b4b0; color: #173d38; }
@@ -9560,6 +9821,182 @@ html { scroll-behavior: smooth; }
 /* Support intro text uses the full width next to the button instead of a narrow column */
 .support-page .dashboard-hero p { max-width: none; }
 
+/* Merchant view of customer issues explicitly forwarded by EscroSafe. */
+.customer-issues-page { width: 100%; max-width: none; margin: 0; }
+.customer-issues-page .dashboard-hero p { max-width: none; white-space: normal; }
+.customer-issues-card { padding: 1.25rem 1.4rem; }
+.customer-issues-toolbar {
+	display: flex;
+	align-items: flex-end;
+	gap: .75rem;
+	flex-wrap: wrap;
+	margin-bottom: 1rem;
+}
+.customer-issues-toolbar > div { display: grid; gap: .15rem; margin-right: auto; }
+.customer-issues-toolbar h3 { margin: 0; color: #173d38; font-size: 1.05rem; }
+.customer-issues-toolbar > div > span { color: #687572; font-size: .78rem; }
+.customer-issues-toolbar label { flex: 0 1 310px; }
+.customer-issues-toolbar input {
+	width: 100%;
+	box-sizing: border-box;
+	min-height: 39px;
+	padding: .58rem .75rem;
+	border: 1px solid #cbd3d0;
+	border-radius: 8px;
+	background: #fbfcfb;
+	color: #173d38;
+	font: inherit;
+	font-size: .84rem;
+}
+.customer-issues-toolbar input:focus { outline: 0; border-color: #2d7467; box-shadow: 0 0 0 3px rgba(45, 116, 103, .12); }
+.customer-issues-empty {
+	margin: 0;
+	padding: 2.2rem 1rem;
+	border: 1px dashed #cbd8d4;
+	border-radius: 10px;
+	background: #f8fbfa;
+	color: #60716d;
+	text-align: center;
+	line-height: 1.55;
+}
+.customer-issues-table { min-width: 1450px; }
+.customer-issues-table th,
+.customer-issues-table td { text-align: center; vertical-align: middle; }
+.customer-issues-table .customer-issue-type-cell { min-width: 210px; white-space: normal; line-height: 1.4; }
+.customer-issues-table .courier-logo-cell { margin: 0 auto; }
+.customer-issue-detail-modal { width: min(900px, 100%); gap: 1.15rem; padding: 1.35rem; }
+.customer-issue-detail-head { align-items: flex-start; padding-bottom: 1rem; border-bottom: 1px solid #e2e9e6; }
+.customer-issue-detail-head > div { min-width: 0; }
+.customer-issue-detail-head > div > p { margin: .35rem 0 0; color: #65736f; font-size: .84rem; }
+.customer-issue-title-row { display: flex; align-items: center; gap: .7rem; }
+.customer-issue-title-row h2 { color: #173d38; }
+.customer-issue-modal-kicker {
+	display: block;
+	margin-bottom: .2rem;
+	color: #2d7467;
+	font-size: .68rem;
+	font-weight: 750;
+	letter-spacing: .07em;
+	text-transform: uppercase;
+}
+.customer-issue-summary-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: .65rem;
+}
+.customer-issue-summary-grid > div {
+	display: grid;
+	gap: .3rem;
+	min-width: 0;
+	padding: .75rem;
+	border-radius: 9px;
+	background: #f5f8f7;
+}
+.customer-issue-summary-grid span,
+.customer-issue-report > span,
+.customer-issue-answers > div span {
+	color: #71807d;
+	font-size: .66rem;
+	font-weight: 750;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+}
+.customer-issue-summary-grid strong { min-width: 0; color: #173d38; font-size: .82rem; overflow-wrap: anywhere; }
+.customer-issue-report {
+	padding: .9rem 1rem;
+	border: 1px solid #dce8e4;
+	border-radius: 10px;
+	background: linear-gradient(135deg, #f3faf7, #fbfdfc);
+}
+.customer-issue-report > div { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.customer-issue-report > div small { color: #7b8985; font-size: .72rem; }
+.customer-issue-report p { margin: .35rem 0 0; color: #334b47; line-height: 1.55; white-space: pre-wrap; }
+.customer-issue-answers { display: grid; gap: .5rem; }
+.customer-issue-answers h3 { margin: 0 0 .1rem; color: #173d38; font-size: .92rem; }
+.customer-issue-answers > div { display: grid; grid-template-columns: minmax(150px, .8fr) minmax(0, 1.2fr); gap: .8rem; padding: .65rem .75rem; border-radius: 8px; background: #f7f9f8; }
+.customer-issue-answers > div strong { color: #253f3a; font-size: .82rem; overflow-wrap: anywhere; }
+.customer-issue-evidence { margin: 0; color: #60716d; font-size: .82rem; }
+.customer-issue-evidence-panel,
+.customer-issue-conversation { display: grid; gap: .8rem; padding: 1rem; border: 1px solid #dfe7e4; border-radius: 12px; background: #fff; }
+.customer-issue-evidence-panel { background: #fbfcfc; }
+.customer-issue-section-title { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.customer-issue-section-title > div { display: grid; gap: .15rem; }
+.customer-issue-section-title span { color: #2d7467; font-size: .67rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+.customer-issue-section-title strong { color: #173d38; font-size: .92rem; }
+.customer-issue-section-title > small { color: #788682; font-size: .74rem; }
+.customer-issue-no-files { margin: 0; padding: .85rem; border: 1px dashed #cfdad6; border-radius: 8px; color: #71807d; font-size: .82rem; text-align: center; }
+.customer-issue-file-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+.customer-issue-file { display: flex; align-items: center; gap: .7rem; min-width: 0; padding: .65rem; border: 1px solid #d7e1dd; border-radius: 9px; background: #fff; color: #173d38; text-decoration: none; transition: border-color .15s ease, box-shadow .15s ease; }
+.customer-issue-file:hover { border-color: #8db7ad; color: #173d38; box-shadow: 0 4px 12px rgba(23, 61, 56, .08); }
+.customer-issue-file > img,
+.customer-issue-file-icon { display: grid; place-items: center; width: 44px; height: 38px; flex: 0 0 44px; border-radius: 6px; background: #edf3f1; object-fit: cover; color: #9a443b; font-size: .65rem; font-weight: 850; }
+.customer-issue-file > span:last-child { display: grid; min-width: 0; gap: .15rem; }
+.customer-issue-file strong { overflow: hidden; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
+.customer-issue-file small { color: #74827e; font-size: .69rem; }
+.customer-issue-file.is-compact { padding: .45rem; background: rgba(255, 255, 255, .65); }
+.customer-issue-file.is-compact > img,
+.customer-issue-file.is-compact > .customer-issue-file-icon { width: 34px; height: 30px; flex-basis: 34px; }
+.customer-issue-file.is-video { display: grid; grid-column: 1 / -1; gap: 0; overflow: hidden; padding: 0; }
+.customer-issue-file.is-video > video { display: block; width: 100%; max-height: 320px; background: #101817; object-fit: contain; }
+.customer-issue-file-video-link { display: flex; align-items: center; justify-content: space-between; gap: .75rem; min-width: 0; padding: .7rem .8rem; color: #173d38; text-decoration: none; }
+.customer-issue-file-video-link:hover { background: #eef6f3; color: #173d38; }
+.customer-issue-file-video-link > span:first-child { display: grid; min-width: 0; gap: .15rem; }
+.customer-issue-file-video-link strong { overflow: hidden; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
+.customer-issue-file-video-link small { color: #74827e; font-size: .69rem; }
+.customer-issue-chat { display: grid; align-content: start; gap: .7rem; min-height: 170px; max-height: 300px; overflow-y: auto; padding: .85rem; border: 1px solid #e0e7e4; border-radius: 10px; background-color: #f1eee8; background-image: radial-gradient(rgba(23, 61, 56, .055) 1px, transparent 1.3px); background-size: 10px 10px; }
+.customer-issue-chat-empty { align-self: center; margin: auto; color: #73807d; font-size: .82rem; text-align: center; }
+.customer-issue-message { display: flex; }
+.customer-issue-message.is-merchant { justify-content: flex-end; }
+.customer-issue-message.is-escrosafe { justify-content: flex-start; }
+.customer-issue-message-bubble { display: grid; width: fit-content; gap: .3rem; max-width: min(76%, 520px); padding: .6rem .75rem .45rem; border-radius: 11px; background: #fff; box-shadow: 0 1px 2px rgba(17, 41, 37, .12); }
+.customer-issue-message.is-merchant .customer-issue-message-bubble { border-bottom-right-radius: 3px; background: #dcefe8; }
+.customer-issue-message.is-escrosafe .customer-issue-message-bubble { border-bottom-left-radius: 3px; }
+.customer-issue-message.is-customer-report .customer-issue-message-bubble { border-left: 3px solid #2d7467; }
+.customer-issue-message-bubble > strong { color: #2b7164; font-size: .7rem; }
+.customer-issue-message-bubble > p { margin: 0; color: #213d38; font-size: .86rem; line-height: 1.48; white-space: pre-wrap; overflow-wrap: anywhere; }
+.customer-issue-message-bubble > time { color: #788682; font-size: .66rem; text-align: right; }
+.customer-issue-message.is-customer-report .customer-issue-message-bubble { width: min(100%, 560px); max-width: 88%; }
+.customer-issue-message-files { display: grid; gap: .4rem; min-width: 0; }
+.customer-issue-message-files.is-report-evidence { margin-top: .2rem; padding-top: .55rem; border-top: 1px solid #e0e8e5; }
+.customer-issue-message-files.is-report-evidence::before { content: 'Customer evidence'; color: #2d7467; font-size: .67rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.customer-issue-message-image { display: grid; width: 300px; max-width: 100%; overflow: hidden; border: 1px solid rgba(23, 61, 56, .14); border-radius: 9px; background: #fff; color: #173d38; text-decoration: none; }
+.customer-issue-message-image img { display: block; width: 100%; max-height: 240px; background: #edf3f1; object-fit: contain; }
+.customer-issue-message-image span { overflow: hidden; padding: .45rem .55rem; font-size: .7rem; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+.customer-issue-message-image:hover { color: #173d38; box-shadow: 0 4px 12px rgba(23, 61, 56, .12); }
+.customer-issue-reply { display: grid; gap: .55rem; }
+.customer-issue-reply-row { display: flex; align-items: center; flex-wrap: nowrap; gap: .55rem; }
+.customer-issue-reply textarea { box-sizing: border-box; flex: 1; min-width: 0; height: 44px; min-height: 44px; max-height: 44px; padding: .7rem .8rem; border: 1px solid #cbd7d3; border-radius: 9px; color: #173d38; font: inherit; font-size: .86rem; line-height: 1.35; resize: none; }
+.customer-issue-reply textarea:focus { border-color: #4f8e82; outline: 3px solid rgba(79, 142, 130, .13); }
+.customer-issue-attach { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; padding: 0; border: 1px solid #cbd7d3; border-radius: 9px; background: #eef3f1; color: #245f55; }
+.customer-issue-attach svg { width: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.customer-issue-send { height: 44px; min-height: 44px; flex: 0 0 auto; padding: .6rem 1.1rem; border: 1px solid #276b5f; border-radius: 9px; background: #276b5f; color: #fff; font-weight: 750; }
+.customer-issue-send:hover:not(:disabled) { background: #1f584e; }
+.customer-issue-send:disabled { opacity: .55; }
+.customer-issue-reply > small { color: #7a8783; font-size: .69rem; text-align: right; }
+.customer-issue-selected-files { display: flex; flex-wrap: wrap; gap: .4rem; }
+.customer-issue-selected-file { display: inline-flex; align-items: center; gap: .45rem; max-width: 280px; padding: .3rem .4rem; border: 1px solid #d2e2dc; border-radius: 9px; background: #e7f1ed; color: #284f48; font-size: .72rem; }
+.customer-issue-selected-file > img,
+.customer-issue-selected-file-type { display: grid; place-items: center; width: 30px; height: 30px; flex: 0 0 30px; border-radius: 6px; background: #fff; object-fit: cover; color: #955046; font-size: .55rem; font-weight: 850; }
+.customer-issue-selected-file > strong { overflow: hidden; font-size: .72rem; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+.customer-issue-selected-file button { display: inline-grid; place-items: center; width: 20px; height: 20px; flex: 0 0 20px; padding: 0; border: 0; border-radius: 50%; background: #cbded7; color: #173d38; line-height: 0; }
+.customer-issue-selected-file button svg { display: block; width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.customer-response-state { display: inline-flex; padding: .28rem .6rem; border: 1px solid #dec985; border-radius: 999px; background: #fff5d8; color: #765b12; font-size: .7rem; font-weight: 750; }
+.customer-response-state.has-response { border-color: #9dcfb1; background: #e7f6ed; color: #246947; }
+@media (max-width: 700px) {
+	.customer-issues-card { padding: 1rem; }
+	.customer-issues-toolbar { align-items: stretch; }
+	.customer-issues-toolbar > div { width: 100%; }
+	.customer-issues-toolbar label { flex-basis: 100%; }
+	.customer-issue-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.customer-issue-file-grid { grid-template-columns: 1fr; }
+	.customer-issue-detail-modal { padding: 1rem; }
+}
+@media (max-width: 460px) {
+	.customer-issue-summary-grid { grid-template-columns: 1fr; }
+	.customer-issue-answers > div { grid-template-columns: 1fr; gap: .25rem; }
+	.customer-issue-message-bubble { max-width: 88%; }
+}
+
 /* Support: issues shown as a table (same look as the Dashboard order table) */
 .support-table { min-width: 1000px; }
 .support-table th:nth-child(1) { width: 110px; }
@@ -9588,6 +10025,22 @@ html { scroll-behavior: smooth; }
 button.support-order-chip.is-more { max-width: none; flex: none; border-color: #cbd3d0; background: #eef1f0; cursor: pointer; }
 button.support-order-chip.is-more:hover { border-color: #a9b4b0; background: #e1e6e4; }
 .issue-btn-small { min-height: 32px; padding: 0.3rem 0.9rem; font-size: 0.82rem; }
+
+/* Customer issues: keep the Open label readable against the table's dark button theme. */
+.shipments-table.customer-issues-table td button.issue-btn,
+.shipments-table.customer-issues-table td button.issue-btn:hover:not(:disabled),
+.shipments-table.customer-issues-table td button.issue-btn:focus-visible,
+.shipments-table.customer-issues-table td button.issue-btn:active {
+	border-color: #173d38 !important;
+	background: #173d38 !important;
+	color: #ffffff !important;
+}
+.shipments-table.customer-issues-table td button.issue-btn:hover:not(:disabled),
+.shipments-table.customer-issues-table td button.issue-btn:focus-visible,
+.shipments-table.customer-issues-table td button.issue-btn:active {
+	border-color: #0f302c !important;
+	background: #0f302c !important;
+}
 
 .issue-orders-list { max-height: 360px; overflow: auto; border: 1px solid #e4eae7; border-radius: 8px; }
 .issue-orders-list table { width: 100%; border-collapse: separate; border-spacing: 0; }
@@ -9805,6 +10258,78 @@ button.support-order-chip.is-more:hover { border-color: #a9b4b0; background: #e1
 	.buyer-faq-lede, .buyer-contact-lede { white-space: normal; max-width: 62ch; }
 }
 
+/* Notification header actions and card spacing refinements. */
+.notification-head > .notification-head-actions {
+	display: flex;
+	grid-auto-flow: unset;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 0.45rem;
+	margin-left: auto;
+}
+
+.nav-account .notification-menu-close {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	min-width: 32px;
+	padding: 0;
+	border: 1px solid #d7e2de;
+	border-radius: 50%;
+	background: #ffffff;
+	color: #526661;
+	line-height: 0;
+}
+
+.nav-account .notification-menu-close:hover:not(:disabled) {
+	border-color: #b9cbc5;
+	background: #eef4f2;
+	color: #173d38;
+}
+
+.nav-account .notification-menu-close svg {
+	display: block;
+	width: 14px;
+	height: 14px;
+	margin: 0;
+}
+
+.notification-list {
+	display: grid;
+	gap: 0.55rem;
+	padding: 0.65rem 0.7rem 0.75rem;
+}
+
+.notification-list li + li {
+	border-top: 0;
+}
+
+.notification-item,
+.notification-item.is-unread {
+	border: 1px solid #dce7e3;
+}
+
+.notification-item.is-unread {
+	border-color: #cfe0da;
+}
+
+@media (max-width: 420px) {
+	.notification-head {
+		align-items: flex-start;
+	}
+
+	.notification-head > .notification-head-actions {
+		gap: 0.35rem;
+	}
+
+	.notification-head .notification-mark-read {
+		padding-inline: 0.5rem;
+		font-size: 0.68rem;
+	}
+}
+
 /* "What happens after you pay": a little space above, so the text block and the video box both sit slightly lower */
 @media (min-width: 901px) {
 	.buyer-timeline-copy { margin-top: 1.75rem; }
@@ -9865,3 +10390,739 @@ button.support-order-chip.is-more:hover { border-color: #a9b4b0; background: #e1
 .pfd-art-chat { filter: drop-shadow(0 6px 10px rgba(240, 138, 36, 0.3)); }
 .pfd-bank-ico { background: #e4ecfb; color: #2f6fe0; }
 .pfd-agg-ico { background: #2f6fe0; }
+
+/* Customer-issue attachment control keeps its pale green treatment on interaction. */
+.customer-issue-reply-row button.customer-issue-attach:hover:not(:disabled),
+.customer-issue-reply-row button.customer-issue-attach:focus-visible,
+.customer-issue-reply-row button.customer-issue-attach:active {
+	border-color: #8fb9ae !important;
+	background: #dceee8 !important;
+	color: #1f6458 !important;
+	box-shadow: none !important;
+	transform: none !important;
+}
+.customer-issue-selected-file button:hover:not(:disabled),
+.customer-issue-selected-file button:focus-visible,
+.customer-issue-selected-file button:active {
+	border: 0 !important;
+	background: #bcd5cc !important;
+	color: #173d38 !important;
+	box-shadow: none !important;
+	transform: none !important;
+}
+
+/* Formal email-style customer issue correspondence. */
+.customer-email-thread {
+	display: grid;
+	align-content: start;
+	gap: 0.85rem;
+	max-height: 390px;
+	padding: 0.85rem;
+	border-color: #dce5e2;
+	background: #f5f7f6;
+	background-image: none;
+}
+
+.customer-email-message {
+	overflow: hidden;
+	border: 1px solid #d9e2df;
+	border-left: 4px solid #96aaa4;
+	border-radius: 9px;
+	background: #fff;
+	box-shadow: 0 3px 10px rgba(25, 55, 49, 0.05);
+}
+
+.customer-email-message.is-escrosafe { border-left-color: #2f7c6d; }
+.customer-email-message.is-merchant { border-left-color: #6f829f; }
+
+.customer-email-message-head {
+	display: grid;
+	grid-template-columns: 36px minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 0.65rem;
+	padding: 0.7rem 0.8rem;
+	border-bottom: 1px solid #e7ecea;
+	background: #fafcfb;
+}
+
+.customer-email-avatar {
+	display: grid;
+	place-items: center;
+	width: 36px;
+	height: 36px;
+	overflow: hidden;
+	border-radius: 50%;
+	background: #e4edf5;
+	color: #49657e;
+	font-size: 0.8rem;
+	font-weight: 750;
+}
+
+.customer-email-avatar.is-escrosafe {
+	border-radius: 7px;
+	background: transparent;
+}
+
+.customer-email-avatar img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.customer-email-message-head > div {
+	display: grid;
+	min-width: 0;
+	gap: 0.05rem;
+}
+
+.customer-email-message-head strong {
+	overflow: hidden;
+	color: #173d38;
+	font-size: 0.82rem;
+	font-weight: 700;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.customer-email-message-head span,
+.customer-email-message-head small {
+	overflow: hidden;
+	color: #71807c;
+	font-size: 0.69rem;
+	font-weight: 500;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.customer-email-message-head time {
+	align-self: start;
+	color: #84918e;
+	font-size: 0.67rem;
+	white-space: nowrap;
+}
+
+.customer-email-subject {
+	display: grid;
+	grid-template-columns: 58px minmax(0, 1fr);
+	gap: 0.5rem;
+	padding: 0.5rem 0.8rem;
+	border-bottom: 1px solid #edf1ef;
+}
+
+.customer-email-subject span {
+	color: #7a8885;
+	font-size: 0.7rem;
+	font-weight: 600;
+}
+
+.customer-email-subject strong {
+	color: #294a44;
+	font-size: 0.75rem;
+	font-weight: 650;
+	overflow-wrap: anywhere;
+}
+
+.customer-email-body {
+	padding: 0.8rem;
+}
+
+.customer-email-body > b {
+	display: block;
+	margin-bottom: 0.35rem;
+	color: #2f7468;
+	font-size: 0.67rem;
+	font-weight: 750;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+
+.customer-email-body > p {
+	margin: 0;
+	color: #344a46;
+	font-size: 0.84rem;
+	font-weight: 400;
+	line-height: 1.55;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+.customer-email-attachments {
+	display: grid;
+	gap: 0.45rem;
+	margin-top: 0.7rem;
+	padding-top: 0.65rem;
+	border-top: 1px solid #e4ebe8;
+}
+
+.customer-email-attachments > span {
+	color: #687a76;
+	font-size: 0.68rem;
+	font-weight: 700;
+	letter-spacing: 0.035em;
+	text-transform: uppercase;
+}
+
+.customer-email-attachments .customer-issue-message-files.is-report-evidence::before {
+	content: none;
+}
+
+.customer-email-compose {
+	overflow: hidden;
+	gap: 0;
+	border: 1px solid #d7e1dd;
+	border-radius: 10px;
+	background: #fff;
+	box-shadow: 0 3px 12px rgba(25, 55, 49, 0.05);
+}
+
+.customer-email-compose .customer-issue-selected-files {
+	padding: 0.6rem 0.7rem;
+	border-bottom: 1px solid #edf1ef;
+	background: #f7faf9;
+}
+
+.customer-email-compose-line {
+	display: grid;
+	grid-template-columns: 62px minmax(0, 1fr);
+	gap: 0.5rem;
+	padding: 0.5rem 0.75rem;
+	border-bottom: 1px solid #edf1ef;
+}
+
+.customer-email-compose-line span {
+	color: #7a8885;
+	font-size: 0.72rem;
+	font-weight: 600;
+}
+
+.customer-email-compose-line strong {
+	overflow: hidden;
+	color: #294a44;
+	font-size: 0.75rem;
+	font-weight: 600;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.customer-issue-reply.customer-email-compose > textarea {
+	display: block;
+	width: 100%;
+	height: auto;
+	min-height: 96px;
+	max-height: 180px;
+	padding: 0.75rem;
+	border: 0;
+	border-radius: 0;
+	outline: 0;
+	font-size: 0.84rem;
+	line-height: 1.5;
+	resize: vertical;
+}
+
+.customer-issue-reply.customer-email-compose > textarea:focus {
+	border: 0;
+	outline: 0;
+	box-shadow: inset 0 0 0 2px rgba(47, 124, 109, 0.12);
+}
+
+.customer-email-compose-actions {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	padding: 0.55rem 0.65rem;
+	border-top: 1px solid #edf1ef;
+	background: #fafcfb;
+}
+
+.customer-email-compose-actions .customer-issue-attach {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	width: auto;
+	height: 34px;
+	padding: 0 0.7rem;
+	border: 1px solid #cbd8d4;
+	border-radius: 7px;
+	background: #eef4f2;
+	color: #285f55;
+	font-size: 0.72rem;
+	font-weight: 650;
+}
+
+.customer-email-compose-actions .customer-issue-attach svg {
+	width: 15px;
+	height: 15px;
+}
+
+.customer-email-compose-actions > small {
+	flex: 1;
+	color: #7a8885;
+	font-size: 0.68rem;
+}
+
+.customer-email-compose-actions .customer-issue-send {
+	min-width: 104px;
+	height: 34px;
+	padding: 0 0.85rem;
+	border-radius: 7px;
+	background: #28645a;
+	color: #fff;
+	font-size: 0.75rem;
+	font-weight: 700;
+}
+
+.customer-email-compose-actions .customer-issue-send:hover:not(:disabled) {
+	background: #1f534b;
+	color: #fff;
+}
+
+@media (max-width: 620px) {
+	.customer-email-message-head { grid-template-columns: 32px minmax(0, 1fr); }
+	.customer-email-message-head time { grid-column: 2; }
+	.customer-email-compose-actions { flex-wrap: wrap; }
+	.customer-email-compose-actions > small { display: none; }
+	.customer-email-compose-actions .customer-issue-send { margin-left: auto; }
+}
+
+.customer-email-thread-subject {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	align-items: center;
+	gap: 0.65rem;
+	padding: 0.7rem 0.8rem;
+	border: 1px solid #d7e1dd;
+	border-radius: 9px;
+	background: #fff;
+}
+
+.customer-email-thread-subject > span {
+	color: #71807c;
+	font-size: 0.69rem;
+	font-weight: 650;
+	text-transform: uppercase;
+}
+
+.customer-email-thread-subject h3 {
+	margin: 0;
+	color: #173d38;
+	font-size: 0.88rem;
+	font-weight: 650;
+	overflow-wrap: anywhere;
+}
+
+.customer-email-acknowledge {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 0.75rem 0.85rem;
+	border: 1px solid #ead7b8;
+	border-radius: 9px;
+	background: #fff9ef;
+}
+
+.customer-email-acknowledge > div {
+	display: grid;
+	gap: 0.12rem;
+	min-width: 0;
+}
+
+.customer-email-acknowledge strong {
+	color: #6f4c1e;
+	font-size: 0.8rem;
+	font-weight: 700;
+}
+
+.customer-email-acknowledge span {
+	color: #826c4e;
+	font-size: 0.71rem;
+	line-height: 1.4;
+}
+
+.customer-email-acknowledge button {
+	flex: none;
+	padding: 0.5rem 0.75rem;
+	border: 1px solid #ddb96f;
+	border-radius: 7px;
+	background: #fff;
+	color: #7a5013;
+	font-size: 0.72rem;
+	font-weight: 700;
+	white-space: nowrap;
+	box-shadow: none;
+}
+
+.customer-email-acknowledge button:hover:not(:disabled) {
+	border-color: #c69539;
+	background: #f7ebd4;
+	color: #67400a;
+}
+
+.customer-email-acknowledge > .customer-email-decision-actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 0.5rem;
+	min-width: max-content;
+}
+
+.customer-email-decision-actions .is-accept {
+	border-color: #79a995;
+	background: #edf8f2;
+	color: #28634d;
+}
+
+.customer-email-decision-actions .is-accept:hover:not(:disabled) {
+	border-color: #28645a;
+	background: #dff1e8;
+	color: #1f534b;
+}
+
+.customer-email-decision-actions .is-challenge {
+	border-color: #d3b3ad;
+	color: #8d4237;
+}
+
+.customer-email-decision-actions .is-challenge:hover:not(:disabled),
+.customer-email-decision-actions .is-challenge.is-active {
+	border-color: #b96354;
+	background: #fbece9;
+	color: #7b3027;
+}
+
+.customer-email-acknowledge.is-acknowledged {
+	border-color: #bcdccc;
+	background: #edf8f2;
+}
+
+.customer-email-acknowledge.is-acknowledged strong,
+.customer-email-acknowledge.is-acknowledged span {
+	color: #28634d;
+}
+
+.customer-email-acknowledge.is-acknowledged button {
+	border-color: #bcdccc;
+	background: #dff1e8;
+	color: #28634d;
+	opacity: 1;
+}
+
+.customer-email-reply-label {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.6rem 0.75rem 0.35rem;
+	color: #526762;
+}
+
+.customer-email-reply-label svg {
+	width: 16px;
+	height: 16px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.customer-email-reply-label strong {
+	font-size: 0.76rem;
+	font-weight: 700;
+}
+
+.customer-email-reply-label span {
+	color: #82908c;
+	font-size: 0.7rem;
+}
+
+@media (max-width: 620px) {
+	.customer-email-acknowledge { align-items: stretch; flex-direction: column; }
+	.customer-email-acknowledge > .customer-email-decision-actions { justify-content: flex-start; min-width: 0; }
+	.customer-email-acknowledge button { align-self: flex-start; }
+}
+
+/* One continuous Gmail-style thread: messages share one surface and subject. */
+.customer-issue-conversation {
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+}
+
+.customer-email-thread {
+	gap: 0;
+	padding: 0 0.9rem;
+	border: 0;
+	border-radius: 0;
+	background: #fff;
+}
+
+.customer-email-message,
+.customer-email-message.is-escrosafe,
+.customer-email-message.is-merchant {
+	overflow: visible;
+	border: 0;
+	border-bottom: 1px solid #e7ecea;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+.customer-email-message:last-of-type {
+	border-bottom: 0;
+}
+
+.customer-email-message-head {
+	padding: 0.9rem 0 0.45rem;
+	border: 0;
+	background: transparent;
+}
+
+.customer-email-body {
+	padding: 0.15rem 0 1rem 2.9rem;
+}
+
+.customer-email-thread-subject {
+	padding: 0.5rem 0.25rem 0.75rem;
+	border: 0;
+	border-bottom: 1px solid #dfe6e3;
+	border-radius: 0;
+	background: transparent;
+}
+
+.customer-email-thread-subject h3 {
+	font-size: 1.02rem;
+	font-weight: 600;
+}
+
+@media (max-width: 620px) {
+	.customer-email-thread { padding: 0 0.6rem; }
+	.customer-email-body { padding-left: 0; }
+}
+
+/* Keep the customer-issue modal fixed in the viewport; only its email thread scrolls. */
+.issue-modal.customer-issue-detail-modal {
+	height: min(760px, calc(100vh - 2rem));
+	max-height: calc(100vh - 2rem);
+	grid-template-rows: auto auto minmax(0, 1fr);
+	overflow: hidden;
+}
+
+.issue-modal-backdrop:has(.customer-issue-detail-modal) {
+	overflow: hidden;
+}
+
+.customer-issue-detail-modal .customer-issue-conversation {
+	min-height: 0;
+	grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+	overflow: hidden;
+}
+
+.customer-issue-detail-modal .customer-email-thread {
+	height: auto;
+	min-height: 0;
+	max-height: none;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+}
+
+.customer-email-compose-actions .customer-issue-attach {
+	min-width: 112px;
+	flex: 0 0 auto;
+	justify-content: center;
+	white-space: nowrap;
+}
+
+.customer-email-compose-actions .customer-issue-attach span {
+	display: inline;
+	white-space: nowrap;
+}
+
+.customer-email-compose-actions {
+	flex-wrap: nowrap;
+}
+
+.customer-email-compose-actions .customer-issue-send {
+	flex: 0 0 auto;
+	white-space: nowrap;
+}
+
+.customer-email-compose-actions button.customer-issue-attach:hover:not(:disabled),
+.customer-email-compose-actions button.customer-issue-attach:focus-visible,
+.customer-email-compose-actions button.customer-issue-attach:active {
+	border-color: #8fb9ae !important;
+	background: #dceee8 !important;
+	color: #1f6458 !important;
+	box-shadow: none !important;
+	transform: none !important;
+}
+
+@media (max-height: 700px) {
+	.issue-modal.customer-issue-detail-modal {
+		height: calc(100vh - 1rem);
+		max-height: calc(100vh - 1rem);
+		padding-block: 0.9rem;
+		gap: 0.75rem;
+	}
+}
+
+@media (max-height: 850px) {
+	.customer-issue-detail-modal .customer-issue-summary-grid {
+		display: none;
+	}
+
+	.issue-modal.customer-issue-detail-modal {
+		grid-template-rows: auto minmax(0, 1fr);
+	}
+
+	.customer-issue-detail-head {
+		padding-bottom: 0.7rem;
+	}
+
+	.customer-issue-detail-head > div > p {
+		display: none;
+	}
+}
+
+/* Match the admin evidence presentation and keep the merchant composer compact. */
+.customer-issue-detail-modal .customer-issue-conversation {
+	grid-template-rows: auto auto auto minmax(230px, 1fr) auto;
+}
+
+.customer-email-thread .customer-issue-file.is-video > video {
+	height: 190px;
+	max-height: 190px;
+	background: #101817;
+	object-fit: contain;
+}
+
+.customer-issue-reply.customer-email-compose > textarea {
+	box-sizing: border-box;
+	height: 150px;
+	min-height: 120px;
+	max-height: 360px;
+	resize: vertical;
+}
+
+.customer-email-reply-label {
+	padding-top: 0.45rem;
+	padding-bottom: 0.2rem;
+}
+
+@media (max-height: 700px) {
+	.customer-issue-detail-modal .customer-issue-conversation {
+		grid-template-rows: auto auto auto minmax(150px, 1fr) auto;
+	}
+
+	.customer-email-thread .customer-issue-file.is-video > video {
+		height: 150px;
+		max-height: 150px;
+	}
+}
+
+/* Styled confirmation used before a merchant acknowledges a customer issue. */
+.customer-ack-confirm-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 260;
+	display: grid;
+	place-items: center;
+	padding: 1rem;
+	background: rgba(17, 39, 34, 0.5);
+	backdrop-filter: blur(2px);
+}
+
+.customer-ack-confirm {
+	display: grid;
+	grid-template-columns: 42px minmax(0, 1fr);
+	gap: 0.85rem;
+	width: min(460px, 100%);
+	padding: 1.1rem;
+	border: 1px solid #d8e2de;
+	border-radius: 12px;
+	background: #fff;
+	box-shadow: 0 24px 60px rgba(17, 39, 34, 0.28);
+}
+
+.customer-ack-confirm-icon {
+	display: grid;
+	place-items: center;
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	background: #fff3dc;
+	color: #a66b16;
+}
+
+.customer-ack-confirm-icon svg {
+	width: 21px;
+	height: 21px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.customer-ack-confirm > div:not(.customer-ack-confirm-actions) {
+	display: grid;
+	gap: 0.28rem;
+}
+
+.customer-ack-confirm > div > span {
+	color: #9a691f;
+	font-size: 0.66rem;
+	font-weight: 750;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.customer-ack-confirm h3 {
+	margin: 0;
+	color: #173d38;
+	font-size: 1rem;
+	font-weight: 700;
+}
+
+.customer-ack-confirm p {
+	margin: 0;
+	color: #657570;
+	font-size: 0.8rem;
+	line-height: 1.5;
+}
+
+.customer-ack-confirm-actions {
+	grid-column: 1 / -1;
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.55rem;
+	padding-top: 0.35rem;
+}
+
+.customer-ack-confirm-actions button {
+	min-height: 36px;
+	padding: 0.48rem 0.8rem;
+	border-radius: 7px;
+	font-size: 0.74rem;
+	font-weight: 700;
+	box-shadow: none;
+}
+
+.customer-ack-confirm-actions .is-cancel,
+.customer-ack-confirm-actions .is-cancel:hover:not(:disabled) {
+	border: 1px solid #cfdad6;
+	background: #f0f4f2;
+	color: #36534d;
+}
+
+.customer-ack-confirm-actions .is-confirm {
+	border: 1px solid #28645a;
+	background: #28645a;
+	color: #fff;
+}
+
+.customer-ack-confirm-actions .is-confirm:hover:not(:disabled) {
+	border-color: #1f534b;
+	background: #1f534b;
+}
