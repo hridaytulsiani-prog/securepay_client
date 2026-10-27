@@ -2645,6 +2645,26 @@ button:disabled {
   box-shadow: 0 24px 70px rgba(23, 61, 56, 0.14);
 }
 
+.auth-login-toast {
+  position: fixed;
+  z-index: 1200;
+  top: 24px;
+  right: 24px;
+  width: min(430px, calc(100vw - 32px));
+  margin: 0;
+  padding: 0.95rem 1.05rem;
+  text-align: left;
+  line-height: 1.5;
+  animation: page-toast-in 0.18s ease;
+}
+
+@media (max-width: 560px) {
+  .auth-login-toast {
+    top: 16px;
+    right: 16px;
+  }
+}
+
 .enquiry-brand {
   display: flex;
   align-items: center;
@@ -4051,6 +4071,63 @@ button:disabled {
   font-weight: 500;
   line-height: 1.5;
   white-space: pre-line;
+}
+
+.merchant-restriction-notice {
+  position: fixed;
+  z-index: 2500;
+  top: 78px;
+  right: 20px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  width: min(390px, calc(100vw - 28px));
+  padding: 13px 15px;
+  border: 1px solid #e0b05d;
+  border-radius: 12px;
+  background: #fff8e8;
+  color: #5e4315;
+  box-shadow: 0 14px 36px rgba(66, 46, 12, 0.2);
+}
+
+.merchant-restriction-notice.is-permanent {
+  border-color: #df9da3;
+  background: #fff1f2;
+  color: #762b33;
+}
+
+.merchant-restriction-icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e9a52c;
+  color: #fff;
+  font-weight: 850;
+}
+
+.merchant-restriction-notice.is-permanent .merchant-restriction-icon {
+  background: #bd3f4c;
+}
+
+.merchant-restriction-notice strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 0.82rem;
+}
+
+.merchant-restriction-notice p {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 620px) {
+  .merchant-restriction-notice {
+    top: 68px;
+    right: 14px;
+  }
 }
 
 @keyframes page-toast-in {
@@ -8818,6 +8895,82 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
   box-shadow: 0 22px 55px rgba(17, 48, 43, 0.2), 0 4px 14px rgba(17, 48, 43, 0.08);
 }
 
+.buyer-nav-actions {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.buyer-language-switch {
+	display: inline-grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	align-items: center;
+	padding: 0.25rem;
+	border: 1px solid rgba(124, 92, 255, 0.2);
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.52);
+	box-shadow: 0 8px 20px rgba(76, 55, 158, 0.1);
+}
+
+.buyer-language-switch button {
+	box-sizing: border-box;
+	width: 100%;
+	min-width: 62px;
+	padding: 0.48rem 0.7rem;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: #5b527c;
+	font: inherit;
+	font-size: 0.82rem;
+	font-weight: 750;
+	line-height: 1;
+	cursor: pointer;
+	transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.buyer-language-switch button.is-active {
+	background: #ffffff;
+	color: #12211a;
+	box-shadow: 0 4px 12px rgba(76, 55, 158, 0.16);
+}
+
+/* Keep the segmented control neutral on hover; the app-wide button hover
+   colour is intended for merchant dashboard buttons, not this language tab. */
+.buyer-language-switch button:hover:not(:disabled) {
+	background: transparent;
+	color: #5b527c;
+}
+
+.buyer-language-switch button.is-active:hover:not(:disabled) {
+	background: #ffffff;
+	color: #12211a;
+}
+
+.buyer-language-switch button:focus-visible {
+	outline: 2px solid #7c5cff;
+	outline-offset: 2px;
+}
+
+@media (min-width: 901px) {
+	.buyer-nav-actions > .buyer-language-switch,
+	.buyer-nav-actions > .buyer-nav-cta {
+		box-sizing: border-box;
+		width: 174px;
+		height: 44px;
+	}
+
+	.buyer-nav-actions > .buyer-nav-cta {
+		justify-content: center;
+	}
+
+	.buyer-language-switch button {
+		height: 100%;
+		min-width: 0;
+		padding-block: 0;
+	}
+}
+
 .notification-head {
   min-height: 72px;
   gap: 0.75rem;
@@ -8969,6 +9122,20 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
   border-color: #cdddf0;
   background: #edf5ff;
   color: #28639a;
+}
+
+.notification-item-icon.is-restriction,
+.notification-item:hover:not(:disabled) .notification-item-icon.is-restriction {
+  border-color: #e9b8bd;
+  background: #fff0f1;
+  color: #aa3440;
+}
+
+.notification-item-icon.is-restored,
+.notification-item:hover:not(:disabled) .notification-item-icon.is-restored {
+  border-color: #b9ddcc;
+  background: #eaf8f1;
+  color: #237153;
 }
 
 .notification-item-icon svg {
@@ -9296,7 +9463,9 @@ a.enquiry-modal-primary { padding: 0.55rem 1.1rem; font-size: 0.88rem; }
 .buyer-menu-button, .buyer-menu-backdrop, .buyer-mobile-menu { display: none; }
 @media (max-width: 900px) {
 	.buyer-nav-inner { gap: 0.6rem; }
-	.buyer-nav-cta { margin-left: auto; }
+	.buyer-nav-actions { order: 2; gap: 0.45rem; }
+	.buyer-nav-cta { margin-left: 0; }
+	.buyer-language-switch button { min-width: 52px; padding-inline: 0.5rem; }
 	.buyer-menu-button { flex: none; display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border: 1px solid rgba(124, 92, 255, 0.22); border-radius: 12px; background: rgba(255, 255, 255, 0.7); color: #12211a; cursor: pointer; }
 	.buyer-menu-button svg, .buyer-menu-close svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 	.buyer-menu-backdrop { display: block; position: fixed; inset: 0; z-index: 90; background: rgba(18, 33, 26, 0.35); }
@@ -9335,7 +9504,19 @@ a.enquiry-modal-primary { padding: 0.55rem 1.1rem; font-size: 0.88rem; }
 /* header on mobile: logo left; menu button sits just left of "For merchants" on the right */
 @media (max-width: 900px) {
 	.buyer-menu-button { order: 1; margin-left: auto; }
-	.buyer-nav-cta { order: 2; margin-left: 0; }
+	.buyer-nav-actions { order: 2; }
+}
+
+@media (max-width: 640px) {
+	.buyer-nav-inner { gap: 0.4rem; }
+	.buyer-nav-actions { gap: 0.35rem; }
+	.buyer-language-switch { padding: 0.18rem; }
+	.buyer-language-switch button { min-width: 38px; padding: 0.43rem 0.35rem; font-size: 0.7rem; }
+}
+
+@media (max-width: 420px) {
+	.buyer-language-switch button { min-width: 34px; padding-inline: 0.25rem; }
+	.buyer-nav-cta { padding-inline: 0.65rem; }
 }
 
 /* menu button: transparent, no box */
@@ -10354,6 +10535,21 @@ button.support-order-chip.is-more:hover { border-color: #a9b4b0; background: #e1
 	.buyer-expect-grid .buyer-expect-item { container-type: inline-size; padding-left: 0.6rem; padding-right: 0.6rem; }
 	.buyer-expect-grid .buyer-expect-item strong { white-space: nowrap; }
 	.buyer-expect-grid .buyer-expect-item p { font-size: min(1rem, 4.9cqw); white-space: nowrap; }
+	.buyer-page[lang="hi"] .buyer-expect-grid .buyer-expect-item {
+		min-width: 0;
+		padding-left: 0.85rem;
+		padding-right: 0.85rem;
+	}
+	.buyer-page[lang="hi"] .buyer-expect-grid .buyer-expect-item strong,
+	.buyer-page[lang="hi"] .buyer-expect-grid .buyer-expect-item p {
+		max-width: 100%;
+		white-space: normal;
+		overflow-wrap: break-word;
+	}
+	.buyer-page[lang="hi"] .buyer-expect-grid .buyer-expect-item p {
+		font-size: 0.9rem;
+		line-height: 1.35;
+	}
 }
 @media (max-width: 1279px) {
 	.buyer-expect-grid .buyer-expect-item p { font-size: 0.95rem; }

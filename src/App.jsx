@@ -20,6 +20,7 @@ import ReportIssue from './pages/ReportIssue'
 import CheckoutRoute from './pages/CheckoutRoute'
 import Documentation from './pages/Documentation'
 import Terms from './pages/Terms'
+import { checkMerchantSession } from './api/auth'
 import { AUTH_IDLE_TIMEOUT_MS, clearAuthSession, isAuthenticated, refreshAuthSessionCookie } from './utils/storage'
 import './App.css'
 
@@ -29,6 +30,7 @@ function App() {
   // authTick exists purely to force a re-render (and re-read of that cookie)
   // whenever storage.js's 'securepay-auth-changed' event fires.
   const [authTick, setAuthTick] = useState(0)
+  const [restriction, setRestriction] = useState(null)
   const authed = isAuthenticated()
 
   useEffect(() => {
@@ -78,8 +80,54 @@ function App() {
   }
   }, [authTick, authed, navigate])
 
+  // Keep every open device synchronized with access decisions made by an
+  // administrator. Protected API calls also enforce this on the server.
+  useEffect(() => {
+  if (!authed) return undefined
+
+  let checking = false
+  const checkAccess = async () => {
+    if (checking) return
+    checking = true
+    try {
+      const session = await checkMerchantSession()
+      setRestriction(session.status === 'restricted' ? session : null)
+    } catch (error) {
+      if (error.status === 401) {
+        setRestriction(null)
+        clearAuthSession()
+        navigate('/login', { replace: true })
+      }
+    } finally {
+      checking = false
+    }
+  }
+
+  checkAccess()
+  const intervalId = window.setInterval(checkAccess, 5000)
+  const handleVisibility = () => {
+    if (document.visibilityState === 'visible') checkAccess()
+  }
+  document.addEventListener('visibilitychange', handleVisibility)
+
+  return () => {
+    window.clearInterval(intervalId)
+    document.removeEventListener('visibilitychange', handleVisibility)
+  }
+  }, [authed, navigate])
+
   return (
-    <Routes>
+    <>
+      {authed && restriction ? (
+        <aside className={`merchant-restriction-notice is-${restriction.block_type}`} role="alert" aria-live="polite">
+          <span className="merchant-restriction-icon" aria-hidden="true">!</span>
+          <div>
+            <strong>{restriction.block_type === 'temporary' ? 'New orders temporarily paused' : 'New orders permanently paused'}</strong>
+            <p>{restriction.error}</p>
+          </div>
+        </aside>
+      ) : null}
+      <Routes>
       {/* /enquiry is the one public route besides login/register — it's
           where the signed WhatsApp delivery-notification link points. */}
       <Route
@@ -119,7 +167,8 @@ function App() {
           />
         }
       />
-    </Routes>
+      </Routes>
+    </>
   )
 }
 

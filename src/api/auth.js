@@ -25,6 +25,13 @@ export async function registerUser(payload) {
 	return handleApiResponse(response)
 }
 
+export async function checkMerchantSession() {
+	const response = await fetch(`${API_BASE_URL}/merchants/session-status/`, {
+		headers: buildJsonHeaders(true),
+	})
+	return handleApiResponse(response)
+}
+
 export async function sendRegisterOtp(payload) {
 	const response = await fetch(`${API_BASE_URL}/merchants/register/send-otp/`, {
 		method: 'POST',

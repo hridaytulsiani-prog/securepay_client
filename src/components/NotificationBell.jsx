@@ -41,6 +41,12 @@ function getNotificationLabel(notification) {
 
 function getNotificationVisual(notification) {
 	const searchText = `${notification.source || ''} ${notification.type || ''} ${notification.title || ''}`.toLowerCase()
+	if (searchText.includes('access_restored') || searchText.includes('access restored')) {
+		return { tone: 'restored', icon: 'restored' }
+	}
+	if (searchText.includes('merchant_temporary_restriction') || searchText.includes('merchant_permanent_restriction') || searchText.includes('orders temporarily paused') || searchText.includes('orders permanently paused')) {
+		return { tone: 'restriction', icon: 'restriction' }
+	}
 	if (searchText.includes('customer_issue') || searchText.includes('customer issue')) {
 		return { tone: 'issue', icon: 'message' }
 	}
@@ -57,7 +63,11 @@ function NotificationTypeIcon({ notification }) {
 	const { tone, icon } = getNotificationVisual(notification)
 	return (
 		<span className={`notification-item-icon is-${tone}`} aria-hidden="true">
-			{icon === 'message' ? (
+			{icon === 'restored' ? (
+				<svg viewBox="0 0 24 24"><path d="M12 3 20 7v5c0 4.6-3.2 7.5-8 9-4.8-1.5-8-4.4-8-9V7Z" /><path d="m8.5 12 2.2 2.2 4.8-5" /></svg>
+			) : icon === 'restriction' ? (
+				<svg viewBox="0 0 24 24"><path d="M12 3 21 19H3Z" /><path d="M12 9v4M12 17h.01" /></svg>
+			) : icon === 'message' ? (
 				<svg viewBox="0 0 24 24"><path d="M20 15a3 3 0 0 1-3 3H8l-4 3V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3Z" /><path d="M8 9h8M8 13h5" /></svg>
 			) : icon === 'package' ? (
 				<svg viewBox="0 0 24 24"><path d="m4 7 8-4 8 4-8 4Z" /><path d="M4 7v10l8 4 8-4V7M12 11v10" /></svg>

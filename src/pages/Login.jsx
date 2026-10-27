@@ -1,10 +1,10 @@
 // Merchant login — calls merchant.v1.create_merchant.LoginMerchant. Only
 // the merchant_email is stashed as the "user" object (setAuthSession's
 // second arg) since that endpoint's response doesn't include a display name.
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { loginUser } from '../api/auth'
-import { isAuthenticated, setAuthSession } from '../utils/storage'
+import { consumeAuthNotice, isAuthenticated, setAuthSession } from '../utils/storage'
 import escrosafeLogo from '../assets/escrosafe-logo.png'
 
 function Login() {
@@ -14,6 +14,13 @@ function Login() {
 	const [password, setPassword] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [error, setError] = useState('')
+	const [toastMessage, setToastMessage] = useState(() => consumeAuthNotice() || location.state?.blockedMessage || '')
+
+	useEffect(() => {
+		if (!toastMessage) return undefined
+		const timerId = window.setTimeout(() => setToastMessage(''), 8000)
+		return () => window.clearTimeout(timerId)
+	}, [toastMessage])
 
 	if (isAuthenticated()) {
 		return <Navigate to="/dashboard" replace />
@@ -41,7 +48,11 @@ function Login() {
 			})
 			navigate('/dashboard', { replace: true })
 		} catch (loginError) {
-			setError(loginError.message || 'Unable to sign in.')
+			if (loginError.code === 'MERCHANT_TEMPORARILY_BLOCKED' || loginError.code === 'MERCHANT_PERMANENTLY_BLOCKED') {
+				setToastMessage(loginError.message)
+			} else {
+				setError(loginError.message || 'Unable to sign in.')
+			}
 		} finally {
 			setIsSubmitting(false)
 		}
@@ -49,6 +60,7 @@ function Login() {
 
 	return (
 		<section className="auth-page auth-page-login">
+			{toastMessage ? <div className="auth-toast auth-toast-error auth-login-toast" role="alert" aria-live="assertive">{toastMessage}</div> : null}
 			<Link className="auth-brand" to="/"><img src={escrosafeLogo} alt="EscroSafe" /></Link>
 			<form className="card form-card" onSubmit={handleSubmit}>
 				<h2>Sign In</h2>

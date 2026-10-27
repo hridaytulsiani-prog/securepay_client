@@ -1,14 +1,14 @@
 import escrosafeLogo from '../assets/escrosafe-logo.png'
 
-function PaymentFlowDiagram() {
+function PaymentFlowDiagram({ t = (text) => text }) {
 	return (
 		<div className="pfd">
 			{/* 1. Pay online */}
 			<section className="pfd-panel pfd-green">
 				<span className="pfd-num">1</span>
 				<div className="pfd-copy">
-					<h4>Pay online</h4>
-					<p>Choose EscroSafe at checkout and complete your payment securely.</p>
+					<h4>{t('Pay online')}</h4>
+					<p>{t('Choose EscroSafe at checkout and complete your payment securely.')}</p>
 				</div>
 				<div className="pfd-mock">
 					<span className="pfd-mock-label">Payment method</span>
@@ -22,9 +22,9 @@ function PaymentFlowDiagram() {
 					<rect x="10" y="4" width="38" height="68" rx="8" fill="#2f4d6b" />
 					<rect x="14" y="12" width="30" height="50" rx="3" fill="#ffffff" />
 					<rect x="25" y="7" width="8" height="2" rx="1" fill="#8aa0b5" />
-					<text x="29" y="40" textAnchor="middle" fontSize="22" fontWeight="700" fill="#e8789a" fontFamily="system-ui, sans-serif">&#8377;</text>
-					<rect x="19" y="50" width="20" height="6" rx="3" fill="#e8789a" />
-					<circle cx="47" cy="56" r="13" fill="#d4547c" stroke="#fff0f4" strokeWidth="3" />
+					<text x="29" y="40" textAnchor="middle" fontSize="22" fontWeight="700" fill="#1f9a78" fontFamily="system-ui, sans-serif">&#8377;</text>
+					<rect x="19" y="50" width="20" height="6" rx="3" fill="#1f9a78" />
+					<circle cx="47" cy="56" r="13" fill="#2fa866" stroke="#dff3ea" strokeWidth="3" />
 					<path d="m41 56 4.5 4.5L53 52" fill="none" stroke="#fff" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" />
 				</svg>
 			</section>
@@ -32,8 +32,8 @@ function PaymentFlowDiagram() {
 			<section className="pfd-panel pfd-purple">
 				<span className="pfd-num">2</span>
 				<div className="pfd-copy">
-					<h4>Payment held</h4>
-					<p>Your payment is securely held with an RBI-regulated payment aggregator until your order is confirmed.</p>
+					<h4>{t('Payment held')}</h4>
+					<p>{t('Your payment is securely held with an RBI-regulated payment aggregator until your order is confirmed.')}</p>
 				</div>
 				<div className="pfd-mock pfd-mock-held">
 					<span className="pfd-mock-label">Payment status</span>
@@ -68,8 +68,8 @@ function PaymentFlowDiagram() {
 			<section className="pfd-panel pfd-blue">
 				<span className="pfd-num">3</span>
 				<div className="pfd-copy">
-					<h4>Track &amp; deliver</h4>
-					<p>We track your order in real time from our store to your doorstep.</p>
+					<h4>{t('Track & deliver')}</h4>
+					<p>{t('We track your order in real time from our store to your doorstep.')}</p>
 				</div>
 				<div className="pfd-mock pfd-mock-route">
 					<div className="pfd-route-head">
@@ -132,13 +132,13 @@ function PaymentFlowDiagram() {
 				</div>
 				{/* Parcel with a location pin: your order, tracked live */}
 				<svg className="pfd-art pfd-art-parcel" viewBox="0 0 64 64" aria-hidden="true">
-					<path d="M30 6 54 18 30 30 6 18Z" fill="#fbbed1" />
-					<path d="M6 18 30 30v26L6 44Z" fill="#e58aa7" />
-					<path d="M54 18 30 30v26l24-12Z" fill="#df7a9a" />
-					<path d="M18 12 42 24v8" fill="none" stroke="#ffdde8" strokeWidth="3" strokeLinecap="round" opacity=".8" />
-					<circle cx="50" cy="48" r="13" fill="#d4547c" stroke="#ffd7e3" strokeWidth="3" />
+					<path d="M30 6 54 18 30 30 6 18Z" fill="#e0b27a" />
+					<path d="M6 18 30 30v26L6 44Z" fill="#c8945a" />
+					<path d="M54 18 30 30v26l24-12Z" fill="#ab7a45" />
+					<path d="M18 12 42 24v8" fill="none" stroke="#f3dcb9" strokeWidth="3" strokeLinecap="round" opacity=".8" />
+					<circle cx="50" cy="48" r="13" fill="#2f6fe0" stroke="#ddeafc" strokeWidth="3" />
 					<path d="M50 57c-5-5-6-7.5-6-10a6 6 0 0 1 12 0c0 2.500-1 5-6 10Z" fill="#fff" />
-					<circle cx="50" cy="47" r="2.300" fill="#d4547c" />
+					<circle cx="50" cy="47" r="2.300" fill="#2f6fe0" />
 				</svg>
 			</section>
 
@@ -146,8 +146,8 @@ function PaymentFlowDiagram() {
 			<section className="pfd-panel pfd-amber">
 				<span className="pfd-num">4</span>
 				<div className="pfd-copy">
-					<h4>Confirm delivery</h4>
-					<p>Once you confirm receiving the order, the payment is released to the merchant.</p>
+					<h4>{t('Confirm delivery')}</h4>
+					<p>{t('Once you confirm receiving the order, the payment is released to the merchant.')}</p>
 				</div>
 				<div className="pfd-mock pfd-mock-chat">
 					{/* WhatsApp-style header: back arrow, shield icon, EscroSafe logo */}
@@ -167,9 +167,9 @@ function PaymentFlowDiagram() {
 				</div>
 				{/* "Delivery confirmed" seal */}
 				<svg className="pfd-art pfd-art-chat" viewBox="0 0 64 64" aria-hidden="true">
-					<polygon points="32.0,5.0 37.2,9.1 43.7,7.7 46.7,13.6 53.1,15.2 53.2,21.8 58.3,26.0 55.5,32.0 58.3,38.0 53.2,42.2 53.1,48.8 46.7,50.4 43.7,56.3 37.2,54.9 32.0,59.0 26.8,54.9 20.3,56.3 17.3,50.4 10.9,48.8 10.8,42.2 5.7,38.0 8.5,32.0 5.7,26.0 10.8,21.8 10.9,15.2 17.3,13.6 20.3,7.7 26.8,9.1" fill="#c04470" />
+					<polygon points="32.0,5.0 37.2,9.1 43.7,7.7 46.7,13.6 53.1,15.2 53.2,21.8 58.3,26.0 55.5,32.0 58.3,38.0 53.2,42.2 53.1,48.8 46.7,50.4 43.7,56.3 37.2,54.9 32.0,59.0 26.8,54.9 20.3,56.3 17.3,50.4 10.9,48.8 10.8,42.2 5.7,38.0 8.5,32.0 5.7,26.0 10.8,21.8 10.9,15.2 17.3,13.6 20.3,7.7 26.8,9.1" fill="#f08a24" />
 					<circle cx="32" cy="32" r="18" fill="#fff" />
-					<path d="m22.500 32.500 6.500 6.500 13-14" fill="none" stroke="#d4547c" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+					<path d="m22.500 32.500 6.500 6.500 13-14" fill="none" stroke="#2fa866" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
 				</svg>
 			</section>
 
@@ -179,20 +179,20 @@ function PaymentFlowDiagram() {
 					<svg viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" /></svg>
 				</span>
 				<div className="pfd-copy">
-					<h4>If the order is not received</h4>
-					<p>In case the order is not delivered to you, we will refund the amount to your bank account.</p>
+					<h4>{t('If the order is not received')}</h4>
+					<p>{t('In case the order is not delivered to you, we will refund the amount to your bank account.')}</p>
 				</div>
 				<div className="pfd-refund-flow">
 					{/* The refund is sent by the payment aggregator (EscroSafe does not hold the money) */}
 					<span className="pfd-agg-chip" role="img" aria-label="Payment aggregator" title="Payment aggregator">
 						<svg viewBox="0 0 48 48" aria-hidden="true">
-							<circle cx="24" cy="24" r="22" fill="#d4547c" />
+							<circle cx="24" cy="24" r="22" fill="#2f6fe0" />
 							<path d="M9.5 20.1A15 15 0 0 1 34.0 12.9" fill="none" stroke="#fff" strokeWidth="2.600" strokeLinecap="round" />
 							<path d="M33.3 6.2L34.0 12.9L27.3 12.9" fill="none" stroke="#fff" strokeWidth="2.600" strokeLinecap="round" strokeLinejoin="round" />
 							<path d="M38.5 27.9A15 15 0 0 1 14.0 35.1" fill="none" stroke="#fff" strokeWidth="2.600" strokeLinecap="round" />
 							<path d="M14.7 41.8L14.0 35.1L20.7 35.1" fill="none" stroke="#fff" strokeWidth="2.600" strokeLinecap="round" strokeLinejoin="round" />
 							<circle cx="24" cy="24" r="7.500" fill="#fff" />
-							<text x="24" y="28" textAnchor="middle" fontSize="11" fontWeight="700" fill="#d4547c" fontFamily="system-ui, sans-serif">&#8377;</text>
+							<text x="24" y="28" textAnchor="middle" fontSize="11" fontWeight="700" fill="#2f6fe0" fontFamily="system-ui, sans-serif">&#8377;</text>
 						</svg>
 					</span>
 					<i className="pfd-dash-arrow" aria-hidden="true" />

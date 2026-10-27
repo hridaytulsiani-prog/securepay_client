@@ -5,6 +5,7 @@
 // writes here can originate from a plain fetch call outside any component.
 const TOKEN_KEY = 'securepay_token'
 const USER_KEY = 'securepay_user'
+const AUTH_NOTICE_KEY = 'securepay_auth_notice'
 export const AUTH_IDLE_TIMEOUT_MS = 10 * 60 * 1000
 
 function emitAuthChange() {
@@ -74,6 +75,18 @@ export function clearAuthSession() {
 	deleteCookie(TOKEN_KEY)
 	localStorage.removeItem(USER_KEY)
 	emitAuthChange()
+}
+
+export function setAuthNotice(message) {
+	if (message) {
+		sessionStorage.setItem(AUTH_NOTICE_KEY, message)
+	}
+}
+
+export function consumeAuthNotice() {
+	const message = sessionStorage.getItem(AUTH_NOTICE_KEY) || ''
+	sessionStorage.removeItem(AUTH_NOTICE_KEY)
+	return message
 }
 
 export function isAuthenticated() {

@@ -11,6 +11,112 @@ const MERCHANT_SITE_URL = (process.env.NEXT_PUBLIC_MERCHANT_URL || 'https://merc
 // Same-origin by default: next.config.mjs rewrites /adminpanel/* to Django.
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 
+// The Hindi copy is kept locally so switching is instant, private, and reliable.
+// English remains the default and no third-party translation widget changes the layout.
+const HINDI_TRANSLATIONS = {
+	'Buyer protection page': 'खरीदार सुरक्षा पेज',
+	'Language': 'भाषा',
+	'How it works': 'यह कैसे काम करता है',
+	'What to expect': 'क्या उम्मीद करें',
+	'FAQ': 'सामान्य प्रश्न',
+	'Contact': 'संपर्क',
+	'For merchants': 'व्यापारियों के लिए',
+	'Open menu': 'मेन्यू खोलें',
+	'Menu': 'मेन्यू',
+	'Close menu': 'मेन्यू बंद करें',
+	'Your payment, protected until delivery': 'आपका भुगतान, डिलीवरी तक सुरक्षित',
+	'Shop online, without': 'ऑनलाइन खरीदारी करें, बिना',
+	'the': 'किसी',
+	'leap of faith.': 'अंधे भरोसे के।',
+	'EscroSafe protects your payment the moment you check out,': 'चेकआउट करते ही EscroSafe आपके भुगतान को सुरक्षित रखता है,',
+	'with a direct line to the seller if anything goes wrong.': 'और कोई समस्या होने पर आपको सीधे विक्रेता से जोड़ता है।',
+	'See a demo': 'डेमो देखें',
+	'Available whenever a seller checks you out with EscroSafe.': 'जब भी कोई विक्रेता EscroSafe से आपका चेकआउट करता है, यह सुरक्षा उपलब्ध रहती है।',
+	'Working behind the scenes': 'पर्दे के पीछे काम करता हुआ',
+	'What happens after': 'भुगतान के बाद',
+	'you pay': 'क्या होता है',
+	"Four things run quietly behind every order, from the moment you pay to the moment it's confirmed in your hands.": 'हर ऑर्डर के पीछे चार चीज़ें चुपचाप काम करती हैं—भुगतान से लेकर आपके हाथों में डिलीवरी की पुष्टि तक।',
+	'Your details stay private': 'आपकी जानकारी निजी रहती है',
+	'Card and bank info never reach the seller.': 'कार्ड और बैंक की जानकारी विक्रेता तक कभी नहीं पहुँचती।',
+	'Updates without asking': 'बिना पूछे अपडेट',
+	'Real order status, sent straight to you.': 'ऑर्डर की सही स्थिति सीधे आपको भेजी जाती है।',
+	'Checked, not just marked': 'सिर्फ दर्ज नहीं, सत्यापित',
+	'We verify it landed safely in your hands.': 'हम सत्यापित करते हैं कि ऑर्डर सुरक्षित रूप से आपको मिला।',
+	'One tap if needed': 'ज़रूरत पर बस एक टैप',
+	'Reach the seller directly, no queue.': 'बिना कतार सीधे विक्रेता से संपर्क करें।',
+	'Before you ask': 'आपके पूछने से पहले',
+	'Frequently asked': 'अक्सर पूछे जाने वाले',
+	'questions': 'सवाल',
+	'Quick answers to what shoppers ask most about payments, delivery and refunds.': 'भुगतान, डिलीवरी और रिफंड के बारे में खरीदारों के आम सवालों के आसान जवाब।',
+	'Is my payment actually safe?': 'क्या मेरा भुगतान सच में सुरक्षित है?',
+	"When you choose EscroSafe, your payment is collected by an RBI-authorised payment aggregator. Under RBI rules, the aggregator keeps collected funds in an escrow account with a scheduled commercial bank in India. That account is managed by the payment aggregator; the money is not held in EscroSafe's bank account or paid straight to the seller.": 'जब आप EscroSafe चुनते हैं, तो आपका भुगतान RBI-अधिकृत पेमेंट एग्रीगेटर द्वारा एकत्र किया जाता है। RBI के नियमों के तहत, एग्रीगेटर इस धनराशि को भारत के एक अनुसूचित वाणिज्यिक बैंक के एस्क्रो खाते में रखता है। इस खाते का प्रबंधन पेमेंट एग्रीगेटर करता है; पैसा EscroSafe के बैंक खाते में नहीं रखा जाता और न ही सीधे विक्रेता को दिया जाता है।',
+	"The seller is paid after delivery is verified and you confirm that you've received the parcel. If delivery fails, the payment is refunded through the payment partner. In case of dispute, our customer support team investigates the issue and reaches a decision.": 'डिलीवरी सत्यापित होने और आपके द्वारा पार्सल मिलने की पुष्टि के बाद विक्रेता को भुगतान किया जाता है। डिलीवरी न होने पर पेमेंट पार्टनर के माध्यम से रिफंड किया जाता है। विवाद की स्थिति में हमारी ग्राहक सहायता टीम जाँच कर निर्णय लेती है।',
+	'Do I need to create an account?': 'क्या मुझे खाता बनाना होगा?',
+	"No. Just choose EscroSafe at the seller's checkout. We'll send you a secure link when it's time to confirm delivery.": 'नहीं। विक्रेता के चेकआउट पर बस EscroSafe चुनें। डिलीवरी की पुष्टि का समय आने पर हम आपको एक सुरक्षित लिंक भेजेंगे।',
+	'How will I know where my order is?': 'मुझे कैसे पता चलेगा कि मेरा ऑर्डर कहाँ है?',
+	"You can track it through the courier link provided for your order. EscroSafe also checks the shipment's delivery status so we know when to ask for your confirmation.": 'आप अपने ऑर्डर के साथ दिए गए कूरियर लिंक से इसे ट्रैक कर सकते हैं। EscroSafe शिपमेंट की डिलीवरी स्थिति भी जाँचता है, ताकि सही समय पर आपसे पुष्टि माँगी जा सके।',
+	'How does EscroSafe know it was delivered?': 'EscroSafe को कैसे पता चलता है कि डिलीवरी हो गई?',
+	"Through the courier's delivery scan, or an OTP shared with you at the door, not just a status label.": 'कूरियर के डिलीवरी स्कैन या दरवाज़े पर आपके साथ साझा किए गए OTP से—सिर्फ स्टेटस लेबल से नहीं।',
+	"Something's wrong with my order. What do I do?": 'मेरे ऑर्डर में समस्या है। मैं क्या करूँ?',
+	"Message us through the WhatsApp link we send you. Our customer support team will get in touch and investigate. If your order hasn't arrived, we'll review the delivery evidence and decide the claim. Once we confirm it wasn't delivered, your payment will be refunded.": 'हमारे भेजे गए WhatsApp लिंक से हमें संदेश भेजें। हमारी ग्राहक सहायता टीम आपसे संपर्क कर जाँच करेगी। अगर ऑर्डर नहीं पहुँचा है, तो हम डिलीवरी प्रमाण की समीक्षा कर दावे पर निर्णय लेंगे। डिलीवरी न होने की पुष्टि के बाद आपका भुगतान रिफंड कर दिया जाएगा।',
+	"If the item arrives but is wrong or damaged, you can report it through the same link. We'll help you raise it with the seller, whose return and refund policy applies to product issues.": 'अगर सामान गलत या क्षतिग्रस्त पहुँचे, तो उसी लिंक से इसकी शिकायत करें। हम विक्रेता के सामने मामला उठाने में आपकी मदद करेंगे; उत्पाद संबंधी समस्याओं पर विक्रेता की रिटर्न और रिफंड नीति लागू होगी।',
+	'Still have a question?': 'अभी भी कोई सवाल है?',
+	'Get in': 'हमसे',
+	'touch': 'संपर्क करें',
+	"Something unclear about your order or payment? Send us a message and we'll get back to you.": 'ऑर्डर या भुगतान को लेकर कुछ स्पष्ट नहीं है? हमें संदेश भेजें, हम आपसे संपर्क करेंगे।',
+	'Email us': 'हमें ईमेल करें',
+	'We reply quickly': 'हम जल्दी जवाब देते हैं',
+	'Expect an answer within one working day.': 'एक कार्य दिवस के भीतर जवाब की उम्मीद रखें।',
+	'Have an order?': 'क्या आपका कोई ऑर्डर है?',
+	'Add your order ID so we can help faster.': 'जल्दी मदद पाने के लिए अपना ऑर्डर ID जोड़ें।',
+	'Your name': 'आपका नाम',
+	'Full name': 'पूरा नाम',
+	'Email': 'ईमेल',
+	'Order ID (optional)': 'ऑर्डर ID (वैकल्पिक)',
+	'Your message': 'आपका संदेश',
+	'How can we help?': 'हम आपकी कैसे मदद कर सकते हैं?',
+	'Sending...': 'भेजा जा रहा है...',
+	'Message sent': 'संदेश भेज दिया गया',
+	'Send message': 'संदेश भेजें',
+	'We reply within one working day.': 'हम एक कार्य दिवस के भीतर जवाब देते हैं।',
+	"Thanks! Your message has been sent. We'll get back to you soon.": 'धन्यवाद! आपका संदेश भेज दिया गया है। हम जल्द आपसे संपर्क करेंगे।',
+	'Could not send your message. Please try again.': 'आपका संदेश नहीं भेजा जा सका। कृपया फिर कोशिश करें।',
+	'Terms & Conditions': 'नियम और शर्तें',
+	'Video coming soon': 'वीडियो जल्द आ रहा है',
+	'Pay online': 'ऑनलाइन भुगतान करें',
+	'Choose EscroSafe at checkout and complete your payment securely.': 'चेकआउट पर EscroSafe चुनें और सुरक्षित रूप से भुगतान पूरा करें।',
+	'Payment method': 'भुगतान का तरीका',
+	'Credit or debit card': 'क्रेडिट या डेबिट कार्ड',
+	'Complete payment': 'भुगतान पूरा करें',
+	'Payment held': 'भुगतान सुरक्षित रखा गया',
+	'Your payment is securely held with an RBI-regulated payment aggregator until your order is confirmed.': 'ऑर्डर की पुष्टि होने तक आपका भुगतान RBI-विनियमित पेमेंट एग्रीगेटर के पास सुरक्षित रहता है।',
+	'Payment status': 'भुगतान की स्थिति',
+	'Amount paid': 'भुगतान राशि',
+	'Held by payment aggregator': 'पेमेंट एग्रीगेटर के पास सुरक्षित',
+	'Paid': 'भुगतान हुआ',
+	'Held': 'सुरक्षित',
+	'Release / Refund': 'जारी / रिफंड',
+	'Track & deliver': 'ट्रैक और डिलीवरी',
+	'We track your order in real time from our store to your doorstep.': 'हम स्टोर से आपके दरवाज़े तक ऑर्डर को रियल टाइम में ट्रैक करते हैं।',
+	'Live tracking': 'लाइव ट्रैकिंग',
+	'On the way': 'रास्ते में',
+	'Order route from store to home: shipped, in transit, out for delivery, delivered': 'स्टोर से घर तक ऑर्डर का मार्ग: भेजा गया, रास्ते में, डिलीवरी के लिए निकला, डिलीवर हुआ',
+	'Shipped': 'भेजा गया',
+	'In transit': 'रास्ते में',
+	'Out for': 'डिलीवरी के',
+	'delivery': 'लिए निकला',
+	'Delivered': 'डिलीवर हुआ',
+	'Confirm delivery': 'डिलीवरी की पुष्टि करें',
+	'Once you confirm receiving the order, the payment is released to the merchant.': 'आपके द्वारा ऑर्डर मिलने की पुष्टि के बाद भुगतान व्यापारी को जारी किया जाता है।',
+	'Your order was tracked, and delivered via Delhivery!': 'आपका ऑर्डर ट्रैक किया गया और Delhivery द्वारा डिलीवर हुआ!',
+	'If you have not received your order or had trouble with your order; click the link below, fill out a quick survey and our team will sort it out shortly. If you have received your order - feel free to ignore this': 'अगर ऑर्डर नहीं मिला या कोई समस्या हुई, तो नीचे दिए लिंक पर क्लिक करके छोटा-सा फॉर्म भरें। हमारी टीम जल्द समाधान करेगी। ऑर्डर मिल गया है तो इस संदेश को अनदेखा करें।',
+	'If the order is not received': 'अगर ऑर्डर नहीं मिलता है',
+	'In case the order is not delivered to you, we will refund the amount to your bank account.': 'ऑर्डर डिलीवर न होने पर राशि आपके बैंक खाते में रिफंड कर दी जाएगी।',
+	'Payment aggregator': 'पेमेंट एग्रीगेटर',
+	'Refunded to your bank account': 'आपके बैंक खाते में रिफंड किया गया',
+	'Bank Account ****** 1234': 'बैंक खाता ****** 1234',
+}
+
 const timelineSteps = [
 	{
 		tone: 'blue',
@@ -132,7 +238,7 @@ function useReveal() {
 const WHAT_HAPPENS_VIDEO = '/escrosafe-video.mp4'
 const WHAT_HAPPENS_POSTER = '' // optional thumbnail image, e.g. '/what-happens-poster.jpg'
 
-function PostPayVideo({ playWithSoundSignal = 0 }) {
+function PostPayVideo({ playWithSoundSignal = 0, t = (text) => text }) {
 	const [failed, setFailed] = useState(false)
 	const videoRef = useRef(null)
 
@@ -148,11 +254,11 @@ function PostPayVideo({ playWithSoundSignal = 0 }) {
 
 	if (failed) {
 		return (
-			<div className="buyer-timeline-video buyer-timeline-video-empty" role="img" aria-label="Video coming soon">
+			<div className="buyer-timeline-video buyer-timeline-video-empty" role="img" aria-label={t('Video coming soon')}>
 				<span className="buyer-timeline-video-play" aria-hidden="true">
 					<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5Z" /></svg>
 				</span>
-				<strong>Video coming soon</strong>
+				<strong>{t('Video coming soon')}</strong>
 			</div>
 		)
 	}
@@ -418,6 +524,8 @@ function useChatDemo() {
 */
 
 function CustomerTrust() {
+	const [language, setLanguage] = useState('en')
+	const t = (text) => (language === 'hi' ? HINDI_TRANSLATIONS[text] || text : text)
 	const heroRef = useRef(null)
 	const [timelineRef, timelineVisible] = useReveal()
 	const [faqRef, faqVisible] = useReveal()
@@ -471,17 +579,27 @@ function CustomerTrust() {
 			})
 			const data = await response.json().catch(() => null)
 			if (!response.ok) {
-				throw new Error((data && data.error) || 'Could not send your message. Please try again.')
+				throw new Error((data && data.error) || t('Could not send your message. Please try again.'))
 			}
-			setContactStatus({ state: 'sent', text: "Thanks! Your message has been sent. We'll get back to you soon." })
+			setContactStatus({ state: 'sent', text: t("Thanks! Your message has been sent. We'll get back to you soon.") })
 		} catch (error) {
-			setContactStatus({ state: 'error', text: error.message || 'Could not send your message. Please try again.' })
+			setContactStatus({ state: 'error', text: error.message || t('Could not send your message. Please try again.') })
 		}
 	}
 	const isScrolled = useScrolled(80)
 	const [menuOpen, setMenuOpen] = useState(false)
 	const closeMenu = () => setMenuOpen(false)
 	const requestDemoPlayback = () => setDemoPlaySignal((current) => current + 1)
+	useEffect(() => {
+		const previousLanguage = document.documentElement.lang
+		const previousTitle = document.title
+		document.documentElement.lang = language
+		document.title = language === 'hi' ? 'खरीदार सुरक्षा | EscroSafe' : 'Buyer protection | EscroSafe'
+		return () => {
+			document.documentElement.lang = previousLanguage
+			document.title = previousTitle
+		}
+	}, [language])
 	useEffect(() => {
 		if (!menuOpen) return undefined
 		const onKey = (event) => { if (event.key === 'Escape') setMenuOpen(false) }
@@ -490,7 +608,7 @@ function CustomerTrust() {
 	}, [menuOpen])
 
 	return (
-		<div className="buyer-page">
+		<div className="buyer-page" lang={language}>
 			<div className="buyer-bg-blob buyer-bg-blob-a" aria-hidden="true" />
 			<div className="buyer-bg-blob buyer-bg-blob-b" aria-hidden="true" />
 
@@ -498,43 +616,49 @@ function CustomerTrust() {
 				<div className="buyer-nav-inner">
 					<img className="buyer-brand-logo" src={escrosafeLogo.src} alt="EscroSafe" />
 					<img className="buyer-brand-mark" src="/short-logo-new.png" alt="EscroSafe" />
-					<nav className="buyer-nav-links" aria-label="Buyer protection page">
+					<nav className="buyer-nav-links" aria-label={t('Buyer protection page')}>
 						<a className={activeNavId === 'hero' ? 'is-active' : ''} href="#hero">
-							How it works
+							{t('How it works')}
 						</a>
 						<a className={activeNavId === 'how-it-works' ? 'is-active' : ''} href="#how-it-works" onClick={requestDemoPlayback}>
-							What to expect
+							{t('What to expect')}
 						</a>
 						<a className={activeNavId === 'faq' ? 'is-active' : ''} href="#faq">
-							FAQ
+							{t('FAQ')}
 						</a>
 						<a className={activeNavId === 'contact' ? 'is-active' : ''} href="#contact">
-							Contact
+							{t('Contact')}
 						</a>
 					</nav>
-					<a className="buyer-nav-cta" href={`${MERCHANT_SITE_URL}/`}>
-						<span className="buyer-cta-label">For merchants</span>
-						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
-					</a>
-					<button type="button" className="buyer-menu-button" aria-label="Open menu" aria-expanded={menuOpen} aria-controls="buyer-mobile-menu" onClick={() => setMenuOpen(true)}>
+					<div className="buyer-nav-actions">
+						<div className="buyer-language-switch" role="group" aria-label={t('Language')}>
+							<button type="button" className={language === 'en' ? 'is-active' : ''} aria-pressed={language === 'en'} onClick={() => setLanguage('en')}>English</button>
+							<button type="button" className={language === 'hi' ? 'is-active' : ''} aria-pressed={language === 'hi'} onClick={() => setLanguage('hi')}>हिंदी</button>
+						</div>
+						<a className="buyer-nav-cta" href={`${MERCHANT_SITE_URL}/`}>
+							<span className="buyer-cta-label">{t('For merchants')}</span>
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
+						</a>
+					</div>
+					<button type="button" className="buyer-menu-button" aria-label={t('Open menu')} aria-expanded={menuOpen} aria-controls="buyer-mobile-menu" onClick={() => setMenuOpen(true)}>
 						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
 					</button>
 				</div>
 				{menuOpen && (
 					<>
 						<div className="buyer-menu-backdrop" onClick={closeMenu} aria-hidden="true" />
-						<div className="buyer-mobile-menu" id="buyer-mobile-menu" role="dialog" aria-label="Menu">
+						<div className="buyer-mobile-menu" id="buyer-mobile-menu" role="dialog" aria-label={t('Menu')}>
 							<div className="buyer-mobile-menu-head">
-								<span>Menu</span>
-								<button type="button" className="buyer-menu-close" aria-label="Close menu" onClick={closeMenu}>
+								<span>{t('Menu')}</span>
+								<button type="button" className="buyer-menu-close" aria-label={t('Close menu')} onClick={closeMenu}>
 									<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
 								</button>
 							</div>
-							<nav aria-label="Menu">
-								<a className={activeNavId === 'hero' ? 'is-active' : ''} href="#hero" onClick={closeMenu}>How it works</a>
-								<a className={activeNavId === 'how-it-works' ? 'is-active' : ''} href="#how-it-works" onClick={() => { requestDemoPlayback(); closeMenu() }}>What to expect</a>
-								<a className={activeNavId === 'faq' ? 'is-active' : ''} href="#faq" onClick={closeMenu}>FAQ</a>
-								<a className={activeNavId === 'contact' ? 'is-active' : ''} href="#contact" onClick={closeMenu}>Contact</a>
+							<nav aria-label={t('Menu')}>
+								<a className={activeNavId === 'hero' ? 'is-active' : ''} href="#hero" onClick={closeMenu}>{t('How it works')}</a>
+								<a className={activeNavId === 'how-it-works' ? 'is-active' : ''} href="#how-it-works" onClick={() => { requestDemoPlayback(); closeMenu() }}>{t('What to expect')}</a>
+								<a className={activeNavId === 'faq' ? 'is-active' : ''} href="#faq" onClick={closeMenu}>{t('FAQ')}</a>
+								<a className={activeNavId === 'contact' ? 'is-active' : ''} href="#contact" onClick={closeMenu}>{t('Contact')}</a>
 							</nav>
 						</div>
 					</>
@@ -546,23 +670,23 @@ function CustomerTrust() {
 					<div className="buyer-hero-copy">
 						<span className="buyer-badge buyer-fade-up" style={{ '--d': '0s' }}>
 							<span className="buyer-badge-dot" aria-hidden="true" />
-							Your payment, protected until delivery
+							{t('Your payment, protected until delivery')}
 						</span>
 						<h1 className="buyer-fade-up" style={{ '--d': '0.08s' }}>
-							Shop online, without<br />the <span className="buyer-hero-accent">leap of faith.</span>
+							{t('Shop online, without')}<br />{t('the')} <span className="buyer-hero-accent">{t('leap of faith.')}</span>
 						</h1>
 						<p className="buyer-lede buyer-fade-up" style={{ '--d': '0.16s' }}>
-							EscroSafe protects your payment the moment you check out,<br />
-							with a direct line to the seller if anything goes wrong.
+							{t('EscroSafe protects your payment the moment you check out,')}<br />
+							{t('with a direct line to the seller if anything goes wrong.')}
 						</p>
 						<div className="buyer-hero-actions buyer-fade-up" style={{ '--d': '0.22s' }}>
 							<a className="buyer-cta-primary" href="#how-it-works" onClick={requestDemoPlayback}>
-								<span className="buyer-cta-label">See a demo</span>
+								<span className="buyer-cta-label">{t('See a demo')}</span>
 								<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
 							</a>
 						</div>
 						<p className="buyer-hero-footnote buyer-fade-up" style={{ '--d': '0.28s' }}>
-							Available whenever a seller checks you out with EscroSafe.
+							{t('Available whenever a seller checks you out with EscroSafe.')}
 						</p>
 					</div>
 
@@ -688,7 +812,7 @@ function CustomerTrust() {
 						{/* Previous pasted image, kept for reference:
 						<img className="buyer-payment-flow-image" src="/payment-flow-illustration.png" alt="" />
 						*/}
-						<PaymentFlowDiagram />
+						<PaymentFlowDiagram t={t} />
 					</div>
 				</section>
 
@@ -700,16 +824,15 @@ function CustomerTrust() {
 					<div className="buyer-timeline-copy">
 						<span className="buyer-badge">
 							<span className="buyer-badge-dot" aria-hidden="true" />
-							Working behind the scenes
+							{t('Working behind the scenes')}
 						</span>
 						<h2>
-							What happens after
+							{t('What happens after')}
 							<br />
-							<span className="buyer-hero-accent">you pay</span>
+							<span className="buyer-hero-accent">{t('you pay')}</span>
 						</h2>
 						<p className="buyer-timeline-lede">
-							Four things run quietly behind every order, from the moment you pay to the moment it's
-							confirmed in your hands.
+							{t("Four things run quietly behind every order, from the moment you pay to the moment it's confirmed in your hands.")}
 						</p>
 					</div>
 
@@ -720,15 +843,15 @@ function CustomerTrust() {
 						{/* Previous icon strip, kept for reference:
 						<PostPayArt />
 						*/}
-						<PostPayVideo playWithSoundSignal={demoPlaySignal} />
+						<PostPayVideo playWithSoundSignal={demoPlaySignal} t={t} />
 					</div>
 
 					<div className="buyer-expect-grid">
 						{timelineSteps.map((step) => (
 							<div className="buyer-expect-item" key={step.title}>
 								<span className={`buyer-expect-icon is-${step.tone}`}>{step.icon}</span>
-								<strong>{step.title}</strong>
-								<p>{step.body}</p>
+								<strong>{t(step.title)}</strong>
+								<p>{t(step.body)}</p>
 							</div>
 						))}
 					</div>
@@ -737,24 +860,24 @@ function CustomerTrust() {
 				<section id="faq" className={`buyer-faq${faqVisible ? ' is-visible' : ''}`} ref={faqRef}>
 					<span className="buyer-badge">
 						<span className="buyer-badge-dot" aria-hidden="true" />
-						Before you ask
+						{t('Before you ask')}
 					</span>
 					<h2>
-						Frequently asked <span className="buyer-hero-accent">questions</span>
+						{t('Frequently asked')} <span className="buyer-hero-accent">{t('questions')}</span>
 					</h2>
 					<p className="buyer-faq-lede">
-						Quick answers to what shoppers ask most about payments, delivery and refunds.
+						{t('Quick answers to what shoppers ask most about payments, delivery and refunds.')}
 					</p>
 
 					<div className="buyer-faq-list">
 						{FAQ_ITEMS.map((item) => (
 							<details className="buyer-faq-item" key={item.question}>
 								<summary>
-									{item.question}
+									{t(item.question)}
 									<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
 								</summary>
 								{item.answer.map((paragraph) => (
-									<p key={paragraph}>{paragraph}</p>
+									<p key={paragraph}>{t(paragraph)}</p>
 								))}
 							</details>
 						))}
@@ -764,13 +887,13 @@ function CustomerTrust() {
 				<section id="contact" className={`buyer-contact${contactVisible ? ' is-visible' : ''}`} ref={contactRef}>
 					<span className="buyer-badge">
 						<span className="buyer-badge-dot" aria-hidden="true" />
-						Still have a question?
+						{t('Still have a question?')}
 					</span>
 					<h2>
-						Get in <span className="buyer-hero-accent">touch</span>
+						{t('Get in')} <span className="buyer-hero-accent">{t('touch')}</span>
 					</h2>
 					<p className="buyer-contact-lede">
-						Something unclear about your order or payment? Send us a message and we&apos;ll get back to you.
+						{t("Something unclear about your order or payment? Send us a message and we'll get back to you.")}
 					</p>
 
 					<div className="buyer-contact-grid">
@@ -780,8 +903,8 @@ function CustomerTrust() {
 									<>
 										<span className={`buyer-expect-icon is-${card.tone}`}>{card.icon}</span>
 										<div>
-											<strong>{card.title}</strong>
-											<p>{card.body}</p>
+											<strong>{t(card.title)}</strong>
+											<p>{t(card.body)}</p>
 										</div>
 									</>
 								)
@@ -795,20 +918,20 @@ function CustomerTrust() {
 
 						<form className="buyer-contact-form" onSubmit={handleContactSubmit}>
 							<label>
-								<span>Your name</span>
-								<input type="text" required value={contactForm.name} onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })} placeholder="Full name" />
+								<span>{t('Your name')}</span>
+								<input type="text" required value={contactForm.name} onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })} placeholder={t('Full name')} />
 							</label>
 							<label>
-								<span>Email</span>
+								<span>{t('Email')}</span>
 								<input type="email" required value={contactForm.email} onChange={(event) => setContactForm({ ...contactForm, email: event.target.value })} placeholder="you@example.com" />
 							</label>
 							<label className="is-wide">
-								<span>Order ID (optional)</span>
+								<span>{t('Order ID (optional)')}</span>
 								<input type="text" value={contactForm.orderId} onChange={(event) => setContactForm({ ...contactForm, orderId: event.target.value })} placeholder="SP_1001" />
 							</label>
 							<label className="is-wide">
-								<span>Your message</span>
-								<textarea required rows="3" value={contactForm.message} onChange={(event) => setContactForm({ ...contactForm, message: event.target.value })} placeholder="How can we help?" />
+								<span>{t('Your message')}</span>
+								<textarea required rows="3" value={contactForm.message} onChange={(event) => setContactForm({ ...contactForm, message: event.target.value })} placeholder={t('How can we help?')} />
 							</label>
 								<input
 									type="text"
@@ -821,12 +944,12 @@ function CustomerTrust() {
 									onChange={(event) => setContactForm({ ...contactForm, website: event.target.value })}
 								/>
 								<button type="submit" className="buyer-contact-send" disabled={contactStatus.state === 'sending' || contactStatus.state === 'sent'}>
-									{contactStatus.state === 'sending' ? 'Sending...' : contactStatus.state === 'sent' ? 'Message sent' : 'Send message'}
+									{contactStatus.state === 'sending' ? t('Sending...') : contactStatus.state === 'sent' ? t('Message sent') : t('Send message')}
 								</button>
 								{contactStatus.state === 'sent' || contactStatus.state === 'error' ? (
 									<small className={`is-wide buyer-contact-note is-${contactStatus.state}`} role="status">{contactStatus.text}</small>
 								) : (
-									<small className="is-wide">We reply within one working day.</small>
+									<small className="is-wide">{t('We reply within one working day.')}</small>
 								)}
 						</form>
 					</div>
@@ -835,7 +958,7 @@ function CustomerTrust() {
 
 			<footer className="buyer-footer">
 				<span>© {new Date().getFullYear()} EscroSafe.</span>
-				<a href={`${MERCHANT_SITE_URL}/terms`}>Terms & Conditions</a>
+				<a href={`${MERCHANT_SITE_URL}/terms`}>{t('Terms & Conditions')}</a>
 			</footer>
 		</div>
 	)

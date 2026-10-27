@@ -6258,6 +6258,48 @@ button.doc-tab-btn.active:focus {
 	transition: transform 0.16s ease, box-shadow 0.16s ease;
 }
 
+.buyer-nav-actions {
+	display: flex;
+	align-items: center;
+	gap: 0.7rem;
+}
+
+.buyer-language-switch {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.25rem;
+	border: 1px solid rgba(124, 92, 255, 0.2);
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.52);
+	box-shadow: 0 8px 20px rgba(76, 55, 158, 0.1);
+}
+
+.buyer-language-switch button {
+	min-width: 62px;
+	padding: 0.48rem 0.7rem;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: #5b527c;
+	font: inherit;
+	font-size: 0.82rem;
+	font-weight: 750;
+	line-height: 1;
+	cursor: pointer;
+	transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.buyer-language-switch button.is-active {
+	background: #ffffff;
+	color: #12211a;
+	box-shadow: 0 4px 12px rgba(76, 55, 158, 0.16);
+}
+
+.buyer-language-switch button:focus-visible {
+	outline: 2px solid #7c5cff;
+	outline-offset: 2px;
+}
+
 .buyer-nav-cta:hover {
 	transform: translateY(-2px);
 	box-shadow: 0 14px 26px rgba(15, 35, 24, 0.2);
@@ -8262,7 +8304,9 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
 .buyer-menu-button, .buyer-menu-backdrop, .buyer-mobile-menu { display: none; }
 @media (max-width: 900px) {
 	.buyer-nav-inner { gap: 0.6rem; }
-	.buyer-nav-cta { margin-left: auto; }
+	.buyer-nav-actions { order: 2; gap: 0.45rem; }
+	.buyer-nav-cta { margin-left: 0; }
+	.buyer-language-switch button { min-width: 52px; padding-inline: 0.5rem; }
 	.buyer-menu-button { flex: none; display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border: 1px solid rgba(124, 92, 255, 0.22); border-radius: 12px; background: rgba(255, 255, 255, 0.7); color: #12211a; cursor: pointer; }
 	.buyer-menu-button svg, .buyer-menu-close svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 	.buyer-menu-backdrop { display: block; position: fixed; inset: 0; z-index: 90; background: rgba(18, 33, 26, 0.35); }
@@ -8301,7 +8345,19 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
 /* header on mobile: logo left; menu button sits just left of "For merchants" on the right */
 @media (max-width: 900px) {
 	.buyer-menu-button { order: 1; margin-left: auto; }
-	.buyer-nav-cta { order: 2; margin-left: 0; }
+	.buyer-nav-actions { order: 2; }
+}
+
+@media (max-width: 640px) {
+	.buyer-nav-inner { gap: 0.4rem; }
+	.buyer-nav-actions { gap: 0.35rem; }
+	.buyer-language-switch { padding: 0.18rem; }
+	.buyer-language-switch button { min-width: 38px; padding: 0.43rem 0.35rem; font-size: 0.7rem; }
+}
+
+@media (max-width: 420px) {
+	.buyer-language-switch button { min-width: 34px; padding-inline: 0.25rem; }
+	.buyer-nav-cta { padding-inline: 0.65rem; }
 }
 
 /* menu button: transparent, no box */

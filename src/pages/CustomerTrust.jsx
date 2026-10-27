@@ -16,6 +16,7 @@ import escrosafeLogo from '../assets/escrosafe-logo.png'
 import PaymentFlowDiagram from '../components/PaymentFlowDiagram'
 import PostPayArt from '../components/PostPayArt'
 import { API_BASE_URL } from '../api/client'
+import { HINDI_TRANSLATIONS } from './customerTranslations'
 
 const timelineSteps = [
 	{
@@ -188,7 +189,7 @@ function useReveal() {
 const WHAT_HAPPENS_VIDEO = '/escrosafe-video.mp4'
 const WHAT_HAPPENS_POSTER = '' // optional thumbnail image, e.g. '/what-happens-poster.jpg'
 
-function PostPayVideo({ playWithSoundSignal = 0 }) {
+function PostPayVideo({ playWithSoundSignal = 0, t = (text) => text }) {
 	const [failed, setFailed] = useState(false)
 	const videoRef = useRef(null)
 
@@ -229,11 +230,11 @@ function PostPayVideo({ playWithSoundSignal = 0 }) {
 
 	if (failed) {
 		return (
-			<div className="buyer-timeline-video buyer-timeline-video-empty" role="img" aria-label="Video coming soon">
+			<div className="buyer-timeline-video buyer-timeline-video-empty" role="img" aria-label={t('Video coming soon')}>
 				<span className="buyer-timeline-video-play" aria-hidden="true">
 					<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5Z" /></svg>
 				</span>
-				<strong>Video coming soon</strong>
+				<strong>{t('Video coming soon')}</strong>
 			</div>
 		)
 	}
@@ -496,7 +497,12 @@ function useChatDemo() {
 */
 
 function CustomerTrust() {
-	useDocumentMeta(PAGE_TITLE, PAGE_DESCRIPTION)
+	const [language, setLanguage] = useState('en')
+	const t = (text) => (language === 'hi' ? HINDI_TRANSLATIONS[text] || text : text)
+	useDocumentMeta(
+		language === 'hi' ? 'खरीदार सुरक्षा | EscroSafe' : PAGE_TITLE,
+		language === 'hi' ? 'जानें कि EscroSafe चेकआउट से डिलीवरी तक आपके भुगतान की सुरक्षा कैसे करता है।' : PAGE_DESCRIPTION,
+	)
 
 	const heroRef = useRef(null)
 	const [timelineRef, timelineVisible] = useReveal()
@@ -551,17 +557,22 @@ function CustomerTrust() {
 			})
 			const data = await response.json().catch(() => null)
 			if (!response.ok) {
-				throw new Error((data && data.error) || 'Could not send your message. Please try again.')
+				throw new Error((data && data.error) || t('Could not send your message. Please try again.'))
 			}
-			setContactStatus({ state: 'sent', text: "Thanks! Your message has been sent. We'll get back to you soon." })
+			setContactStatus({ state: 'sent', text: t("Thanks! Your message has been sent. We'll get back to you soon.") })
 		} catch (error) {
-			setContactStatus({ state: 'error', text: error.message || 'Could not send your message. Please try again.' })
+			setContactStatus({ state: 'error', text: error.message || t('Could not send your message. Please try again.') })
 		}
 	}
 	const isScrolled = useScrolled(80)
 	const [menuOpen, setMenuOpen] = useState(false)
 	const closeMenu = () => setMenuOpen(false)
 	const requestDemoPlayback = () => setDemoPlaySignal((current) => current + 1)
+	useEffect(() => {
+		const previousLanguage = document.documentElement.lang
+		document.documentElement.lang = language
+		return () => { document.documentElement.lang = previousLanguage }
+	}, [language])
 	useEffect(() => {
 		if (!menuOpen) return undefined
 		const onKey = (event) => { if (event.key === 'Escape') setMenuOpen(false) }
@@ -570,50 +581,56 @@ function CustomerTrust() {
 	}, [menuOpen])
 
 	return (
-		<div className="buyer-page">
+		<div className="buyer-page" lang={language}>
 			<div className="buyer-bg-blob buyer-bg-blob-a" aria-hidden="true" />
 			<div className="buyer-bg-blob buyer-bg-blob-b" aria-hidden="true" />
 
 			<header className={`buyer-nav${isScrolled ? ' is-scrolled' : ''}`}>
 				<div className="buyer-nav-inner">
 					<img className="buyer-brand-logo" src={escrosafeLogo} alt="EscroSafe" />
-					<nav className="buyer-nav-links" aria-label="Buyer protection page">
+					<nav className="buyer-nav-links" aria-label={t('Buyer protection page')}>
 						<a className={activeNavId === 'hero' ? 'is-active' : ''} href="#hero">
-							How it works
+							{t('How it works')}
 						</a>
 						<a className={activeNavId === 'how-it-works' ? 'is-active' : ''} href="#how-it-works" onClick={requestDemoPlayback}>
-							What to expect
+							{t('What to expect')}
 						</a>
 						<a className={activeNavId === 'faq' ? 'is-active' : ''} href="#faq">
-							FAQ
+							{t('FAQ')}
 						</a>
 						<a className={activeNavId === 'contact' ? 'is-active' : ''} href="#contact">
-							Contact
+							{t('Contact')}
 						</a>
 					</nav>
-					<Link className="buyer-nav-cta" to="/">
-						<span className="buyer-cta-label">For merchants</span>
-						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
-					</Link>
-					<button type="button" className="buyer-menu-button" aria-label="Open menu" aria-expanded={menuOpen} aria-controls="buyer-mobile-menu" onClick={() => setMenuOpen(true)}>
+					<div className="buyer-nav-actions">
+						<div className="buyer-language-switch" role="group" aria-label={t('Language')}>
+							<button type="button" className={language === 'en' ? 'is-active' : ''} aria-pressed={language === 'en'} onClick={() => setLanguage('en')}>English</button>
+							<button type="button" className={language === 'hi' ? 'is-active' : ''} aria-pressed={language === 'hi'} onClick={() => setLanguage('hi')}>हिंदी</button>
+						</div>
+						<Link className="buyer-nav-cta" to="/">
+							<span className="buyer-cta-label">{t('For merchants')}</span>
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
+						</Link>
+					</div>
+					<button type="button" className="buyer-menu-button" aria-label={t('Open menu')} aria-expanded={menuOpen} aria-controls="buyer-mobile-menu" onClick={() => setMenuOpen(true)}>
 						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
 					</button>
 				</div>
 				{menuOpen && (
 					<>
 						<div className="buyer-menu-backdrop" onClick={closeMenu} aria-hidden="true" />
-						<div className="buyer-mobile-menu" id="buyer-mobile-menu" role="dialog" aria-label="Menu">
+						<div className="buyer-mobile-menu" id="buyer-mobile-menu" role="dialog" aria-label={t('Menu')}>
 							<div className="buyer-mobile-menu-head">
-								<span>Menu</span>
-								<button type="button" className="buyer-menu-close" aria-label="Close menu" onClick={closeMenu}>
+								<span>{t('Menu')}</span>
+								<button type="button" className="buyer-menu-close" aria-label={t('Close menu')} onClick={closeMenu}>
 									<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
 								</button>
 							</div>
-							<nav aria-label="Menu">
-								<a className={activeNavId === 'hero' ? 'is-active' : ''} href="#hero" onClick={closeMenu}>How it works</a>
-								<a className={activeNavId === 'how-it-works' ? 'is-active' : ''} href="#how-it-works" onClick={() => { requestDemoPlayback(); closeMenu() }}>What to expect</a>
-								<a className={activeNavId === 'faq' ? 'is-active' : ''} href="#faq" onClick={closeMenu}>FAQ</a>
-								<a className={activeNavId === 'contact' ? 'is-active' : ''} href="#contact" onClick={closeMenu}>Contact</a>
+							<nav aria-label={t('Menu')}>
+								<a className={activeNavId === 'hero' ? 'is-active' : ''} href="#hero" onClick={closeMenu}>{t('How it works')}</a>
+								<a className={activeNavId === 'how-it-works' ? 'is-active' : ''} href="#how-it-works" onClick={() => { requestDemoPlayback(); closeMenu() }}>{t('What to expect')}</a>
+								<a className={activeNavId === 'faq' ? 'is-active' : ''} href="#faq" onClick={closeMenu}>{t('FAQ')}</a>
+								<a className={activeNavId === 'contact' ? 'is-active' : ''} href="#contact" onClick={closeMenu}>{t('Contact')}</a>
 							</nav>
 						</div>
 					</>
@@ -625,23 +642,23 @@ function CustomerTrust() {
 					<div className="buyer-hero-copy">
 						<span className="buyer-badge buyer-fade-up" style={{ '--d': '0s' }}>
 							<span className="buyer-badge-dot" aria-hidden="true" />
-							Your payment, protected until delivery
+							{t('Your payment, protected until delivery')}
 						</span>
 						<h1 className="buyer-fade-up" style={{ '--d': '0.08s' }}>
-							Shop online, without<br />the <span className="buyer-hero-accent">leap of faith.</span>
+							{t('Shop online, without')}<br />{t('the')} <span className="buyer-hero-accent">{t('leap of faith.')}</span>
 						</h1>
 						<p className="buyer-lede buyer-fade-up" style={{ '--d': '0.16s' }}>
-							EscroSafe protects your payment the moment you check out,<br />
-							with a direct line to the seller if anything goes wrong.
+							{t('EscroSafe protects your payment the moment you check out,')}<br />
+							{t('with a direct line to the seller if anything goes wrong.')}
 						</p>
 						<div className="buyer-hero-actions buyer-fade-up" style={{ '--d': '0.22s' }}>
 							<a className="buyer-cta-primary" href="#how-it-works" onClick={requestDemoPlayback}>
-								<span className="buyer-cta-label">See a demo</span>
+								<span className="buyer-cta-label">{t('See a demo')}</span>
 								<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
 							</a>
 						</div>
 						<p className="buyer-hero-footnote buyer-fade-up" style={{ '--d': '0.28s' }}>
-							Available whenever a seller checks you out with EscroSafe.
+							{t('Available whenever a seller checks you out with EscroSafe.')}
 						</p>
 					</div>
 
@@ -767,7 +784,7 @@ function CustomerTrust() {
 						{/* Previous pasted image, kept for reference:
 						<img className="buyer-payment-flow-image" src="/payment-flow-illustration.png" alt="" />
 						*/}
-						<PaymentFlowDiagram />
+						<PaymentFlowDiagram t={t} />
 					</div>
 				</section>
 
@@ -779,16 +796,15 @@ function CustomerTrust() {
 					<div className="buyer-timeline-copy">
 						<span className="buyer-badge">
 							<span className="buyer-badge-dot" aria-hidden="true" />
-							Working behind the scenes
+							{t('Working behind the scenes')}
 						</span>
 						<h2>
-							What happens after
+							{t('What happens after')}
 							<br />
-							<span className="buyer-hero-accent">you pay</span>
+							<span className="buyer-hero-accent">{t('you pay')}</span>
 						</h2>
 						<p className="buyer-timeline-lede">
-							Four things run quietly behind every order, from the moment you pay to the moment it's
-							confirmed in your hands.
+							{t("Four things run quietly behind every order, from the moment you pay to the moment it's confirmed in your hands.")}
 						</p>
 					</div>
 
@@ -799,15 +815,15 @@ function CustomerTrust() {
 						{/* Previous icon strip, kept for reference:
 						<PostPayArt />
 						*/}
-						<PostPayVideo playWithSoundSignal={demoPlaySignal} />
+						<PostPayVideo playWithSoundSignal={demoPlaySignal} t={t} />
 					</div>
 
 					<div className="buyer-expect-grid">
 						{timelineSteps.map((step) => (
 							<div className="buyer-expect-item" key={step.title}>
 								<span className={`buyer-expect-icon is-${step.tone}`}>{step.icon}</span>
-								<strong>{step.title}</strong>
-								<p>{step.body}</p>
+								<strong>{t(step.title)}</strong>
+								<p>{t(step.body)}</p>
 							</div>
 						))}
 					</div>
@@ -816,24 +832,24 @@ function CustomerTrust() {
 				<section id="faq" className={`buyer-faq${faqVisible ? ' is-visible' : ''}`} ref={faqRef}>
 					<span className="buyer-badge">
 						<span className="buyer-badge-dot" aria-hidden="true" />
-						Before you ask
+						{t('Before you ask')}
 					</span>
 					<h2>
-						Frequently asked <span className="buyer-hero-accent">questions</span>
+						{t('Frequently asked')} <span className="buyer-hero-accent">{t('questions')}</span>
 					</h2>
 					<p className="buyer-faq-lede">
-						Quick answers to what shoppers ask most about payments, delivery and refunds.
+						{t('Quick answers to what shoppers ask most about payments, delivery and refunds.')}
 					</p>
 
 					<div className="buyer-faq-list">
 						{FAQ_ITEMS.map((item) => (
 							<details className="buyer-faq-item" key={item.question}>
 								<summary>
-									{item.question}
+									{t(item.question)}
 									<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
 								</summary>
 								{item.answer.map((paragraph) => (
-									<p key={paragraph}>{paragraph}</p>
+									<p key={paragraph}>{t(paragraph)}</p>
 								))}
 							</details>
 						))}
@@ -843,13 +859,13 @@ function CustomerTrust() {
 				<section id="contact" className={`buyer-contact${contactVisible ? ' is-visible' : ''}`} ref={contactRef}>
 					<span className="buyer-badge">
 						<span className="buyer-badge-dot" aria-hidden="true" />
-						Still have a question?
+						{t('Still have a question?')}
 					</span>
 					<h2>
-						Get in <span className="buyer-hero-accent">touch</span>
+						{t('Get in')} <span className="buyer-hero-accent">{t('touch')}</span>
 					</h2>
 					<p className="buyer-contact-lede">
-						Something unclear about your order or payment? Send us a message and we&apos;ll get back to you.
+						{t("Something unclear about your order or payment? Send us a message and we'll get back to you.")}
 					</p>
 
 					<div className="buyer-contact-grid">
@@ -859,8 +875,8 @@ function CustomerTrust() {
 									<>
 										<span className={`buyer-expect-icon is-${card.tone}`}>{card.icon}</span>
 										<div>
-											<strong>{card.title}</strong>
-											<p>{card.body}</p>
+											<strong>{t(card.title)}</strong>
+											<p>{t(card.body)}</p>
 										</div>
 									</>
 								)
@@ -874,20 +890,20 @@ function CustomerTrust() {
 
 						<form className="buyer-contact-form" onSubmit={handleContactSubmit}>
 							<label>
-								<span>Your name</span>
-								<input type="text" required value={contactForm.name} onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })} placeholder="Full name" />
+								<span>{t('Your name')}</span>
+								<input type="text" required value={contactForm.name} onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })} placeholder={t('Full name')} />
 							</label>
 							<label>
-								<span>Email</span>
+								<span>{t('Email')}</span>
 								<input type="email" required value={contactForm.email} onChange={(event) => setContactForm({ ...contactForm, email: event.target.value })} placeholder="you@example.com" />
 							</label>
 							<label className="is-wide">
-								<span>Order ID (optional)</span>
+								<span>{t('Order ID (optional)')}</span>
 								<input type="text" value={contactForm.orderId} onChange={(event) => setContactForm({ ...contactForm, orderId: event.target.value })} placeholder="SP_1001" />
 							</label>
 							<label className="is-wide">
-								<span>Your message</span>
-								<textarea required rows="3" value={contactForm.message} onChange={(event) => setContactForm({ ...contactForm, message: event.target.value })} placeholder="How can we help?" />
+								<span>{t('Your message')}</span>
+								<textarea required rows="3" value={contactForm.message} onChange={(event) => setContactForm({ ...contactForm, message: event.target.value })} placeholder={t('How can we help?')} />
 							</label>
 								<input
 									type="text"
@@ -900,12 +916,12 @@ function CustomerTrust() {
 									onChange={(event) => setContactForm({ ...contactForm, website: event.target.value })}
 								/>
 								<button type="submit" className="buyer-contact-send" disabled={contactStatus.state === 'sending' || contactStatus.state === 'sent'}>
-									{contactStatus.state === 'sending' ? 'Sending...' : contactStatus.state === 'sent' ? 'Message sent' : 'Send message'}
+									{contactStatus.state === 'sending' ? t('Sending...') : contactStatus.state === 'sent' ? t('Message sent') : t('Send message')}
 								</button>
 								{contactStatus.state === 'sent' || contactStatus.state === 'error' ? (
 									<small className={`is-wide buyer-contact-note is-${contactStatus.state}`} role="status">{contactStatus.text}</small>
 								) : (
-									<small className="is-wide">We reply within one working day.</small>
+									<small className="is-wide">{t('We reply within one working day.')}</small>
 								)}
 						</form>
 					</div>
@@ -914,7 +930,7 @@ function CustomerTrust() {
 
 			<footer className="buyer-footer">
 				<span>© {new Date().getFullYear()} EscroSafe.</span>
-				<Link to="/terms">Terms & Conditions</Link>
+				<Link to="/terms">{t('Terms & Conditions')}</Link>
 			</footer>
 		</div>
 	)

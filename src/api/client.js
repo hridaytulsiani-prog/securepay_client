@@ -20,7 +20,7 @@
 // which defaults to http://localhost:8000 instead — the two apps' .env
 // files are independent; check both if something isn't reaching the
 // backend as expected.)
-import { clearAuthSession, getToken, refreshAuthSessionCookie } from '../utils/storage'
+import { clearAuthSession, getToken, refreshAuthSessionCookie, setAuthNotice } from '../utils/storage'
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
 
@@ -30,9 +30,29 @@ export async function handleApiResponse(response) {
 	// instead of retrying with a token the backend has already rejected.
 	const contentType = response.headers.get('content-type')
 	const isJson = contentType && contentType.includes('application/json')
-	const body = isJson ? await response.json() : await response.text()
+	let body = isJson ? await response.json() : await response.text()
 
 	if (!response.ok) {
+		// A protected endpoint generally returns 401 after an admin blocks a
+		// merchant. Resolve the restriction before clearing the token so the
+		// login screen can explain why the session ended.
+		if (response.status === 401 && !response.url.includes('/merchants/session-status/')) {
+			const token = getToken()
+			if (token) {
+				try {
+					const statusResponse = await fetch(`${API_BASE_URL}/merchants/session-status/`, {
+						headers: { Authorization: `Bearer ${token}`, 'ngrok-skip-browser-warning': 'true' },
+					})
+					if (statusResponse.status === 403) {
+						const restriction = await statusResponse.json()
+						body = restriction
+						setAuthNotice(restriction.error)
+					}
+				} catch {
+					// Preserve the original authentication response if this check fails.
+				}
+			}
+		}
 		const message = isJson
 			? body.error || body.message || body.detail
 			: contentType && contentType.includes('text/html')
@@ -43,7 +63,11 @@ export async function handleApiResponse(response) {
 			clearAuthSession()
 		}
 
-		throw new Error(message || 'Request failed.')
+		const apiError = new Error(message || 'Request failed.')
+		apiError.status = response.status
+		apiError.code = typeof body === 'object' ? body.code : undefined
+		apiError.data = typeof body === 'object' ? body : undefined
+		throw apiError
 	}
 
 	refreshAuthSessionCookie()
