@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { API_BASE_URL } from '../api/client'
 import paymentQr from '../assets/payment-qr.png'
 import escrosafeLogo from '../assets/escrosafe-logo.png'
-import { clearStoredCart } from '../utils/cart'
-import { clearOrderDraft } from '../utils/orderDraft'
 
 const CHECKOUT_SESSION_TTL_MS = 10 * 60 * 1000
 
@@ -58,19 +56,13 @@ function clearSecurePayActiveSession(sessionId) {
 }
 
 function CheckoutConfirm() {
+	const navigate = useNavigate()
 	const [searchParams] = useSearchParams()
 	const sessionId = searchParams.get('session_id') || ''
 	const paymentReady = searchParams.get('payment_ready') === '1'
 	const [session, setSession] = useState(null)
+	const [paymentData, setPaymentData] = useState(null)
 
-	// Reaching the payment page means the order exists: the next visit to
-	// /create-order starts with an empty cart and a blank form.
-	useEffect(() => {
-		if (sessionId) {
-			clearStoredCart()
-			clearOrderDraft()
-		}
-	}, [sessionId])
 	const [loading, setLoading] = useState(true)
 	const [message, setMessage] = useState('')
 	const [remainingMs, setRemainingMs] = useState(CHECKOUT_SESSION_TTL_MS)
@@ -78,7 +70,7 @@ function CheckoutConfirm() {
 	const customer = session?.customer_snapshot || {}
 	const order = session?.order_snapshot || {}
 	const merchant = session?.merchant || {}
-	const isPaymentReady = paymentReady || session?.status === 'confirmed'
+	const isPaymentReady = paymentReady || ['created', 'confirmed', 'payment_started'].includes(session?.status)
 	const isSessionExpired = session?.status === 'created' && remainingMs <= 0
 	const amountLabel = useMemo(() => formatAmount(order.amount, order.currency || 'INR'), [order.amount, order.currency])
 
@@ -108,6 +100,48 @@ function CheckoutConfirm() {
 			})
 			.finally(() => setLoading(false))
 	}, [sessionId])
+
+	useEffect(() => {
+		if (!sessionId || !session || !isPaymentReady || isSessionExpired || paymentData) return undefined
+		let cancelled = false
+		const timer = window.setTimeout(async () => {
+			setMessage('')
+			try {
+				const response = await fetch(`${API_BASE_URL}/payments/v1/checkout-sessions/${encodeURIComponent(sessionId)}/payment/`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+					body: JSON.stringify({ payment_mode: 'UPI_QR' }),
+				})
+				const body = await response.json().catch(() => ({}))
+				if (!response.ok || (!body.qr_image_url && !body.mock)) {
+					throw new Error(body.error || 'Could not load the UPI QR code.')
+				}
+				if (!cancelled) setPaymentData(body)
+			} catch (error) {
+				if (!cancelled) setMessage(error.message || 'Could not load the UPI QR code.')
+			}
+		}, 0)
+		return () => { cancelled = true; window.clearTimeout(timer) }
+	}, [isPaymentReady, isSessionExpired, paymentData, session, sessionId])
+
+	useEffect(() => {
+		if (!paymentData || !sessionId) return undefined
+		const checkPayment = async () => {
+			try {
+				const response = await fetch(`${API_BASE_URL}/payments/v1/checkout-sessions/${encodeURIComponent(sessionId)}/payment-status/`, {
+					headers: { 'ngrok-skip-browser-warning': 'true' },
+				})
+				const body = await response.json().catch(() => ({}))
+				if (['SUCCESS', 'FAILED', 'CANCELLED'].includes(body.status)) {
+					navigate(`/checkout/payment-result?session_id=${encodeURIComponent(sessionId)}&status=${body.status.toLowerCase()}`)
+				}
+			} catch {
+				// A temporary status check failure should not remove a valid QR.
+			}
+		}
+		const interval = window.setInterval(checkPayment, 3000)
+		return () => window.clearInterval(interval)
+	}, [navigate, paymentData, sessionId])
 
 	useEffect(() => {
 		if (!session?.created_at) {
@@ -158,18 +192,22 @@ function CheckoutConfirm() {
 						<div className="checkout-confirm-card checkout-payment-card">
 							<div className="aggregator-payment-box">
 								<span>Complete your payment</span>
-								<div className="aggregator-qr-card" aria-label="Payment QR code">
-									<img src={paymentQr} alt="Scan to pay" />
-									{/* Previous placeholder pattern, kept for reference:
-									<div className="aggregator-qr-pattern">
-										<span />
-										<span />
-										<span />
-									</div>
-									*/}
-								</div>
+								{paymentData ? (
+									<a
+										className="aggregator-qr-card"
+										href={paymentData.mock ? paymentData.mock_control_url : undefined}
+										target={paymentData.mock ? '_blank' : undefined}
+										rel={paymentData.mock ? 'noreferrer' : undefined}
+										aria-label={paymentData.mock ? 'Open mock UPI payment controls' : 'UPI payment QR code'}
+									>
+										<img src={paymentData.qr_image_url || paymentQr} alt="Scan with any UPI app to pay" />
+									</a>
+								) : (
+									<div className="aggregator-qr-loading" role="status">Generating secure UPI QR...</div>
+								)}
 								<strong>Payment of {amountLabel}</strong>
 								<small>{isSessionExpired ? 'QR code expired' : `QR code is valid for ${formatRemainingTime(remainingMs)} minutes`}</small>
+								{paymentData?.mock ? <small className="aggregator-mock-hint">Local test: click the QR to simulate a UPI result.</small> : null}
 
 								<p className="aggregator-terms-text">
 									By paying, you accept <img className="aggregator-terms-logo" src={escrosafeLogo} alt="EscroSafe" /> <a className="aggregator-terms-link" href="/terms" target="_blank" rel="noreferrer">

@@ -660,6 +660,10 @@ function CustomerTrust() {
 								<a className={activeNavId === 'faq' ? 'is-active' : ''} href="#faq" onClick={closeMenu}>{t('FAQ')}</a>
 								<a className={activeNavId === 'contact' ? 'is-active' : ''} href="#contact" onClick={closeMenu}>{t('Contact')}</a>
 							</nav>
+							<a className="buyer-nav-mobile-cta" href={`${MERCHANT_SITE_URL}/`} onClick={closeMenu}>
+								<span>{t('For merchants')}</span>
+								<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
+							</a>
 						</div>
 					</>
 				)}
@@ -673,10 +677,10 @@ function CustomerTrust() {
 							{t('Your payment, protected until delivery')}
 						</span>
 						<h1 className="buyer-fade-up" style={{ '--d': '0.08s' }}>
-							{t('Shop online, without')}<br />{t('the')} <span className="buyer-hero-accent">{t('leap of faith.')}</span>
+							{t('Shop online, without')}<br className="buyer-copy-break" />{' '}{t('the')} <span className="buyer-hero-accent">{t('leap of faith.')}</span>
 						</h1>
 						<p className="buyer-lede buyer-fade-up" style={{ '--d': '0.16s' }}>
-							{t('EscroSafe protects your payment the moment you check out,')}<br />
+							{t('EscroSafe protects your payment the moment you check out,')}<br className="buyer-copy-break" />{' '}
 							{t('with a direct line to the seller if anything goes wrong.')}
 						</p>
 						<div className="buyer-hero-actions buyer-fade-up" style={{ '--d': '0.22s' }}>

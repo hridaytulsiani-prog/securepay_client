@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import { API_BASE_URL } from '../api/client'
 import { getUser } from '../utils/storage'
-import { clearStoredCart, useCart } from '../utils/cart'
-import { clearOrderDraft, readOrderDraft, writeOrderDraft } from '../utils/orderDraft'
+import { useCart } from '../utils/cart'
+import { readOrderDraft, writeOrderDraft } from '../utils/orderDraft'
 import { formatInr } from '../constants/storeProducts'
 import { readStoredButtonTheme } from '../constants/buttonThemes'
 import escrosafeLogo from '../assets/escrosafe-logo.png'
@@ -39,6 +39,7 @@ function MethodIcon({ name }) {
 // the order draft; the EscroSafe SDK button is mounted on the right only when
 // "Pay using EscroSafe" is the chosen method.
 function Checkout() {
+	const [searchParams] = useSearchParams()
 	const user = getUser()
 	const merchantKey = user?.merchant_key || user?.merchantKey || user?.publishable_key || ''
 	const { cartLines, cartCount, cartTotal } = useCart()
@@ -61,6 +62,8 @@ function Checkout() {
 	const [showEscrowInfo, setShowEscrowInfo] = useState(false)
 	const [escrowInfoAbove, setEscrowInfoAbove] = useState(false)
 	const escrowInfoRef = useRef(null)
+	const returnedPaymentStatus = searchParams.get('payment_status') || ''
+	const returnedOrderId = searchParams.get('order_id') || draft?.merchantOrderId || ''
 
 	// Close the "How EscroSafe works" popover on outside click or Escape.
 	useEffect(() => {
@@ -102,18 +105,6 @@ function Checkout() {
 		return () => window.removeEventListener('securepay:before-start', handleBeforeStart)
 	}, [termsAccepted])
 	*/
-
-	// The order exists once the SDK has created its session, so the next visit to
-	// /create-order starts with an empty cart and a blank form.
-	useEffect(() => {
-		const handleSessionCreated = () => {
-			clearStoredCart()
-			clearOrderDraft()
-		}
-
-		window.addEventListener('securepay:session-created', handleSessionCreated)
-		return () => window.removeEventListener('securepay:session-created', handleSessionCreated)
-	}, [])
 
 	useEffect(() => {
 		const handlePageShow = (event) => {
@@ -248,6 +239,12 @@ function Checkout() {
 					<span className="oc-badge">{cartCount}</span>
 				</Link>
 			</header>
+			{returnedPaymentStatus === 'success' ? (
+				<div className="oc-payment-success" role="status">
+					<span aria-hidden="true">✓</span>
+					<div><strong>Payment completed</strong><small>Payment for order {returnedOrderId} has been successfully recorded.</small></div>
+				</div>
+			) : null}
 
 			<main className="oc-body">
 				<div className="oc-left">

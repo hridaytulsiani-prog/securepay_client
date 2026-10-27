@@ -20,6 +20,7 @@ import ReportIssue from './pages/ReportIssue'
 import CheckoutRoute from './pages/CheckoutRoute'
 import Documentation from './pages/Documentation'
 import Terms from './pages/Terms'
+import PaymentResult from './pages/PaymentResult'
 import { checkMerchantSession } from './api/auth'
 import { AUTH_IDLE_TIMEOUT_MS, clearAuthSession, isAuthenticated, refreshAuthSessionCookie } from './utils/storage'
 import './App.css'
@@ -144,6 +145,7 @@ function App() {
       <Route path="/report-issue" element={<ReportIssue />} />
       <Route path="/docs" element={<Documentation />} />
       <Route path="/checkout" element={<CheckoutRoute />} />
+      <Route path="/checkout/payment-result" element={<PaymentResult />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
