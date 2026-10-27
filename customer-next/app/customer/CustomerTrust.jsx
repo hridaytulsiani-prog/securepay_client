@@ -25,7 +25,7 @@ const HINDI_TRANSLATIONS = {
 	'Menu': 'मेन्यू',
 	'Close menu': 'मेन्यू बंद करें',
 	'Your payment, protected until delivery': 'आपका भुगतान, डिलीवरी तक सुरक्षित',
-	'Shop online, without': 'ऑनलाइन खरीदारी करें, बिना',
+	'Shop online, without': 'ऑनलाइन खरीदें, बिना',
 	'the': 'किसी',
 	'leap of faith.': 'अंधे भरोसे के।',
 	'EscroSafe protects your payment the moment you check out,': 'चेकआउट करते ही EscroSafe आपके भुगतान को सुरक्षित रखता है,',

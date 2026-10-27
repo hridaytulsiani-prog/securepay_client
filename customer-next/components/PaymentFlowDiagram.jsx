@@ -11,12 +11,12 @@ function PaymentFlowDiagram({ t = (text) => text }) {
 					<p>{t('Choose EscroSafe at checkout and complete your payment securely.')}</p>
 				</div>
 				<div className="pfd-mock">
-					<span className="pfd-mock-label">{t('Payment method')}</span>
+					<span className="pfd-mock-label">Payment method</span>
 					<div className="pfd-mock-options">
-						<span className="pfd-mock-option"><i className="pfd-radio" />{t('Credit or debit card')}</span>
+						<span className="pfd-mock-option"><i className="pfd-radio" />Credit or debit card</span>
 						<span className="pfd-mock-option is-selected"><i className="pfd-radio is-on" /><img src={escrosafeLogo.src} alt="EscroSafe" /></span>
 					</div>
-					<span className="pfd-mock-button">{t('Complete payment')}</span>
+					<span className="pfd-mock-button">Complete payment</span>
 				</div>
 				<svg className="pfd-art pfd-art-phone" viewBox="0 0 64 80" aria-hidden="true">
 					<rect x="10" y="4" width="38" height="68" rx="8" fill="#2f4d6b" />
@@ -36,31 +36,31 @@ function PaymentFlowDiagram({ t = (text) => text }) {
 					<p>{t('Your payment is securely held with an RBI-regulated payment aggregator until your order is confirmed.')}</p>
 				</div>
 				<div className="pfd-mock pfd-mock-held">
-					<span className="pfd-mock-label">{t('Payment status')}</span>
+					<span className="pfd-mock-label">Payment status</span>
 					<div className="pfd-held-row">
-						<span>{t('Amount paid')}</span>
+						<span>Amount paid</span>
 						<strong>&#8377;1,299</strong>
 					</div>
 					<span className="pfd-held-pill">
 						<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
-						{t('Held by payment aggregator')}
+						Held by payment aggregator
 					</span>
 					<ol className="pfd-held-track">
-						<li className="is-done"><i />{t('Paid')}</li>
-						<li className="is-now"><i />{t('Held')}</li>
-						<li><i />{t('Release / Refund')}</li>
+						<li className="is-done"><i />Paid</li>
+						<li className="is-now"><i />Held</li>
+						<li><i />Release / Refund</li>
 					</ol>
 				</div>
 				{/* Bank: the payment is held with the payment aggregator's bank */}
 				<svg className="pfd-art pfd-art-safe" viewBox="0 0 64 64" aria-hidden="true">
-					<path d="M32 4 4 20h56Z" fill="#d94c82" />
+					<path d="M32 4 4 20h56Z" fill="#de6589" />
 					<circle cx="32" cy="14" r="5" fill="#fff" />
-					<text x="32" y="17.500" textAnchor="middle" fontSize="8" fontWeight="700" fill="#b03a68" fontFamily="system-ui, sans-serif">&#8377;</text>
-					<rect x="9" y="24" width="8" height="26" rx="1.500" fill="#ea7aa3" />
-					<rect x="21" y="24" width="8" height="26" rx="1.500" fill="#ea7aa3" />
-					<rect x="35" y="24" width="8" height="26" rx="1.500" fill="#ea7aa3" />
-					<rect x="47" y="24" width="8" height="26" rx="1.500" fill="#ea7aa3" />
-					<rect x="4" y="52" width="56" height="6" rx="2" fill="#d94c82" />
+					<text x="32" y="17.500" textAnchor="middle" fontSize="8" fontWeight="700" fill="#8f2a50" fontFamily="system-ui, sans-serif">&#8377;</text>
+					<rect x="9" y="24" width="8" height="26" rx="1.500" fill="#f2a1b8" />
+					<rect x="21" y="24" width="8" height="26" rx="1.500" fill="#f2a1b8" />
+					<rect x="35" y="24" width="8" height="26" rx="1.500" fill="#f2a1b8" />
+					<rect x="47" y="24" width="8" height="26" rx="1.500" fill="#f2a1b8" />
+					<rect x="4" y="52" width="56" height="6" rx="2" fill="#de6589" />
 				</svg>
 			</section>
 
@@ -73,60 +73,60 @@ function PaymentFlowDiagram({ t = (text) => text }) {
 				</div>
 				<div className="pfd-mock pfd-mock-route">
 					<div className="pfd-route-head">
-						<span className="pfd-mock-label">{t('Live tracking')}</span>
-						<span className="pfd-route-status">{t('On the way')}</span>
+						<span className="pfd-mock-label">Live tracking</span>
+						<span className="pfd-route-status">On the way</span>
 					</div>
-					<svg className="pfd-route" viewBox="0 0 214 100" role="img" aria-label={t('Order route from store to home: shipped, in transit, out for delivery, delivered')}>
+					<svg className="pfd-route" viewBox="0 0 214 100" role="img" aria-label="Order route from store to home: shipped, in transit, out for delivery, delivered">
 						{/* straight road with 4 milestones: 22 (Shipped), 79 (In transit), 135 (Out for delivery), 192 (Delivered) */}
-						<line x1="22" y1="58" x2="192" y2="58" stroke="#d3ddf0" strokeWidth="9" strokeLinecap="round" />
-						<line x1="22" y1="58" x2="107" y2="58" stroke="#2f6fe0" strokeWidth="9" strokeLinecap="round" />
+						<line x1="22" y1="58" x2="192" y2="58" stroke="#ffc3d6" strokeWidth="9" strokeLinecap="round" />
+						<line x1="22" y1="58" x2="107" y2="58" stroke="#d4547c" strokeWidth="9" strokeLinecap="round" />
 						<line x1="26" y1="58" x2="188" y2="58" stroke="#ffffff" strokeWidth="1.4" strokeDasharray="4 4" opacity=".9" />
 
 						{/* store (start) */}
 						<g transform="translate(8 14)">
-							<rect x="2" y="10" width="24" height="17" fill="#fdf0e3" stroke="#d9c3a5" strokeWidth=".8" />
-							<path d="M0 9 3 0H25L28 9Q24.500 13 21 9Q17.500 13 14 9Q10.500 13 7 9Q3.500 13 0 9Z" fill="#e5534b" />
+							<rect x="2" y="10" width="24" height="17" fill="#fff6f9" stroke="#f9b2c8" strokeWidth=".8" />
+							<path d="M0 9 3 0H25L28 9Q24.500 13 21 9Q17.500 13 14 9Q10.500 13 7 9Q3.500 13 0 9Z" fill="#de6589" />
 							<path d="M9.500 0 8.500 9M14 0V9M18.500 0 19.500 9" stroke="#fff" strokeWidth="1.800" opacity=".85" />
-							<rect x="11" y="16" width="7" height="11" fill="#3f63c9" />
-							<rect x="4" y="15" width="5" height="6" fill="#cfe3ff" />
-							<rect x="20" y="15" width="5" height="6" fill="#cfe3ff" />
+							<rect x="11" y="16" width="7" height="11" fill="#b33d68" />
+							<rect x="4" y="15" width="5" height="6" fill="#ffdae6" />
+							<rect x="20" y="15" width="5" height="6" fill="#ffdae6" />
 						</g>
 
 						{/* house (destination) */}
 						<g transform="translate(178 14)">
-							<rect x="19" y="3" width="4" height="8" fill="#c7463a" />
-							<rect x="3" y="13" width="22" height="15" fill="#fdf0e3" stroke="#d9c3a5" strokeWidth=".8" />
-							<path d="M0 14 14 1 28 14Z" fill="#e5634d" />
-							<rect x="11" y="18" width="7" height="10" fill="#3f63c9" />
+							<rect x="19" y="3" width="4" height="8" fill="#c04470" />
+							<rect x="3" y="13" width="22" height="15" fill="#fff6f9" stroke="#f9b2c8" strokeWidth=".8" />
+							<path d="M0 14 14 1 28 14Z" fill="#e8789a" />
+							<rect x="11" y="18" width="7" height="10" fill="#b33d68" />
 							<circle cx="16.500" cy="23.500" r=".9" fill="#fff" />
-							<rect x="5" y="18" width="5" height="5" fill="#cfe3ff" />
-							<rect x="19" y="18" width="5" height="5" fill="#cfe3ff" />
+							<rect x="5" y="18" width="5" height="5" fill="#ffdae6" />
+							<rect x="19" y="18" width="5" height="5" fill="#ffdae6" />
 						</g>
 
 						{/* milestones */}
-						<circle cx="22" cy="58" r="6" fill="#2f6fe0" stroke="#fff" strokeWidth="2" />
-						<circle cx="79" cy="58" r="6" fill="#2f6fe0" stroke="#fff" strokeWidth="2" />
-						<circle cx="135" cy="58" r="6" fill="#fff" stroke="#2f6fe0" strokeWidth="2.400" />
-						<circle cx="192" cy="58" r="6" fill="#fff" stroke="#f08804" strokeWidth="2.400" />
+						<circle cx="22" cy="58" r="6" fill="#d4547c" stroke="#fff" strokeWidth="2" />
+						<circle cx="79" cy="58" r="6" fill="#d4547c" stroke="#fff" strokeWidth="2" />
+						<circle cx="135" cy="58" r="6" fill="#fff" stroke="#d4547c" strokeWidth="2.400" />
+						<circle cx="192" cy="58" r="6" fill="#fff" stroke="#c04470" strokeWidth="2.400" />
 						<path d="m19.200 58.200 2 2 3.400-3.800M76.200 58.200l2 2 3.400-3.800" fill="none" stroke="#fff" strokeWidth="1.600" strokeLinecap="round" strokeLinejoin="round" />
 
 						{/* tracker: the truck sits between "In transit" and "Out for delivery" */}
 						<g transform="translate(107 41)">
-							<rect x="-11" y="-9" width="14" height="10.500" rx="1.500" fill="#2f6fe0" />
-							<path d="M3 -5.500h5l3.500 4.500v2.500H3Z" fill="#4f86ea" />
+							<rect x="-11" y="-9" width="14" height="10.500" rx="1.500" fill="#d4547c" />
+							<path d="M3 -5.500h5l3.500 4.500v2.500H3Z" fill="#ee93ad" />
 							<circle cx="-6" cy="2" r="2.600" fill="#2f3b52" stroke="#fff" strokeWidth="1" />
 							<circle cx="7" cy="2" r="2.600" fill="#2f3b52" stroke="#fff" strokeWidth="1" />
 						</g>
-						<path d="M107 46v6" stroke="#2f6fe0" strokeWidth="1.600" strokeLinecap="round" />
-						<circle cx="107" cy="58" r="3.200" fill="#fff" stroke="#2f6fe0" strokeWidth="1.800" />
+						<path d="M107 46v6" stroke="#d4547c" strokeWidth="1.600" strokeLinecap="round" />
+						<circle cx="107" cy="58" r="3.200" fill="#fff" stroke="#d4547c" strokeWidth="1.800" />
 
 						{/* labels */}
 						<g className="pfd-route-labels" textAnchor="middle">
-							<text x="22" y="84">{t('Shipped')}</text>
-							<text x="79" y="84">{t('In transit')}</text>
-							<text x="135" y="84">{t('Out for')}</text>
-							<text x="135" y="92.500">{t('delivery')}</text>
-							<text x="192" y="84">{t('Delivered')}</text>
+							<text x="22" y="84">Shipped</text>
+							<text x="79" y="84">In transit</text>
+							<text x="135" y="84">Out for</text>
+							<text x="135" y="92.500">delivery</text>
+							<text x="192" y="84">Delivered</text>
 						</g>
 					</svg>
 				</div>
@@ -158,8 +158,8 @@ function PaymentFlowDiagram({ t = (text) => text }) {
 					</div>
 					<div className="pfd-chat-body">
 						<p className="pfd-bubble-in pfd-bubble-long">
-							<span>{t('Your order was tracked, and delivered via Delhivery!')}</span>
-							<span>{t('If you have not received your order or had trouble with your order; click the link below, fill out a quick survey and our team will sort it out shortly. If you have received your order - feel free to ignore this')}</span>
+							<span>Your order was tracked, and delivered via Delhivery!</span>
+							<span>If you have not received your order or had trouble with your order; click the link below, fill out a quick survey and our team will sort it out shortly. If you have received your order - feel free to ignore this</span>
 							<span className="pfd-chat-link">escrosafe.com/enquiry</span>
 							<small>10:42</small>
 						</p>
@@ -184,7 +184,7 @@ function PaymentFlowDiagram({ t = (text) => text }) {
 				</div>
 				<div className="pfd-refund-flow">
 					{/* The refund is sent by the payment aggregator (EscroSafe does not hold the money) */}
-					<span className="pfd-agg-chip" role="img" aria-label={t('Payment aggregator')} title={t('Payment aggregator')}>
+					<span className="pfd-agg-chip" role="img" aria-label="Payment aggregator" title="Payment aggregator">
 						<svg viewBox="0 0 48 48" aria-hidden="true">
 							<circle cx="24" cy="24" r="22" fill="#2f6fe0" />
 							<path d="M9.5 20.1A15 15 0 0 1 34.0 12.9" fill="none" stroke="#fff" strokeWidth="2.600" strokeLinecap="round" />
@@ -201,8 +201,8 @@ function PaymentFlowDiagram({ t = (text) => text }) {
 							<svg viewBox="0 0 24 24"><path d="M3 10 12 4l9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18" /></svg>
 						</span>
 						<div>
-							<strong>{t('Refunded to your bank account')}</strong>
-							<small>{t('Bank Account ****** 1234')}</small>
+							<strong>Refunded to your bank account</strong>
+							<small>Bank Account ****** 1234</small>
 						</div>
 						<span className="pfd-tick" aria-hidden="true">
 							<svg viewBox="0 0 24 24"><path d="m6 12.5 4 4 8-9" /></svg>

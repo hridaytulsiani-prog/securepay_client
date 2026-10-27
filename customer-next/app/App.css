@@ -6261,11 +6261,12 @@ button.doc-tab-btn.active:focus {
 .buyer-nav-actions {
 	display: flex;
 	align-items: center;
-	gap: 0.7rem;
+	gap: 1rem;
 }
 
 .buyer-language-switch {
-	display: inline-flex;
+	display: inline-grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 	align-items: center;
 	padding: 0.25rem;
 	border: 1px solid rgba(124, 92, 255, 0.2);
@@ -6275,6 +6276,8 @@ button.doc-tab-btn.active:focus {
 }
 
 .buyer-language-switch button {
+	box-sizing: border-box;
+	width: 100%;
 	min-width: 62px;
 	padding: 0.48rem 0.7rem;
 	border: 0;
@@ -6295,9 +6298,38 @@ button.doc-tab-btn.active:focus {
 	box-shadow: 0 4px 12px rgba(76, 55, 158, 0.16);
 }
 
+.buyer-language-switch button:hover:not(:disabled) {
+	background: transparent;
+	color: #5b527c;
+}
+
+.buyer-language-switch button.is-active:hover:not(:disabled) {
+	background: #ffffff;
+	color: #12211a;
+}
+
 .buyer-language-switch button:focus-visible {
 	outline: 2px solid #7c5cff;
 	outline-offset: 2px;
+}
+
+@media (min-width: 901px) {
+	.buyer-nav-actions > .buyer-language-switch,
+	.buyer-nav-actions > .buyer-nav-cta {
+		box-sizing: border-box;
+		width: 174px;
+		height: 44px;
+	}
+
+	.buyer-nav-actions > .buyer-nav-cta {
+		justify-content: center;
+	}
+
+	.buyer-language-switch button {
+		height: 100%;
+		min-width: 0;
+		padding-block: 0;
+	}
 }
 
 .buyer-nav-cta:hover {
@@ -8651,6 +8683,21 @@ button.settings-extension-link:hover:not(:disabled) { background: #e1e6e4; borde
 	.buyer-expect-grid .buyer-expect-item { container-type: inline-size; padding-left: 0.6rem; padding-right: 0.6rem; }
 	.buyer-expect-grid .buyer-expect-item strong { white-space: nowrap; }
 	.buyer-expect-grid .buyer-expect-item p { font-size: min(1rem, 4.9cqw); white-space: nowrap; }
+	.buyer-page[lang="hi"] .buyer-expect-grid .buyer-expect-item {
+		min-width: 0;
+		padding-left: 0.85rem;
+		padding-right: 0.85rem;
+	}
+	.buyer-page[lang="hi"] .buyer-expect-grid .buyer-expect-item strong,
+	.buyer-page[lang="hi"] .buyer-expect-grid .buyer-expect-item p {
+		max-width: 100%;
+		white-space: normal;
+		overflow-wrap: break-word;
+	}
+	.buyer-page[lang="hi"] .buyer-expect-grid .buyer-expect-item p {
+		font-size: 0.9rem;
+		line-height: 1.35;
+	}
 }
 @media (max-width: 1279px) {
 	.buyer-expect-grid .buyer-expect-item p { font-size: 0.95rem; }
