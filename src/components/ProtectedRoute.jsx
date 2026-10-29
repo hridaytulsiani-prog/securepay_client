@@ -6,7 +6,8 @@ import { useEffect, useState } from 'react'
 import Navbar from './Navbar'
 import CourierSetupModal from './CourierSetupModal'
 import { getCourierPreferences } from '../api/merchant'
-import { isAuthenticated } from '../utils/storage'
+import { getUser, isAuthenticated } from '../utils/storage'
+import { hasIncompleteOnboardingProgress } from '../utils/onboardingProgress'
 
 function ProtectedRoute() {
 	const [showCourierSetup, setShowCourierSetup] = useState(null)
@@ -17,7 +18,8 @@ function ProtectedRoute() {
 
 		getCourierPreferences()
 			.then((data) => {
-				if (active) setShowCourierSetup(!data.courier_setup_completed)
+				const hasSavedProgress = hasIncompleteOnboardingProgress(getUser())
+				if (active) setShowCourierSetup(!data.courier_setup_completed || hasSavedProgress)
 			})
 			.catch((requestError) => {
 				// Do not silently skip mandatory first-login setup. The modal can

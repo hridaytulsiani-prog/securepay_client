@@ -303,7 +303,20 @@ function CustomerIssues() {
 
 	return (
 		<section className="dashboard-page customer-issues-page">
-			<div className="dashboard-overview"><div className="dashboard-hero"><div><p className="dashboard-eyebrow">Customer reports</p><h2 className="dashboard-title">Customer Issues</h2><p>Review customer concerns forwarded by EscroSafe and respond with updates or supporting files.</p></div></div></div>
+			<div className="dashboard-overview">
+				<div className="dashboard-hero">
+					<div>
+						<p className="dashboard-eyebrow">
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H11l-4 3.5V17h-.5A2.5 2.5 0 0 1 4 14.5v-8Zm4 1.5a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8Zm0 3.5a1 1 0 1 0 0 2h5a1 1 0 1 0 0-2H8Z" />
+							</svg>
+							Customer reports
+						</p>
+						<h2 className="dashboard-title">Customer Issues</h2>
+						<p>Review customer concerns forwarded by EscroSafe and respond with updates or supporting files.</p>
+					</div>
+				</div>
+			</div>
 			<div className="card table-card customer-issues-card">
 				<div className="customer-issues-toolbar"><div><h3>Forwarded issues</h3><span>{issues.length} total</span></div><label><span className="sr-only">Search customer issues</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search ticket, order or customer" /></label><button type="button" className="issue-btn" disabled={loading} onClick={loadIssues}>{loading ? 'Refreshing...' : 'Refresh'}</button></div>
 				{error ? <p className="message error">{error}</p> : null}

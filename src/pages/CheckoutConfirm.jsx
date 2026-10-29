@@ -65,11 +65,13 @@ function CheckoutConfirm() {
 
 	const [loading, setLoading] = useState(true)
 	const [message, setMessage] = useState('')
+	const [simulating, setSimulating] = useState('')
 	const [remainingMs, setRemainingMs] = useState(CHECKOUT_SESSION_TTL_MS)
 
 	const customer = session?.customer_snapshot || {}
 	const order = session?.order_snapshot || {}
 	const merchant = session?.merchant || {}
+	const isTestMode = Boolean(session?.test_mode)
 	const isPaymentReady = paymentReady || ['created', 'confirmed', 'payment_started'].includes(session?.status)
 	const isSessionExpired = session?.status === 'created' && remainingMs <= 0
 	const amountLabel = useMemo(() => formatAmount(order.amount, order.currency || 'INR'), [order.amount, order.currency])
@@ -102,7 +104,7 @@ function CheckoutConfirm() {
 	}, [sessionId])
 
 	useEffect(() => {
-		if (!sessionId || !session || !isPaymentReady || isSessionExpired || paymentData) return undefined
+		if (!sessionId || !session || isTestMode || !isPaymentReady || isSessionExpired || paymentData) return undefined
 		let cancelled = false
 		const timer = window.setTimeout(async () => {
 			setMessage('')
@@ -122,7 +124,26 @@ function CheckoutConfirm() {
 			}
 		}, 0)
 		return () => { cancelled = true; window.clearTimeout(timer) }
-	}, [isPaymentReady, isSessionExpired, paymentData, session, sessionId])
+	}, [isPaymentReady, isSessionExpired, isTestMode, paymentData, session, sessionId])
+
+	async function simulateTestPayment(outcome) {
+		setMessage('')
+		setSimulating(outcome)
+		try {
+			const response = await fetch(`${API_BASE_URL}/payments/v1/checkout-sessions/${encodeURIComponent(sessionId)}/test-outcome/`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+				body: JSON.stringify({ outcome }),
+			})
+			const body = await response.json().catch(() => ({}))
+			if (!response.ok) throw new Error(body.error || 'Could not simulate the test payment.')
+			clearSecurePayActiveSession(sessionId)
+			navigate(`/checkout/payment-result?session_id=${encodeURIComponent(sessionId)}&status=${body.status.toLowerCase()}`)
+		} catch (error) {
+			setMessage(error.message || 'Could not simulate the test payment.')
+			setSimulating('')
+		}
+	}
 
 	useEffect(() => {
 		if (!paymentData || !sessionId) return undefined
@@ -175,7 +196,7 @@ function CheckoutConfirm() {
 							<div className="securepay-webhook-toast-head">
 								<div>
 									<img className="securepay-webhook-toast-logo" src={escrosafeLogo} alt="EscroSafe" />
-									<strong>New order received</strong>
+									<strong>{isTestMode ? 'Test checkout received' : 'New order received'}</strong>
 								</div>
 								<strong>{amountLabel}</strong>
 							</div>
@@ -191,8 +212,19 @@ function CheckoutConfirm() {
 
 						<div className="checkout-confirm-card checkout-payment-card">
 							<div className="aggregator-payment-box">
-								<span>Complete your payment</span>
-								{paymentData ? (
+								<span>{isTestMode ? 'EscroSafe integration test' : 'Complete your payment'}</span>
+								{isTestMode ? (
+									<div className="checkout-test-simulator">
+										<strong>TEST MODE</strong>
+										<h1>No real payment will be made</h1>
+										<p>The button, merchant key, mapped order fields and EscroSafe checkout redirect are working. Choose a result to finish this test.</p>
+										<div className="checkout-test-actions">
+											<button type="button" className="is-success" onClick={() => simulateTestPayment('success')} disabled={Boolean(simulating)}>{simulating === 'success' ? 'Simulating...' : 'Simulate success'}</button>
+											<button type="button" onClick={() => simulateTestPayment('failed')} disabled={Boolean(simulating)}>{simulating === 'failed' ? 'Simulating...' : 'Simulate failure'}</button>
+											<button type="button" onClick={() => simulateTestPayment('cancelled')} disabled={Boolean(simulating)}>{simulating === 'cancelled' ? 'Simulating...' : 'Simulate cancellation'}</button>
+										</div>
+									</div>
+								) : paymentData ? (
 									<a
 										className="aggregator-qr-card"
 										href={paymentData.mock ? paymentData.mock_control_url : undefined}
@@ -205,16 +237,14 @@ function CheckoutConfirm() {
 								) : (
 									<div className="aggregator-qr-loading" role="status">Generating secure UPI QR...</div>
 								)}
-								<strong>Payment of {amountLabel}</strong>
-								<small>{isSessionExpired ? 'QR code expired' : `QR code is valid for ${formatRemainingTime(remainingMs)} minutes`}</small>
-								{paymentData?.mock ? <small className="aggregator-mock-hint">Local test: click the QR to simulate a UPI result.</small> : null}
+								{!isTestMode ? <><strong>Payment of {amountLabel}</strong><small>{isSessionExpired ? 'QR code expired' : `QR code is valid for ${formatRemainingTime(remainingMs)} minutes`}</small>{paymentData?.mock ? <small className="aggregator-mock-hint">Local test: click the QR to simulate a UPI result.</small> : null}</> : null}
 
-								<p className="aggregator-terms-text">
+								{!isTestMode ? <p className="aggregator-terms-text">
 									By paying, you accept <img className="aggregator-terms-logo" src={escrosafeLogo} alt="EscroSafe" /> <a className="aggregator-terms-link" href="/terms" target="_blank" rel="noreferrer">
 										Terms &amp; Conditions
 										<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" /></svg>
 									</a>
-								</p>
+								</p> : null}
 
 								{message ? <p className="checkout-confirm-message">{message}</p> : null}
 							</div>

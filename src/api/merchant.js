@@ -18,3 +18,31 @@ export async function saveCourierPreferences(payload) {
 
 	return handleApiResponse(response)
 }
+
+export async function getMerchantKyc() {
+	const response = await fetch(`${API_BASE_URL}/merchants/kyc/`, {
+		method: 'GET',
+		headers: buildJsonHeaders(),
+	})
+
+	return handleApiResponse(response)
+}
+
+export async function updateMerchantKyc(payload) {
+	const response = await fetch(`${API_BASE_URL}/merchants/kyc/`, {
+		method: 'POST',
+		headers: buildJsonHeaders(),
+		body: JSON.stringify(payload),
+	})
+
+	return handleApiResponse(response)
+}
+
+export async function getCheckoutSessions() {
+	const response = await fetch(`${API_BASE_URL}/payments/v1/checkout-sessions/`, {
+		method: 'GET',
+		headers: buildJsonHeaders(),
+	})
+
+	return handleApiResponse(response)
+}

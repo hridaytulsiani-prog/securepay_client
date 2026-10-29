@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { STORE_PLATFORMS, WORDPRESS_PLUGIN_ZIP_URL } from '../constants/storePlatforms'
+import wordpressMark from '../assets/platforms/wordpress-mark.png'
+import wooMark from '../assets/platforms/woo-primary.png'
 
 // Three-way choice: custom-built site / WordPress / WooCommerce.
 export function StorePlatformPicker({ value, onChange }) {
@@ -14,8 +16,20 @@ export function StorePlatformPicker({ value, onChange }) {
 					key={platform.key}
 					onClick={() => onChange(platform.key)}
 				>
-					<strong>{platform.label}</strong>
-					<small>{platform.hint}</small>
+					<span className="store-platform-option-icon" aria-hidden="true">
+						{platform.key === 'manual' ? (
+							<svg viewBox="0 0 24 24"><path d="m8.5 7-5 5 5 5M15.5 7l5 5-5 5M14 4l-4 16" /></svg>
+						) : (
+							<img src={platform.key === 'wordpress' ? wordpressMark : wooMark} alt="" />
+						)}
+					</span>
+					<span className="store-platform-option-copy">
+						<strong>{platform.label}</strong>
+						<small>{platform.hint}</small>
+					</span>
+					<span className="store-platform-option-check" aria-hidden="true">
+						<svg viewBox="0 0 16 16"><path d="m3.5 8.2 2.8 2.8 6.2-6.3" /></svg>
+					</span>
 				</button>
 			))}
 		</div>

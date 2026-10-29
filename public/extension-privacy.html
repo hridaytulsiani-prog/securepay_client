@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EscroSafe Label Uploader Privacy Policy</title>
+    <style>
+      :root { color: #173d38; background: #f3f7f5; font: 16px/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      body { margin: 0; }
+      main { width: min(760px, calc(100% - 32px)); margin: 40px auto; padding: 36px; border: 1px solid #d8e5e0; border-radius: 16px; background: #fff; box-shadow: 0 16px 44px rgba(23, 61, 56, 0.09); }
+      h1 { margin: 0 0 4px; font-size: clamp(1.65rem, 4vw, 2.25rem); line-height: 1.2; }
+      h2 { margin: 28px 0 6px; font-size: 1.15rem; }
+      p, ul { margin: 8px 0; color: #52635f; }
+      a { color: #176b58; font-weight: 650; }
+      .updated { color: #74827e; font-size: 0.9rem; }
+      @media (max-width: 560px) { main { margin: 16px auto; padding: 22px; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>EscroSafe Label Uploader Privacy Policy</h1>
+      <p class="updated">Last updated: 28 October 2026</p>
+      <p>This policy explains how the EscroSafe Label Uploader Chrome extension processes information when an EscroSafe merchant uses it to upload courier shipment-label PDFs.</p>
+      <h2>Information processed</h2>
+      <ul>
+        <li>The extension reads the <code>securepay_token</code> cookie only from <code>https://merchant.escrosafe.com</code> to authenticate the signed-in merchant.</li>
+        <li>For completed PDF downloads, it temporarily reads the filename, file type and source URL to identify and retrieve a courier label.</li>
+        <li>It processes shipment-label PDFs selected by the merchant or detected after download and uploads them to EscroSafe.</li>
+        <li>It stores the auto-upload preference and up to 50 recent upload-status records locally in Chrome.</li>
+      </ul>
+      <h2>How information is used</h2>
+      <p>Information is used only to authenticate the merchant, upload courier shipment labels, show upload results and provide retry or manual-upload controls.</p>
+      <h2>Data transmission and sharing</h2>
+      <p>The session token and shipment-label PDFs are transmitted over HTTPS only to <code>https://api.escrosafe.com</code>. EscroSafe does not sell extension data or use it for advertising, creditworthiness or lending.</p>
+      <h2>Local storage and control</h2>
+      <p>Recent status records contain a download ID, filename, timestamps, status and message. They do not contain PDF contents, local filesystem paths, source URLs, authentication tokens or API responses. Merchants can clear these records from the popup, turn off automatic upload, or remove the extension.</p>
+      <h2>Limited use</h2>
+      <p>Information obtained through Chrome APIs is used and transferred only as necessary to provide and improve the extension's disclosed label-upload functionality, consistent with the Chrome Web Store User Data Policy.</p>
+      <h2>Contact</h2>
+      <p>For privacy questions or support, use the <a href="https://merchant.escrosafe.com/enquiry">EscroSafe enquiry page</a>.</p>
+    </main>
+  </body>
+</html>

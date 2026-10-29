@@ -81,7 +81,7 @@ const courierPartners = [
 ]
 import escrosafeLogo from '../assets/escrosafe-logo.png'
 
-const SUPPORT_EMAIL = 'partners@escrosafe.com'
+const SUPPORT_EMAIL = 'partnerships@escrosafe.com'
 
 function LandingPage() {
 	const [helpForm, setHelpForm] = useState({ name: '', email: '', message: '', website: '' })

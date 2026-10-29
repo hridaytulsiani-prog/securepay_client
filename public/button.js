@@ -3,7 +3,7 @@
 
 	var SDK_VERSION = '0.1.0';
 	var STYLE_ID = 'securepay-button-sdk-style';
-	var DEFAULT_CHECKOUT_URL = 'https://pay.securepay.com/checkout';
+	var DEFAULT_CHECKOUT_URL = 'https://merchant.escrosafe.com/checkout';
 	var DEFAULT_SESSION_PATH = '/payments/v1/checkout-sessions/';
 	var DEFAULT_CONFIG_PATH = '/payments/v1/button-config/';
 	var ACTIVE_SESSION_PREFIX = 'securepay.activeSession.';
@@ -44,6 +44,7 @@
 						'.securepay-button:disabled{cursor:not-allowed;opacity:.7;transform:none}',
 			'.securepay-button-text{white-space:nowrap}',
 			'.securepay-button-logo{display:block;flex:none;height:34px;width:auto;margin:-9px -7px -9px -11px}',
+			'.securepay-test-badge{display:block;color:#9a6224;font:700 10px/1.2 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.08em;text-align:center;text-transform:uppercase}',
 			'.securepay-session-tip{display:none;position:absolute;right:0;bottom:calc(100% + 10px);z-index:10000;width:min(320px,calc(100vw - 32px));box-sizing:border-box;padding:11px 12px;border:1px solid rgba(23,61,56,.18);border-radius:8px;background:#f8fbfa;color:#173d38;box-shadow:0 18px 40px rgba(13,31,35,.16);font:500 13px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-align:left}',
 			'.securepay-button-wrap.is-session-active:hover .securepay-session-tip,.securepay-button-wrap.is-session-active:focus-within .securepay-session-tip{display:block}',
 			'.securepay-session-tip span{display:block;margin-bottom:7px;color:#536662}',
@@ -554,6 +555,7 @@
 				},
 				body: JSON.stringify({
 					merchant_key: options.merchantKey,
+					test_mode: Boolean(options.testMode),
 					customer: snapshot.customer,
 					order: snapshot.order,
 					page: snapshot.page,
@@ -701,6 +703,7 @@
 		var checkoutUrl = String(options.checkoutUrl || DEFAULT_CHECKOUT_URL).trim();
 		var sessionApiUrl = String(options.sessionApiUrl || '').trim();
 		var configApiUrl = String(options.configApiUrl || '').trim();
+		var testMode = Boolean(options.testMode);
 		var disabled = Boolean(options.disabled);
 		var disabledReason = String(options.disabledReason || 'This payment option is currently unavailable.').trim();
 		var target = options.target || null;
@@ -718,6 +721,9 @@
 
 		var wrapper = document.createElement('span');
 		wrapper.className = 'securepay-button-wrap';
+		if (testMode) {
+			wrapper.classList.add('is-test-mode');
+		}
 		var theme = THEMES[String(options.buttonTheme || '').trim().toLowerCase()];
 		if (theme) {
 			wrapper.style.setProperty('--sp-bg', theme[0]);
@@ -787,8 +793,9 @@
 
 		function getActiveSessionForCurrentOrder() {
 			var snapshot = collectCheckoutSnapshot({});
-			currentStorageKey = activeSessionStorageKey(merchantKey, snapshot.order.order_id);
-			return readActiveSession(currentStorageKey) || readActiveSessionForPage(merchantKey);
+			var storageMerchantKey = testMode ? merchantKey + ':test' : merchantKey;
+			currentStorageKey = activeSessionStorageKey(storageMerchantKey, snapshot.order.order_id);
+			return readActiveSession(currentStorageKey) || readActiveSessionForPage(storageMerchantKey);
 		}
 
 		function resetButtonState() {
@@ -823,16 +830,18 @@
 			setLabel('opening');
 
 			window.dispatchEvent(new CustomEvent('securepay:button-click', {
-				detail: {
-					merchantKey: merchantKey,
-					version: SDK_VERSION,
-				},
+					detail: {
+						merchantKey: merchantKey,
+						version: SDK_VERSION,
+						testMode: testMode,
+					},
 			}));
 
 			createCheckoutSession({
 				merchantKey: merchantKey,
 				sessionApiUrl: sessionApiUrl,
 				configApiUrl: configApiUrl,
+				testMode: testMode,
 			}).then(function (payload) {
 				saveActiveSession(currentStorageKey, payload);
 				window.dispatchEvent(new CustomEvent('securepay:session-created', {
@@ -884,6 +893,12 @@
 		};
 
 		wrapper.appendChild(button);
+		if (testMode) {
+			var testBadge = document.createElement('small');
+			testBadge.className = 'securepay-test-badge';
+			testBadge.textContent = 'Test mode · no real payment';
+			wrapper.appendChild(testBadge);
+		}
 		wrapper.appendChild(sessionTip);
 		resetButtonState();
 
@@ -914,6 +929,7 @@
 			checkoutUrl: script.getAttribute('data-checkout-url'),
 			sessionApiUrl: script.getAttribute('data-session-api-url'),
 			configApiUrl: script.getAttribute('data-config-api-url'),
+			testMode: script.getAttribute('data-test-mode') === 'true',
 			target: target,
 		});
 

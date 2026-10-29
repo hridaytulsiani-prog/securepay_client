@@ -11,12 +11,12 @@ const LABELS = {
 	NOT_STARTED: ['Payment not started', 'Return to checkout to begin the payment.'],
 }
 
-function buildReturnUrl(value, status, orderId) {
+function buildReturnUrl(value, status, orderId, testMode = false) {
 	try {
-		const destination = status === 'SUCCESS' ? '/create-order' : (value || '/checkout')
+		const destination = testMode ? (value || '/checkout') : status === 'SUCCESS' ? '/create-order' : (value || '/checkout')
 		const url = new URL(destination, window.location.origin)
 		if (!['http:', 'https:'].includes(url.protocol)) return '/checkout'
-		url.searchParams.set('payment_status', status.toLowerCase())
+		url.searchParams.set(testMode ? 'escrosafe_test_status' : 'payment_status', status.toLowerCase())
 		if (orderId) url.searchParams.set('order_id', orderId)
 		return url.toString()
 	} catch {
@@ -58,13 +58,17 @@ function PaymentResult() {
 	}, [sessionId])
 
 	const status = result?.status || 'NOT_STARTED'
-	const copy = LABELS[status] || ['Payment status received', result?.message || status]
-	const returnUrl = buildReturnUrl(result?.return_url, status, result?.order_id)
+	const testMode = Boolean(result?.test_mode)
+	const copy = testMode
+		? [`Test payment ${status.toLowerCase().replace('_', ' ')}`, status === 'SUCCESS' ? 'Your custom website integration completed the full EscroSafe test journey successfully.' : 'The simulated result was recorded. No real payment or order was created.']
+		: LABELS[status] || ['Payment status received', result?.message || status]
+	const returnUrl = buildReturnUrl(result?.return_url, status, result?.order_id, testMode)
 
 	return (
 		<main className="payment-result-page">
 			<section className={`payment-result-card is-${status.toLowerCase()}`}>
 				<img src={escrosafeLogo} alt="EscroSafe" />
+				{testMode ? <span className="payment-result-test-badge">Test mode · no real payment</span> : null}
 				<div className="payment-result-icon" aria-hidden="true">
 					{status === 'SUCCESS' ? <svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7" /></svg> : status === 'PENDING' ? '…' : '!'}
 				</div>
@@ -73,7 +77,7 @@ function PaymentResult() {
 				{result?.order_id ? <small>Order ID: {result.order_id}</small> : null}
 				<div className="payment-result-actions">
 					{status === 'PENDING' || error ? <button type="button" onClick={checkStatus} disabled={loading}>Check again</button> : null}
-					<a href={returnUrl}>{status === 'SUCCESS' ? 'Back to order' : 'Back to checkout'}</a>
+					<a href={returnUrl}>{testMode ? 'Return to merchant website' : status === 'SUCCESS' ? 'Back to order' : 'Back to checkout'}</a>
 				</div>
 			</section>
 		</main>

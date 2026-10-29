@@ -1,13 +1,13 @@
 // Courier name matching/lookup used by CourierLogo.jsx's CourierLogoCell —
 // split out from that component so react-refresh's "only export components"
 // rule doesn't fire on the .jsx file.
-import blueDartLogo from '../assets/couriers/blue-dart-real.png'
-import delhiveryLogo from '../assets/couriers/delhivery-real.png'
-import dtdcLogo from '../assets/couriers/dtdc-real.png'
+import blueDartLogo from '../assets/couriers/blue-dart.png'
+import delhiveryLogo from '../assets/couriers/delhivery.png'
+import dtdcLogo from '../assets/couriers/dtdc.png'
 import ecomExpressLogo from '../assets/couriers/ecom-express.png'
-import ekartLogo from '../assets/couriers/ekart-real.png'
+import ekartLogo from '../assets/couriers/ekart.png'
 import shadowfaxLogo from '../assets/couriers/shadowfax.svg'
-import shiprocketLogo from '../assets/couriers/shiprocket-real.png'
+import shiprocketLogo from '../assets/couriers/shiprocket.png'
 import xpressbeesLogo from '../assets/couriers/xpressbees.png'
 
 export const courierLogos = [
